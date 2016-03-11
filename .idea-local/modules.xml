@@ -4,9 +4,8 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/source/java-classfile-domain/java-classfile-domain.iml" filepath="$PROJECT_DIR$/source/java-classfile-domain/java-classfile-domain.iml" group="java-classfile" />
       <module fileurl="file://$PROJECT_DIR$/source/java-classfile-parsing/java-classfile-parsing.iml" filepath="$PROJECT_DIR$/source/java-classfile-parsing/java-classfile-parsing.iml" group="java-classfile" />
-      <module fileurl="file://$PROJECT_DIR$/source/java-parsing-utilities/java-parsing-utilities.iml" filepath="$PROJECT_DIR$/source/java-parsing-utilities/java-parsing-utilities.iml" group="java-parsing" />
       <module fileurl="file://$PROJECT_DIR$/source/java-parsing-fileParsers/java-parsing-fileParsers.iml" filepath="$PROJECT_DIR$/source/java-parsing-fileParsers/java-parsing-fileParsers.iml" group="java-parsing" />
-      <module fileurl="file://$PROJECT_DIR$/source/path/path.iml" filepath="$PROJECT_DIR$/source/path/path.iml" group="java-parsing" />
+      <module fileurl="file://$PROJECT_DIR$/source/java-parsing-utilities/java-parsing-utilities.iml" filepath="$PROJECT_DIR$/source/java-parsing-utilities/java-parsing-utilities.iml" group="java-parsing" />
     </modules>
   </component>
 </project>

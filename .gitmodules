@@ -4,6 +4,3 @@
 [submodule "library/annotations"]
 	path = library/annotations
 	url = https://github.com/raphaelcohn/intellij-library-annotations.git
-[submodule "library/path"]
-	path = library/path
-	url = https://github.com/raphaelcohn/path.git
