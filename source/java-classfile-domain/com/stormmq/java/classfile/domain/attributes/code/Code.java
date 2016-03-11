@@ -24,15 +24,25 @@ package com.stormmq.java.classfile.domain.attributes.code;
 
 import com.stormmq.java.classfile.domain.attributes.UnknownAttributes;
 import com.stormmq.java.classfile.domain.attributes.annotations.TypeAnnotation;
+import com.stormmq.java.classfile.domain.attributes.code.opcodeParsers.InvalidOpcodeException;
+import com.stormmq.java.classfile.domain.attributes.code.opcodeParsers.OpcodeParser;
+import com.stormmq.java.classfile.domain.attributes.code.operandStack.OperandStack;
 import com.stormmq.java.classfile.domain.attributes.code.stackMapFrames.StackMapFrame;
 import org.jetbrains.annotations.NotNull;
 
 import java.nio.ByteBuffer;
 import java.util.List;
+import java.util.Locale;
+
+import static com.stormmq.java.classfile.domain.attributes.code.opcodeParsers.OpcodeParser.Java6AndEarlierOpcodeParser;
+import static com.stormmq.java.classfile.domain.attributes.code.opcodeParsers.OpcodeParser.Java7AndLaterOpcodeParsers;
+import static com.stormmq.java.classfile.domain.attributes.code.opcodeParsers.OpcodeParser.unsigned8BitInteger;
 
 public final class Code
 {
-	private final char maximumStack;
+	public static final long MaximumCodeLength = 65535L;
+
+	private final char maximumDepthOfTheOperandStackOfTheMethod;
 	private final char maximumLocals;
 	private final long codeLength;
 	@NotNull private final ByteBuffer code;
@@ -44,10 +54,19 @@ public final class Code
 	@NotNull private final UnknownAttributes unknownAttributes;
 	@NotNull private final TypeAnnotation[] visibleTypeAnnotations;
 	@NotNull private final TypeAnnotation[] invisibleTypeAnnotations;
+	private final boolean opcode186IsPermittedBecauseThisIsForJava7OrLater;
 
-	public Code(final char maximumStack, final char maximumLocals, final long codeLength, @NotNull final ByteBuffer code, @NotNull final ExceptionCode[] exceptionCode, final List<LineNumberEntry[]> lineNumberEntries, final List<LocalVariable[]> localVariables, final List<LocalVariableType[]> localVariableTypes, final StackMapFrame[] stackMapFrames, @NotNull final UnknownAttributes unknownAttributes, @NotNull final TypeAnnotation[] visibleTypeAnnotations, @NotNull final TypeAnnotation[] invisibleTypeAnnotations)
+	public Code(final char maximumDepthOfTheOperandStackOfTheMethod, final char maximumLocals, final long codeLength, @NotNull final ByteBuffer code, @NotNull final ExceptionCode[] exceptionCode, final List<LineNumberEntry[]> lineNumberEntries, final List<LocalVariable[]> localVariables, final List<LocalVariableType[]> localVariableTypes, final StackMapFrame[] stackMapFrames, @NotNull final UnknownAttributes unknownAttributes, @NotNull final TypeAnnotation[] visibleTypeAnnotations, @NotNull final TypeAnnotation[] invisibleTypeAnnotations, final boolean opcode186IsPermittedBecauseThisIsForJava7OrLater)
 	{
-		this.maximumStack = maximumStack;
+		if (codeLength <= 0L)
+		{
+			throw new IllegalArgumentException(String.format(Locale.ENGLISH, "code length can not be zero or less bytes (ie not '%1$s')", codeLength));
+		}
+		if (codeLength > MaximumCodeLength)
+		{
+			throw new IllegalArgumentException(String.format(Locale.ENGLISH, "code length can not be more than '%1$s' bytes (ie not '%2$s')", MaximumCodeLength, codeLength));
+		}
+		this.maximumDepthOfTheOperandStackOfTheMethod = maximumDepthOfTheOperandStackOfTheMethod;
 		this.maximumLocals = maximumLocals;
 		this.codeLength = codeLength;
 		this.code = code;
@@ -59,5 +78,27 @@ public final class Code
 		this.unknownAttributes = unknownAttributes;
 		this.visibleTypeAnnotations = visibleTypeAnnotations;
 		this.invisibleTypeAnnotations = invisibleTypeAnnotations;
+		this.opcode186IsPermittedBecauseThisIsForJava7OrLater = opcode186IsPermittedBecauseThisIsForJava7OrLater;
 	}
+
+	public void parseCode() throws InvalidOpcodeException
+	{
+		final OperandStack operandStack = new OperandStack(maximumDepthOfTheOperandStackOfTheMethod);
+
+		final OpcodeParser[] opcodeParsers = opcode186IsPermittedBecauseThisIsForJava7OrLater ? Java7AndLaterOpcodeParsers : Java6AndEarlierOpcodeParser;
+
+		code.position(0);
+
+		int programCounter = 0;
+		do
+		{
+			final int opcode = unsigned8BitInteger(code);
+			opcodeParsers[opcode].parse(operandStack);
+
+
+			programCounter += 1;
+		}
+		while (programCounter < codeLength);
+	}
+
 }

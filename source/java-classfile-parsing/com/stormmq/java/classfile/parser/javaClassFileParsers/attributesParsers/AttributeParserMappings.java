@@ -53,6 +53,7 @@ import java.util.*;
 import java.util.function.IntFunction;
 
 import static com.stormmq.java.classfile.domain.attributes.AttributeLocation.*;
+import static com.stormmq.java.classfile.domain.attributes.code.Code.MaximumCodeLength;
 import static com.stormmq.java.classfile.domain.attributes.code.ExceptionCode.EmptyExceptionCodes;
 import static com.stormmq.java.classfile.domain.JavaClassFileVersion.*;
 import static com.stormmq.java.classfile.domain.attributes.annotations.TargetType.allValidTargetTypesForLocationIndexedByTargetTypeTag;
@@ -111,8 +112,7 @@ public final class AttributeParserMappings
 			{
 				throw new InvalidJavaClassFileException("code length can not be zero bytes");
 			}
-			//noinspection MagicNumber
-			if (codeLength > 65535L)
+			if (codeLength > MaximumCodeLength)
 			{
 				throw new InvalidJavaClassFileException("code length can not exceed 65,535 bytes");
 			}
@@ -136,7 +136,7 @@ public final class AttributeParserMappings
 			final StackMapFrame[] stackMapFrames = attributes.stackMapFrames();
 			final UnknownAttributes unknownAttributes = attributes.unknownAttributes();
 
-			return new Code(maximumStack, maximumLocals, codeLength, code, exceptionCode, lineNumberEntries, localVariables, localVariableTypes, stackMapFrames, unknownAttributes, visibleTypeAnnotations, invisibleTypeAnnotations);
+			return new Code(maximumStack, maximumLocals, codeLength, code, exceptionCode, lineNumberEntries, localVariables, localVariableTypes, stackMapFrames, unknownAttributes, visibleTypeAnnotations, invisibleTypeAnnotations, javaClassFileVersion.isJava7OrLater());
 		});
 
 		mapping(Attributes.ConstantValue, Java1_0_2, OnlyField, (attributeLength, javaClassFileReader) ->
