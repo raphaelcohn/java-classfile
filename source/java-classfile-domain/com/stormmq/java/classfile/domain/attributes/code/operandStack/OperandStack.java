@@ -26,6 +26,7 @@ import com.stormmq.java.classfile.domain.attributes.code.invalidOperandStackExce
 import com.stormmq.java.classfile.domain.attributes.code.operandStackItems.DoNothingOperandStackItem;
 import com.stormmq.java.classfile.domain.attributes.code.operandStackItems.OperandStackItem;
 import com.stormmq.java.classfile.domain.attributes.code.operandStackItems.numericOperandStackItems.NumericOperandStackItem;
+import com.stormmq.java.classfile.domain.attributes.code.operandStackItems.referenceOperandStackItems.ReferenceOperandStackItem;
 import com.stormmq.java.classfile.domain.attributes.code.typing.ComputationalCategory;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;

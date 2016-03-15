@@ -20,16 +20,19 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-package com.stormmq.java.classfile.domain.attributes.code.operandStackItems.loadLocalVariableOperandStackItems;
+package com.stormmq.java.classfile.domain.attributes.code.operandStackItems.referenceOperandStackItems;
 
-import com.stormmq.java.classfile.domain.attributes.code.operandStackItems.constantOperandStackItems.ConstantOperandStackItem;
+import com.stormmq.java.classfile.domain.attributes.code.localVariables.LocalVariableAtProgramCounter;
+import com.stormmq.java.classfile.domain.attributes.code.operandStackItems.OperandStackItem;
 
-public final class IntegerLoadLocalVariableOperandStackItem implements ConstantOperandStackItem
+public final class LoadReferenceLocalVariableOperandStackItem implements ReferenceOperandStackItem
 {
 	private final char localVariableIndex;
+	private final LocalVariableAtProgramCounter localVariableAtProgramCounter;
 
-	public IntegerLoadLocalVariableOperandStackItem(final char localVariableIndex)
+	public LoadReferenceLocalVariableOperandStackItem(final char localVariableIndex, final LocalVariableAtProgramCounter localVariableAtProgramCounter)
 	{
 		this.localVariableIndex = localVariableIndex;
+		this.localVariableAtProgramCounter = localVariableAtProgramCounter;
 	}
 }

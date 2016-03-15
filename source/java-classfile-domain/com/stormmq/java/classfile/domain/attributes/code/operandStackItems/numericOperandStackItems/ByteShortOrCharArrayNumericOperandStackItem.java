@@ -20,19 +20,24 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-package com.stormmq.java.classfile.domain.attributes.code.operandStackItems.constantOperandStackItems;
+package com.stormmq.java.classfile.domain.attributes.code.operandStackItems.numericOperandStackItems;
 
-import com.stormmq.java.classfile.domain.MethodHandle;
 import com.stormmq.java.classfile.domain.attributes.code.operandStackItems.referenceOperandStackItems.ReferenceOperandStackItem;
+import com.stormmq.java.classfile.domain.attributes.code.typing.ComputationalCategory;
+import com.stormmq.java.classfile.domain.attributes.code.typing.LocalVariableSimpleType;
 import org.jetbrains.annotations.NotNull;
 
-public final class MethodHandleReferenceConstantOperandStackItem implements ConstantOperandStackItem, ReferenceOperandStackItem
+public final class ByteShortOrCharArrayNumericOperandStackItem<N extends Number> extends AbstractNumericOperandStackItem<N>
 {
-	@NotNull private final MethodHandle methodHandle;
+	@NotNull private final LocalVariableSimpleType localVariableSimpleType;
+	@NotNull private final ReferenceOperandStackItem referenceOperandStackItem;
+	@NotNull private final NumericOperandStackItem<N> arrayIndex;
 
-	public MethodHandleReferenceConstantOperandStackItem(@NotNull final MethodHandle methodHandle)
+	public ByteShortOrCharArrayNumericOperandStackItem(@NotNull final ComputationalCategory computationalCategory, @NotNull final LocalVariableSimpleType localVariableSimpleType,@NotNull final ReferenceOperandStackItem referenceOperandStackItem, @NotNull final NumericOperandStackItem<N> arrayIndex)
 	{
-		// https://stackoverflow.com/questions/30002380/why-are-java8-lambdas-invoked-using-invokedynamic
-		this.methodHandle = methodHandle;
+		super(computationalCategory);
+		this.localVariableSimpleType = localVariableSimpleType;
+		this.referenceOperandStackItem = referenceOperandStackItem;
+		this.arrayIndex = arrayIndex;
 	}
 }

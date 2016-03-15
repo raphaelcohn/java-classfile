@@ -22,9 +22,10 @@
 
 package com.stormmq.java.classfile.domain.attributes.code.operandStackItems.constantOperandStackItems;
 
+import com.stormmq.java.classfile.domain.attributes.code.operandStackItems.referenceOperandStackItems.ReferenceOperandStackItem;
 import org.jetbrains.annotations.NotNull;
 
-public final class NullReferenceConstantOperandStackItem implements ConstantOperandStackItem
+public final class NullReferenceConstantOperandStackItem implements ConstantOperandStackItem, ReferenceOperandStackItem
 {
 	@NotNull public static final ConstantOperandStackItem NullConstant = new NullReferenceConstantOperandStackItem();
 

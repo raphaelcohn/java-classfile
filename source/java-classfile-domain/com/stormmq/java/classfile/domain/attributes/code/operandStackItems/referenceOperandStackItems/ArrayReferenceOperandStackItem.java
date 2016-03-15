@@ -20,19 +20,19 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-package com.stormmq.java.classfile.domain.attributes.code.operandStackItems.constantOperandStackItems;
+package com.stormmq.java.classfile.domain.attributes.code.operandStackItems.referenceOperandStackItems;
 
-import com.stormmq.java.classfile.domain.MethodHandle;
-import com.stormmq.java.classfile.domain.attributes.code.operandStackItems.referenceOperandStackItems.ReferenceOperandStackItem;
+import com.stormmq.java.classfile.domain.attributes.code.operandStackItems.numericOperandStackItems.NumericOperandStackItem;
 import org.jetbrains.annotations.NotNull;
 
-public final class MethodHandleReferenceConstantOperandStackItem implements ConstantOperandStackItem, ReferenceOperandStackItem
+public final class ArrayReferenceOperandStackItem implements ReferenceOperandStackItem
 {
-	@NotNull private final MethodHandle methodHandle;
+	@NotNull private final ReferenceOperandStackItem arrayReference;
+	@NotNull private final NumericOperandStackItem<Integer> index;
 
-	public MethodHandleReferenceConstantOperandStackItem(@NotNull final MethodHandle methodHandle)
+	public ArrayReferenceOperandStackItem(@NotNull final ReferenceOperandStackItem arrayReference, @NotNull final NumericOperandStackItem<Integer> index)
 	{
-		// https://stackoverflow.com/questions/30002380/why-are-java8-lambdas-invoked-using-invokedynamic
-		this.methodHandle = methodHandle;
+		this.arrayReference = arrayReference;
+		this.index = index;
 	}
 }

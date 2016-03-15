@@ -22,23 +22,19 @@
 
 package com.stormmq.java.classfile.domain.attributes.code.operandStackItems.numericOperandStackItems;
 
-import com.stormmq.java.classfile.domain.attributes.code.localVariables.LocalVariable;
-import com.stormmq.java.classfile.domain.attributes.code.localVariables.LocalVariableType;
+import com.stormmq.java.classfile.domain.attributes.code.operandStackItems.referenceOperandStackItems.ReferenceOperandStackItem;
 import com.stormmq.java.classfile.domain.attributes.code.typing.ComputationalCategory;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
-public final class LoadLocalVariableNumericOperandStackItem<N extends Number> extends AbstractNumericOperandStackItem<N>
+public final class ArrayNumericOperandStackItem<N extends Number> extends AbstractNumericOperandStackItem<N>
 {
-	private final char localVariableIndex;
-	@NotNull private final LocalVariable localVariable;
-	@Nullable private final LocalVariableType localVariableType;
+	@NotNull private final ReferenceOperandStackItem referenceOperandStackItem;
+	@NotNull private final NumericOperandStackItem<N> arrayIndex;
 
-	public LoadLocalVariableNumericOperandStackItem(@NotNull final ComputationalCategory computationalCategory, final char localVariableIndex, @NotNull final LocalVariable localVariable, @Nullable final LocalVariableType localVariableType)
+	public ArrayNumericOperandStackItem(@NotNull final ComputationalCategory computationalCategory, @NotNull final ReferenceOperandStackItem referenceOperandStackItem, @NotNull final NumericOperandStackItem<N> arrayIndex)
 	{
 		super(computationalCategory);
-		this.localVariableIndex = localVariableIndex;
-		this.localVariable = localVariable;
-		this.localVariableType = localVariableType;
+		this.referenceOperandStackItem = referenceOperandStackItem;
+		this.arrayIndex = arrayIndex;
 	}
 }

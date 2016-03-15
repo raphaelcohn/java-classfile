@@ -20,19 +20,10 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-package com.stormmq.java.classfile.domain.attributes.code.operandStackItems.constantOperandStackItems;
+package com.stormmq.java.classfile.domain.attributes.code.operandStackItems.referenceOperandStackItems;
 
-import com.stormmq.java.classfile.domain.MethodHandle;
-import com.stormmq.java.classfile.domain.attributes.code.operandStackItems.referenceOperandStackItems.ReferenceOperandStackItem;
-import org.jetbrains.annotations.NotNull;
+import com.stormmq.java.classfile.domain.attributes.code.operandStackItems.OperandStackItem;
 
-public final class MethodHandleReferenceConstantOperandStackItem implements ConstantOperandStackItem, ReferenceOperandStackItem
+public interface ReferenceOperandStackItem extends OperandStackItem
 {
-	@NotNull private final MethodHandle methodHandle;
-
-	public MethodHandleReferenceConstantOperandStackItem(@NotNull final MethodHandle methodHandle)
-	{
-		// https://stackoverflow.com/questions/30002380/why-are-java8-lambdas-invoked-using-invokedynamic
-		this.methodHandle = methodHandle;
-	}
 }

@@ -20,19 +20,23 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-package com.stormmq.java.classfile.domain.attributes.code.operandStackItems.constantOperandStackItems;
+package com.stormmq.java.classfile.domain.attributes.code.operandStackItems.numericOperandStackItems;
 
-import com.stormmq.java.classfile.domain.MethodHandle;
-import com.stormmq.java.classfile.domain.attributes.code.operandStackItems.referenceOperandStackItems.ReferenceOperandStackItem;
+import com.stormmq.java.classfile.domain.attributes.code.localVariables.LocalVariableAtProgramCounter;
+import com.stormmq.java.classfile.domain.attributes.code.operandStackItems.constantOperandStackItems.ConstantOperandStackItem;
+import com.stormmq.java.classfile.domain.attributes.code.typing.ComputationalCategory;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-public final class MethodHandleReferenceConstantOperandStackItem implements ConstantOperandStackItem, ReferenceOperandStackItem
+public final class LoadNumericLocalVariableOperandStackItem<N extends Number> extends AbstractNumericOperandStackItem<N> implements ConstantOperandStackItem
 {
-	@NotNull private final MethodHandle methodHandle;
+	private final char localVariableIndex;
+	@Nullable private final LocalVariableAtProgramCounter localVariableAtProgramCounter;
 
-	public MethodHandleReferenceConstantOperandStackItem(@NotNull final MethodHandle methodHandle)
+	public LoadNumericLocalVariableOperandStackItem(@NotNull final ComputationalCategory computationalCategory, final char localVariableIndex, @Nullable final LocalVariableAtProgramCounter localVariableAtProgramCounter)
 	{
-		// https://stackoverflow.com/questions/30002380/why-are-java8-lambdas-invoked-using-invokedynamic
-		this.methodHandle = methodHandle;
+		super(computationalCategory);
+		this.localVariableIndex = localVariableIndex;
+		this.localVariableAtProgramCounter = localVariableAtProgramCounter;
 	}
 }

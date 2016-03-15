@@ -23,7 +23,7 @@
 package com.stormmq.java.classfile.domain.attributes.code.opcodeParsers;
 
 import com.stormmq.java.classfile.domain.attributes.code.codeReaders.CodeReader;
-import com.stormmq.java.classfile.domain.attributes.code.constants.*;
+import com.stormmq.java.classfile.domain.attributes.code.constants.RuntimeConstantPool;
 import com.stormmq.java.classfile.domain.attributes.code.invalidOperandStackExceptions.*;
 import com.stormmq.java.classfile.domain.attributes.code.localVariables.LocalVariableAtProgramCounter;
 import com.stormmq.java.classfile.domain.attributes.code.operandStack.OperandStack;
@@ -32,6 +32,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Map;
 import java.util.Set;
 
+import static com.stormmq.java.classfile.domain.attributes.code.opcodeParsers.ArrayReferenceOpcodeParser.ArrayReference;
 import static com.stormmq.java.classfile.domain.attributes.code.opcodeParsers.BinaryOperationOpcodeParser.binaryOperationOpcodeParser;
 import static com.stormmq.java.classfile.domain.attributes.code.opcodeParsers.BytePushOpcodeParser.BytePush;
 import static com.stormmq.java.classfile.domain.attributes.code.opcodeParsers.IntegerBitOperationOpcodeParser.integerBitOperationOpcodeParser;
@@ -39,21 +40,27 @@ import static com.stormmq.java.classfile.domain.attributes.code.opcodeParsers.In
 import static com.stormmq.java.classfile.domain.attributes.code.opcodeParsers.LoadDoubleWidthConstantOpcodeParser.LoadWideDoubleWidthConstant;
 import static com.stormmq.java.classfile.domain.attributes.code.opcodeParsers.LoadSingleWidthConstantOpcodeParser.LoadNarrowSingleWidthConstant;
 import static com.stormmq.java.classfile.domain.attributes.code.opcodeParsers.LoadSingleWidthConstantOpcodeParser.LoadWideSingleWidthConstant;
+import static com.stormmq.java.classfile.domain.attributes.code.opcodeParsers.NarrowLoadReferenceVariableOpcodeParser.NarrowLoadReferenceVariable;
 import static com.stormmq.java.classfile.domain.attributes.code.opcodeParsers.NoOperationOpcodeParser.NoOperation;
 import static com.stormmq.java.classfile.domain.attributes.code.opcodeParsers.PushConstantOpcodeParser.pushConstantOpcodeParser;
 import static com.stormmq.java.classfile.domain.attributes.code.opcodeParsers.ShortPushOpcodeParser.ShortPush;
 import static com.stormmq.java.classfile.domain.attributes.code.opcodeParsers.UnaryOperationOpcodeParser.unaryOperationOpcodeParser;
+import static com.stormmq.java.classfile.domain.attributes.code.operandStackItems.constantOperandStackItems.NullReferenceConstantOperandStackItem.NullConstant;
 import static com.stormmq.java.classfile.domain.attributes.code.operandStackItems.operations.BinaryOperation.*;
 import static com.stormmq.java.classfile.domain.attributes.code.operandStackItems.operations.IntegerBitOperation.*;
 import static com.stormmq.java.classfile.domain.attributes.code.operandStackItems.operations.UnaryOperation.negate;
-import static com.stormmq.java.classfile.domain.attributes.code.operandStackItems.constantOperandStackItems.NullReferenceConstantOperandStackItem.NullConstant;
 import static com.stormmq.java.classfile.domain.attributes.code.typing.ComputationalCategory.*;
+import static com.stormmq.java.classfile.domain.attributes.code.typing.LocalVariableSimpleType._byte;
+import static com.stormmq.java.classfile.domain.attributes.code.typing.LocalVariableSimpleType._char;
+import static com.stormmq.java.classfile.domain.attributes.code.typing.LocalVariableSimpleType._short;
 
 public interface OpcodeParser
 {
 	char length() throws InvalidOpcodeException;
 
 	void parse(@NotNull final OperandStack operandStack, @NotNull final CodeReader codeReader, @NotNull final Set<Character> lineNumbers, @NotNull final Map<Character, LocalVariableAtProgramCounter> localVariablesAtProgramCounter, @NotNull final RuntimeConstantPool runtimeConstantPool) throws InvalidOpcodeException, UnderflowInvalidOperandStackException, MismatchedTypeInvalidOperandStackException, OverflowInvalidOperandStackException, NotEnoughBytesInvalidOperandStackException;
+
+	// Constants
 
 	short nop = 0;
 
@@ -98,7 +105,165 @@ public interface OpcodeParser
 	short ldc2_w = 20;
 
 
+	// Loads
 
+	short iload = 21;
+
+	short lload = 22;
+
+	short fload = 23;
+
+	short dload = 24;
+
+	short aload = 25;
+
+	short iload_0 = 26;
+
+	short iload_1 = 27;
+
+	short iload_2 = 28;
+
+	short iload_3 = 29;
+
+	short lload_0 = 30;
+
+	short lload_1 = 31;
+
+	short lload_2 = 32;
+
+	short lload_3 = 33;
+
+	short fload_0 = 34;
+
+	short fload_1 = 35;
+
+	short fload_2 = 36;
+
+	short fload_3 = 37;
+
+	short dload_0 = 38;
+
+	short dload_1 = 39;
+
+	short dload_2 = 40;
+
+	short dload_3 = 41;
+
+	short aload_0 = 42;
+
+	short aload_1 = 43;
+
+	short aload_2 = 44;
+
+	short aload_3 = 45;
+
+	short iaload = 46;
+
+	short laload = 47;
+
+	short faload = 48;
+
+	short daload = 49;
+
+	short aaload = 50;
+
+	short baload = 51;
+
+	short caload = 52;
+
+	short saload = 53;
+
+
+	// Stores
+	short istore = 54;
+
+	short lstore = 55;
+
+	short fstore = 56;
+
+	short dstore = 57;
+
+	short astore = 58;
+
+	short istore_0 = 59;
+
+	short istore_1 = 60;
+
+	short istore_2 = 61;
+
+	short istore_3 = 62;
+
+	short lstore_0 = 63;
+
+	short lstore_1 = 64;
+
+	short lstore_2 = 65;
+
+	short lstore_3 = 66;
+
+	short fstore_0 = 67;
+
+	short fstore_1 = 68;
+
+	short fstore_2 = 69;
+
+	short fstore_3 = 70;
+
+	short dstore_0 = 71;
+
+	short dstore_1 = 72;
+
+	short dstore_2 = 73;
+
+	short dstore_3 = 74;
+
+	short astore_0 = 75;
+
+	short astore_1 = 76;
+
+	short astore_2 = 77;
+
+	short astore_3 = 78;
+
+	short iastore = 79;
+
+	short lastore = 80;
+
+	short fastore = 81;
+
+	short dastore = 82;
+
+	short aastore = 83;
+
+	short bastore = 84;
+
+	short castore = 85;
+
+	short sastore = 86;
+
+
+	// Stack
+
+	short pop = 87;
+
+	short pop2 = 88;
+
+	short dup = 89;
+
+	short dup_x1 = 90;
+
+	short dup_x2 = 91;
+
+	short dup2 = 92;
+
+	short dup2_x1 = 93;
+
+	short dup2_x2 = 94;
+
+	short swap = 95;
+
+
+	// Math
 
 	short iadd = 96;
 
@@ -175,7 +340,160 @@ public interface OpcodeParser
 	short iinc = 132;
 
 
+	// Conversions
+
+	short i2l = 133;
+
+	short i2f = 134;
+
+	short i2d = 135;
+
+	short l2i = 136;
+
+	short l2f = 137;
+
+	short l2d = 138;
+
+	short f2i = 139;
+
+	short f2l = 140;
+
+	short f2d = 141;
+
+	short d2i = 142;
+
+	short d2l = 143;
+
+	short d2f = 144;
+
+	short i2b = 145;
+
+	short i2c = 146;
+
+	short i2s = 147;
+
+
+	// Comparisons
+
+	short lcmp = 148;
+
+	short fcmpl = 149;
+
+	short fcmpg = 150;
+
+	short dcmpl = 151;
+
+	short dcmpg = 152;
+
+	short ifeq = 153;
+
+	short ifne = 154;
+
+	short iflt = 155;
+
+	short ifge = 156;
+
+	short ifgt = 157;
+
+	short ifle = 158;
+
+	short if_icmpeq = 159;
+
+	short if_icmpne = 160;
+
+	short if_icmplt = 161;
+
+	short if_icmpge = 162;
+
+	short if_icmpgt = 163;
+
+	short if_icmple = 164;
+
+	short if_acmpeq = 165;
+
+	short if_acmpne = 166;
+
+
+	// Control
+
+	short _goto = 167;
+
+	short jsr = 168;
+
+	short ret = 169;
+
+	short tableswitch = 170;
+
+	short lookupswitch = 171;
+
+	short ireturn = 172;
+
+	short lreturn = 173;
+
+	short freturn = 174;
+
+	short dreturn = 175;
+
+	short areturn = 176;
+
+	short _return = 177;
+
+
+	// References
+
+	short getstatic = 178;
+
+	short putstatic = 179;
+
+	short getfield = 180;
+
+	short putfield = 181;
+
+	short invokevirtual = 182;
+
+	short invokespecial = 183;
+
+	short invokestatic = 184;
+
+	short invokeinterface = 185;
+
 	short invokedynamic = 186;
+
+	short _new = 187;
+
+	short newarray = 188;
+
+	short anewarray = 189;
+
+	short arraylength = 190;
+
+	short athrow = 191;
+
+	short checkcast = 192;
+
+	short _instanceof = 193;
+
+	short monitorenter = 194;
+
+	short monitorexit = 195;
+
+
+	// Extended
+
+	short wide = 196;
+
+	short multianewarray = 197;
+
+	short ifnull = 198;
+
+	short ifnonnull = 199;
+
+	short goto_w = 200;
+
+	short jsr_w = 201;
+
+
+	// Reserved
 
 	short breakpoint = 202;
 
@@ -247,6 +565,41 @@ public interface OpcodeParser
 		opcodeParsers[ldc] = LoadNarrowSingleWidthConstant;
 		opcodeParsers[ldc_w] = LoadWideSingleWidthConstant;
 		opcodeParsers[ldc2_w] = LoadWideDoubleWidthConstant;
+
+		// Loads
+		opcodeParsers[iload] = new NarrowLoadNumericVariableOpcodeParser(_int);
+		opcodeParsers[lload] = new NarrowLoadNumericVariableOpcodeParser(_long);
+		opcodeParsers[fload] = new NarrowLoadNumericVariableOpcodeParser(_float);
+		opcodeParsers[dload] = new NarrowLoadNumericVariableOpcodeParser(_double);
+		opcodeParsers[aload] = NarrowLoadReferenceVariable;
+		opcodeParsers[iload_0] = new NarrowFixedLoadNumericVariableOpcodeParser(_int, (char) 0);
+		opcodeParsers[iload_1] = new NarrowFixedLoadNumericVariableOpcodeParser(_int, (char) 1);
+		opcodeParsers[iload_2] = new NarrowFixedLoadNumericVariableOpcodeParser(_int, (char) 2);
+		opcodeParsers[iload_3] = new NarrowFixedLoadNumericVariableOpcodeParser(_int, (char) 3);
+		opcodeParsers[lload_0] = new NarrowFixedLoadNumericVariableOpcodeParser(_long, (char) 0);
+		opcodeParsers[lload_1] = new NarrowFixedLoadNumericVariableOpcodeParser(_long, (char) 1);
+		opcodeParsers[lload_2] = new NarrowFixedLoadNumericVariableOpcodeParser(_long, (char) 2);
+		opcodeParsers[lload_3] = new NarrowFixedLoadNumericVariableOpcodeParser(_long, (char) 3);
+		opcodeParsers[fload_0] = new NarrowFixedLoadNumericVariableOpcodeParser(_float, (char) 0);
+		opcodeParsers[fload_1] = new NarrowFixedLoadNumericVariableOpcodeParser(_float, (char) 1);
+		opcodeParsers[fload_2] = new NarrowFixedLoadNumericVariableOpcodeParser(_float, (char) 2);
+		opcodeParsers[fload_3] = new NarrowFixedLoadNumericVariableOpcodeParser(_float, (char) 3);
+		opcodeParsers[dload_0] = new NarrowFixedLoadNumericVariableOpcodeParser(_double, (char) 0);
+		opcodeParsers[dload_1] = new NarrowFixedLoadNumericVariableOpcodeParser(_double, (char) 1);
+		opcodeParsers[dload_2] = new NarrowFixedLoadNumericVariableOpcodeParser(_double, (char) 2);
+		opcodeParsers[dload_3] = new NarrowFixedLoadNumericVariableOpcodeParser(_double, (char) 3);
+		opcodeParsers[aload_0] = new NarrowFixedLoadReferenceVariableOpcodeParser((char) 0);
+		opcodeParsers[aload_1] = new NarrowFixedLoadReferenceVariableOpcodeParser((char) 1);
+		opcodeParsers[aload_2] = new NarrowFixedLoadReferenceVariableOpcodeParser((char) 2);
+		opcodeParsers[aload_3] = new NarrowFixedLoadReferenceVariableOpcodeParser((char) 3);
+		opcodeParsers[iaload] = new ArrayNumericOpcodeParser(_int);
+		opcodeParsers[laload] = new ArrayNumericOpcodeParser(_long);
+		opcodeParsers[faload] = new ArrayNumericOpcodeParser(_float);
+		opcodeParsers[daload] = new ArrayNumericOpcodeParser(_double);
+		opcodeParsers[aaload] = ArrayReference;
+		opcodeParsers[baload] = new ArrayByteShortOrCharNumericOpcodeParser(_byte); // also used for boolean arrays
+		opcodeParsers[caload] = new ArrayByteShortOrCharNumericOpcodeParser(_char);
+		opcodeParsers[saload] = new ArrayByteShortOrCharNumericOpcodeParser(_short);
 
 		// Math
 		opcodeParsers[iadd] = binaryOperationOpcodeParser(_int, add, isStrictFloatingPoint);
