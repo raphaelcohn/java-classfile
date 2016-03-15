@@ -195,7 +195,7 @@ public interface OpcodeParser
 		{
 			if (isStrictFloatingPoint)
 			{
-				return Java7AndLaterOpcodeParsersStrictFloatingPoint
+				return Java7AndLaterOpcodeParsersStrictFloatingPoint;
 			}
 			else
 			{
@@ -204,7 +204,7 @@ public interface OpcodeParser
 		}
 		if (isStrictFloatingPoint)
 		{
-			return Java6AndEarlierOpcodeParserStrictFloatingPoint
+			return Java6AndEarlierOpcodeParserStrictFloatingPoint;
 		}
 		else
 		{
@@ -223,9 +223,7 @@ public interface OpcodeParser
 		opcodeParsers[impdep1] = new ReservedOpcodeParser(impdep1, "impdep1");
 		opcodeParsers[impdep2] = new ReservedOpcodeParser(impdep2, "impdep2");
 
-		opcodeParsers[invokedynamic] = opcode186IsPermittedBecauseThisIsForJava7OrLater ? new InvokeDynamicOpcodeParser()
-		:
-		InvokeDynamicNotAllowed;
+		opcodeParsers[invokedynamic] = opcode186IsPermittedBecauseThisIsForJava7OrLater ? InvokeDynamicOpcodeParser.InvokeDynamicAllowed : InvokeDynamicNotAllowed;
 
 		// Constants
 		opcodeParsers[nop] = NoOperation;
@@ -286,6 +284,7 @@ public interface OpcodeParser
 		opcodeParsers[ior] = integerBitOperationOpcodeParser(_int, or);
 		opcodeParsers[lor] = integerBitOperationOpcodeParser(_long, or);
 		opcodeParsers[ixor] = integerBitOperationOpcodeParser(_int, xor);
+		opcodeParsers[lxor] = integerBitOperationOpcodeParser(_long, xor);
 		opcodeParsers[iinc] = new LocalVariableIntegerIncrementOpcodeParser();
 
 		for (short opcode = 0; opcode < length; opcode++)
