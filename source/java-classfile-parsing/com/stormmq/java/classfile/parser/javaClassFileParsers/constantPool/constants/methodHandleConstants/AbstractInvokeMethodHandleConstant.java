@@ -22,16 +22,17 @@
 
 package com.stormmq.java.classfile.parser.javaClassFileParsers.constantPool.constants.methodHandleConstants;
 
-import com.stormmq.java.classfile.parser.javaClassFileParsers.exceptions.InvalidJavaClassFileException;
+import com.stormmq.java.classfile.domain.names.MethodName;
 import com.stormmq.java.classfile.parser.javaClassFileParsers.constantPool.ConstantPool;
 import com.stormmq.java.classfile.parser.javaClassFileParsers.constantPool.ConstantPoolIndex;
 import com.stormmq.java.classfile.parser.javaClassFileParsers.constantPool.constants.Constant;
-import com.stormmq.java.classfile.parser.javaClassFileParsers.constantPool.constants.referenceIndexConstants.doubles.*;
+import com.stormmq.java.classfile.parser.javaClassFileParsers.constantPool.constants.referenceIndexConstants.doubles.ClassMethodReferenceIndexConstant;
+import com.stormmq.java.classfile.parser.javaClassFileParsers.exceptions.InvalidJavaClassFileException;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 
-import static com.stormmq.java.parsing.utilities.ReservedIdentifiers.InstanceInitializerMethodName;
-import static com.stormmq.java.parsing.utilities.ReservedIdentifiers.StaticInitializerMethodName;
+import static com.stormmq.java.classfile.domain.names.MethodName.InstanceInitializer;
+import static com.stormmq.java.classfile.domain.names.MethodName.StaticInstanceInitializer;
 import static java.lang.String.format;
 import static java.util.Locale.ENGLISH;
 
@@ -41,7 +42,7 @@ public abstract class AbstractInvokeMethodHandleConstant extends AbstractMethodH
 	{
 		super(constantPool, referenceIndex);
 	}
-	
+
 	protected final void validateMethodReference(@NotNull final Constant constant) throws InvalidJavaClassFileException
 	{
 		if (constant instanceof ClassMethodReferenceIndexConstant)
@@ -50,20 +51,20 @@ public abstract class AbstractInvokeMethodHandleConstant extends AbstractMethodH
 		}
 		throw new InvalidJavaClassFileException(format(ENGLISH, "The reference at constant pool index '%1$s' is not a CONSTANT_Methodref_info but is instead a '%2$s'", referenceIndex, constant.getClass().getSimpleName()));
 	}
-	
+
 	protected final void validateMethodReferenceIsNotAnInstanceOrStaticInitializer(@NotNull final Constant constant) throws InvalidJavaClassFileException
 	{
 		final ClassMethodReferenceIndexConstant classMethodReferenceIndexConstant = (ClassMethodReferenceIndexConstant) constant;
 		classMethodReferenceIndexConstant.validateReferenceIndices();
-		
-		@NonNls final String methodName = classMethodReferenceIndexConstant.methodName();
-		
-		if (methodName.equals(InstanceInitializerMethodName))
+
+		@NonNls final MethodName methodName = classMethodReferenceIndexConstant.methodName();
+
+		if (methodName.equals(InstanceInitializer))
 		{
 			throw new InvalidJavaClassFileException(format(ENGLISH, "A method handle that is not of kind InvokeInterface may not reference '%1$s' an instance initializer of '<init>'", referenceIndex));
 		}
-		
-		if (methodName.equals(StaticInitializerMethodName))
+
+		if (methodName.equals(StaticInstanceInitializer))
 		{
 			throw new InvalidJavaClassFileException(format(ENGLISH, "A method handle that is not of kind InvokeInterface may not reference '%1$s' a static initializer of '<clinit>'", referenceIndex));
 		}

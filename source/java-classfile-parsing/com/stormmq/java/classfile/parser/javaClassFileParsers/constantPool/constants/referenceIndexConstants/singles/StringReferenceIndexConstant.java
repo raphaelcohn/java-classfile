@@ -22,12 +22,13 @@
 
 package com.stormmq.java.classfile.parser.javaClassFileParsers.constantPool.constants.referenceIndexConstants.singles;
 
+import com.stormmq.java.classfile.domain.attributes.code.constants.*;
 import com.stormmq.java.classfile.parser.javaClassFileParsers.constantPool.ConstantPool;
 import com.stormmq.java.classfile.parser.javaClassFileParsers.constantPool.ConstantPoolIndex;
 import com.stormmq.java.classfile.parser.javaClassFileParsers.constantPool.constants.FieldConstant;
 import org.jetbrains.annotations.NotNull;
 
-public final class StringReferenceIndexConstant extends AbstractSingleReferenceIndexConstant implements FieldConstant
+public final class StringReferenceIndexConstant extends AbstractSingleReferenceIndexConstant implements FieldConstant, SingleWidthConstantForLoad
 {
 	public StringReferenceIndexConstant(@NotNull final ConstantPool constantPool, @NotNull final ConstantPoolIndex modifiedUtf8StringIndex)
 	{
@@ -57,5 +58,12 @@ public final class StringReferenceIndexConstant extends AbstractSingleReferenceI
 	private String valuePossiblyEmptyOrWithInvalidUtf16SurrogateSequences()
 	{
 		return referencedValue();
+	}
+
+	@NotNull
+	@Override
+	public <T> T visit(@NotNull final SingleWidthConstantForLoadUser<T> singleWidthConstantForLoadUser) throws InvalidConstantException
+	{
+		return singleWidthConstantForLoadUser.useString(value());
 	}
 }

@@ -22,6 +22,9 @@
 
 package com.stormmq.java.classfile.domain;
 
-public interface MethodHandle extends BootstrapMethodArgument
+import com.stormmq.java.classfile.domain.attributes.code.constants.BootstrapMethodArgument;
+import com.stormmq.java.classfile.domain.attributes.code.constants.SingleWidthConstantForLoad;
+
+public interface MethodHandle extends BootstrapMethodArgument, SingleWidthConstantForLoad
 {
 }

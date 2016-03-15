@@ -22,7 +22,7 @@
 
 package com.stormmq.java.classfile.parser.javaClassFileParsers.constantPool;
 
-import com.stormmq.java.classfile.domain.BootstrapMethodArgument;
+import com.stormmq.java.classfile.domain.attributes.code.constants.BootstrapMethodArgument;
 import com.stormmq.java.classfile.domain.MethodHandle;
 import com.stormmq.java.classfile.domain.*;
 import com.stormmq.java.classfile.domain.attributes.annotations.*;
@@ -30,6 +30,8 @@ import com.stormmq.java.classfile.domain.attributes.annotations.targetInformatio
 import com.stormmq.java.classfile.domain.attributes.annotations.typePathElements.TypePathElement;
 import com.stormmq.java.classfile.domain.descriptors.FieldDescriptor;
 import com.stormmq.java.classfile.domain.descriptors.MethodDescriptor;
+import com.stormmq.java.classfile.domain.names.FieldName;
+import com.stormmq.java.classfile.domain.names.MethodName;
 import com.stormmq.java.classfile.parser.JavaClassFileReader;
 import com.stormmq.java.classfile.parser.javaClassFileParsers.constantPool.constants.referenceIndexConstants.NameAndTypeReferenceIndexConstant;
 import com.stormmq.java.classfile.parser.javaClassFileParsers.exceptions.InvalidJavaClassFileException;
@@ -282,11 +284,11 @@ public final class ConstantPoolJavaClassFileReader implements JavaClassFileReade
 
 	@SuppressWarnings("rawtypes")
 	@NotNull
-	private Map<String, Object> parseAnnotationElementValuePairs() throws InvalidJavaClassFileException, JavaClassFileContainsDataTooLongToReadException
+	private Map<MethodName, Object> parseAnnotationElementValuePairs() throws InvalidJavaClassFileException, JavaClassFileContainsDataTooLongToReadException
 	{
 		return parseTableAsMapWith16BitLength((table, index) ->
 		{
-			final String elementName = readMethodName("element name");
+			final MethodName elementName = readMethodName("element name");
 			final Object elementValue = parseAnnotationElementValue();
 			if (table.put(elementName, elementValue) != null)
 			{
@@ -379,7 +381,7 @@ public final class ConstantPoolJavaClassFileReader implements JavaClassFileReade
 
 			case 'e':
 				final KnownReferenceTypeName enumTypeName = readKnownReferenceTypeName("annotation default enum internal type name");
-				final String enumConstantName = readFieldName("annotation default enum simple annotation default name");
+				final FieldName enumConstantName = readFieldName("annotation default enum simple annotation default name");
 				return new EnumConstantAnnotationDefaultValue(enumTypeName, enumConstantName);
 
 			case 'c':
@@ -410,7 +412,7 @@ public final class ConstantPoolJavaClassFileReader implements JavaClassFileReade
 	public AnnotationValue parseAnnotationValue() throws InvalidJavaClassFileException, JavaClassFileContainsDataTooLongToReadException
 	{
 		final FieldDescriptor typeIndexFieldDescriptor = readFieldDescriptor("annotation type index");
-		final Map<String, Object> fieldValues = parseAnnotationElementValuePairs();
+		final Map<MethodName, Object> fieldValues = parseAnnotationElementValuePairs();
 
 		return new AnnotationValue(typeIndexFieldDescriptor, fieldValues);
 	}
@@ -464,14 +466,14 @@ public final class ConstantPoolJavaClassFileReader implements JavaClassFileReade
 
 	@NotNull
 	@NonNls
-	public String readFieldName(@NotNull @NonNls final String what) throws InvalidJavaClassFileException
+	public FieldName readFieldName(@NotNull @NonNls final String what) throws InvalidJavaClassFileException
 	{
 		return parseFieldName(readModifiedUtf8String(what));
 	}
 
 	@NotNull
 	@NonNls
-	public String readMethodName(@NotNull @NonNls final String what) throws InvalidJavaClassFileException
+	public MethodName readMethodName(@NotNull @NonNls final String what) throws InvalidJavaClassFileException
 	{
 		return parseMethodName(readModifiedUtf8String(what));
 	}

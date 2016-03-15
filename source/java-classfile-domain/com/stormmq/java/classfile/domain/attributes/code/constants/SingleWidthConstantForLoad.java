@@ -20,12 +20,13 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-package com.stormmq.java.classfile.domain.attributes.code.operandStack;
+package com.stormmq.java.classfile.domain.attributes.code.constants;
 
-public final class StackOverflowException extends Exception
+import org.jetbrains.annotations.NotNull;
+
+@FunctionalInterface
+public interface SingleWidthConstantForLoad
 {
-	public StackOverflowException()
-	{
-		super("Stack overflow on push");
-	}
+	@NotNull
+	<T> T visit(@NotNull final SingleWidthConstantForLoadUser<T> singleWidthConstantForLoadUser) throws InvalidConstantException;
 }

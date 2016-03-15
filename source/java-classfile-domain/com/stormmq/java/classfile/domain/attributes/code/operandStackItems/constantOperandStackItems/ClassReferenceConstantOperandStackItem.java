@@ -20,29 +20,17 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-package com.stormmq.java.classfile.domain.attributes.code;
+package com.stormmq.java.classfile.domain.attributes.code.operandStackItems.constantOperandStackItems;
 
-import com.stormmq.java.classfile.domain.signatures.Signature;
-import org.jetbrains.annotations.NonNls;
+import com.stormmq.java.classfile.domain.InternalTypeName;
 import org.jetbrains.annotations.NotNull;
 
-public final class LocalVariableType
+public final class ClassReferenceConstantOperandStackItem implements ConstantOperandStackItem
 {
-	@NotNull public static final LocalVariableType[] EmptyLocalVariableTypes = {};
+	@NotNull private final InternalTypeName internalTypeName;
 
-	private final char startProgramCount;
-	private final char length;
-	@NotNull private final String localVariableName;
-	@NotNull private final Signature localVariableDescriptor;
-	private final char localVariableIndex;
-
-	public LocalVariableType(final char startProgramCount, final char length, @NonNls @NotNull final String localVariableName, @NotNull final Signature localVariableDescriptor, final char localVariableIndex)
+	public ClassReferenceConstantOperandStackItem(@NotNull final InternalTypeName internalTypeName)
 	{
-
-		this.startProgramCount = startProgramCount;
-		this.length = length;
-		this.localVariableName = localVariableName;
-		this.localVariableDescriptor = localVariableDescriptor;
-		this.localVariableIndex = localVariableIndex;
+		this.internalTypeName = internalTypeName;
 	}
 }

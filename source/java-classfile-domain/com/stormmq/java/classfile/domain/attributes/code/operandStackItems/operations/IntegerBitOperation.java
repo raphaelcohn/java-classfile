@@ -20,14 +20,16 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-package com.stormmq.java.classfile.domain.attributes.code.operandStack;
+package com.stormmq.java.classfile.domain.attributes.code.operandStackItems.operations;
 
-public final class IntegerConstantOperandStackItem implements OperandStackItem
+public enum IntegerBitOperation
 {
-	private final int value;
+	shiftLeft,
+	shiftRight,
+	unsignedShiftRight,
 
-	public IntegerConstantOperandStackItem(final int value)
-	{
-		this.value = value;
-	}
+	and,
+	or,
+	xor,
+	;
 }

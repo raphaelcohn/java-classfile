@@ -27,17 +27,19 @@ import com.stormmq.java.classfile.domain.attributes.*;
 import com.stormmq.java.classfile.domain.attributes.annotations.TargetType;
 import com.stormmq.java.classfile.domain.attributes.annotations.TypeAnnotation;
 import com.stormmq.java.classfile.domain.attributes.code.*;
+import com.stormmq.java.classfile.domain.attributes.code.constants.BootstrapMethodArgument;
+import com.stormmq.java.classfile.domain.attributes.code.localVariables.LocalVariables;
 import com.stormmq.java.classfile.domain.attributes.code.stackMapFrames.*;
 import com.stormmq.java.classfile.domain.attributes.code.stackMapFrames.verificationTypes.*;
 import com.stormmq.java.classfile.domain.attributes.method.MethodParameter;
-import com.stormmq.java.classfile.domain.attributes.type.*;
+import com.stormmq.java.classfile.domain.attributes.type.BootstrapMethod;
+import com.stormmq.java.classfile.domain.attributes.type.InnerTypeInformation;
 import com.stormmq.java.classfile.domain.attributes.type.enclosingMethods.InsideEnclosingMethod;
 import com.stormmq.java.classfile.domain.attributes.type.enclosingMethods.OutsideEnclosingMethod;
 import com.stormmq.java.classfile.domain.descriptors.FieldDescriptor;
+import com.stormmq.java.classfile.domain.names.FieldName;
 import com.stormmq.java.classfile.domain.signatures.Signature;
-import com.stormmq.java.classfile.parser.javaClassFileParsers.constantPool.*;
-import com.stormmq.java.classfile.domain.BootstrapMethodArgument;
-import com.stormmq.java.classfile.domain.MethodHandle;
+import com.stormmq.java.classfile.parser.javaClassFileParsers.constantPool.ConstantPoolJavaClassFileReader;
 import com.stormmq.java.classfile.parser.javaClassFileParsers.constantPool.constants.referenceIndexConstants.NameAndTypeReferenceIndexConstant;
 import com.stormmq.java.classfile.parser.javaClassFileParsers.exceptions.InvalidJavaClassFileException;
 import com.stormmq.java.classfile.parser.javaClassFileParsers.exceptions.JavaClassFileContainsDataTooLongToReadException;
@@ -52,16 +54,20 @@ import java.nio.ByteBuffer;
 import java.util.*;
 import java.util.function.IntFunction;
 
+import static com.stormmq.java.classfile.domain.attributes.code.constants.BootstrapMethodArgument.EmptyBootstrapMethodArgumentConstants;
+import static com.stormmq.java.classfile.domain.JavaClassFileVersion.*;
 import static com.stormmq.java.classfile.domain.attributes.AttributeLocation.*;
+import static com.stormmq.java.classfile.domain.attributes.annotations.TargetType.allValidTargetTypesForLocationIndexedByTargetTypeTag;
 import static com.stormmq.java.classfile.domain.attributes.code.Code.MaximumCodeLength;
 import static com.stormmq.java.classfile.domain.attributes.code.ExceptionCode.EmptyExceptionCodes;
-import static com.stormmq.java.classfile.domain.JavaClassFileVersion.*;
-import static com.stormmq.java.classfile.domain.attributes.annotations.TargetType.allValidTargetTypesForLocationIndexedByTargetTypeTag;
+import static com.stormmq.java.classfile.domain.attributes.code.stackMapFrames.verificationTypes.VerificationType.Double;
+import static com.stormmq.java.classfile.domain.attributes.code.stackMapFrames.verificationTypes.VerificationType.Float;
+import static com.stormmq.java.classfile.domain.attributes.code.stackMapFrames.verificationTypes.VerificationType.Integer;
+import static com.stormmq.java.classfile.domain.attributes.code.stackMapFrames.verificationTypes.VerificationType.Long;
 import static com.stormmq.java.classfile.domain.attributes.code.stackMapFrames.verificationTypes.VerificationType.*;
 import static com.stormmq.java.classfile.parser.javaClassFileParsers.accessFlags.InnerTypeAccessFlags.*;
 import static com.stormmq.java.classfile.parser.javaClassFileParsers.accessFlags.ParameterAccessFlags.*;
 import static com.stormmq.java.classfile.parser.javaClassFileParsers.constantPool.FieldSignatureParser.parseFieldSignature;
-import static com.stormmq.java.classfile.domain.BootstrapMethodArgument.EmptyBootstrapMethodArgumentConstants;
 import static java.lang.String.format;
 import static java.util.Locale.ENGLISH;
 
@@ -130,13 +136,12 @@ public final class AttributeParserMappings
 
 			final TypeAnnotation[] visibleTypeAnnotations = attributes.runtimeVisibleTypeAnnotations();
 			final TypeAnnotation[] invisibleTypeAnnotations = attributes.runtimeInvisibleTypeAnnotations();
-			final List<LineNumberEntry[]> lineNumberEntries = attributes.lineNumberEntries();
-			final List<LocalVariable[]> localVariables = attributes.localVariables();
-			final List<LocalVariableType[]> localVariableTypes = attributes.localVariableTypes();
+			final Map<Character, Set<Character>> programCounterToLineNumberEntryMap = attributes.lineNumberEntries(codeLength);
+			final LocalVariables localVariables = attributes.localVariableWithSignatures(codeLength, maximumLocals);
 			final StackMapFrame[] stackMapFrames = attributes.stackMapFrames();
 			final UnknownAttributes unknownAttributes = attributes.unknownAttributes();
 
-			return new Code(maximumStack, maximumLocals, codeLength, code, exceptionCode, lineNumberEntries, localVariables, localVariableTypes, stackMapFrames, unknownAttributes, visibleTypeAnnotations, invisibleTypeAnnotations, javaClassFileVersion.isJava7OrLater());
+			return new Code(maximumStack, maximumLocals, codeLength, code, exceptionCode, programCounterToLineNumberEntryMap, localVariables, stackMapFrames, unknownAttributes, visibleTypeAnnotations, invisibleTypeAnnotations, javaClassFileVersion.isJava7OrLater());
 		});
 
 		mapping(Attributes.ConstantValue, Java1_0_2, OnlyField, (attributeLength, javaClassFileReader) ->
@@ -195,26 +200,26 @@ public final class AttributeParserMappings
 			return new LineNumberEntry(startProgramCounter, lineNumber);
 		});
 
-		tableArrayMapping(Attributes.LocalVariableTable, Java1_0_2, OnlyCode, LocalVariable[]::new, (javaClassFileReader) ->
+		tableArrayMapping(Attributes.LocalVariableTable, Java1_0_2, OnlyCode, LocalVariableEntry[]::new, (javaClassFileReader) ->
 		{
 			final char startProgramCount = javaClassFileReader.readBigEndianUnsigned16BitInteger("local variable start program counter");
 			final char localVariableLength = javaClassFileReader.readBigEndianUnsigned16BitInteger("local variable length");
-			@NotNull final String localVariableName = javaClassFileReader.readFieldName("local variable name");
+			@NotNull final FieldName localVariableName = javaClassFileReader.readFieldName("local variable name");
 			@NotNull final FieldDescriptor localVariableDescriptor = javaClassFileReader.readFieldDescriptor("local variable descriptor");
 			final char localVariableIndex = javaClassFileReader.readBigEndianUnsigned16BitInteger("local variable index");
 
-			return new LocalVariable(startProgramCount, localVariableLength, localVariableName, localVariableDescriptor, localVariableIndex);
+			return new LocalVariableEntry(startProgramCount, localVariableLength, localVariableName, localVariableDescriptor, null, localVariableIndex);
 		});
 
-		tableArrayMapping(Attributes.LocalVariableTypeTable, Java5, OnlyCode, LocalVariableType[]::new, (javaClassFileReader) ->
+		tableArrayMapping(Attributes.LocalVariableTypeTable, Java5, OnlyCode, LocalVariableEntry[]::new, (javaClassFileReader) ->
 		{
 			final char startProgramCount = javaClassFileReader.readBigEndianUnsigned16BitInteger("local variable type start program counter");
 			final char localVariableLength = javaClassFileReader.readBigEndianUnsigned16BitInteger("local variable type length");
-			@NotNull final String localVariableName = javaClassFileReader.readFieldName("local variable type name");
-			@NotNull final Signature localVariableDescriptor = parseFieldSignature(javaClassFileReader.readModifiedUtf8String("local variable type signature"));
+			@NotNull final FieldName localVariableName = javaClassFileReader.readFieldName("local variable type name");
+			@NotNull final Signature signature = parseFieldSignature(javaClassFileReader.readModifiedUtf8String("local variable type signature"));
 			final char localVariableIndex = javaClassFileReader.readBigEndianUnsigned16BitInteger("local variable type index");
 
-			return new LocalVariableType(startProgramCount, localVariableLength, localVariableName, localVariableDescriptor, localVariableIndex);
+			return new LocalVariableEntry(startProgramCount, localVariableLength, localVariableName, null, signature, localVariableIndex);
 		});
 
 		tableArrayMapping(Attributes.MethodParameters, Java8, OnlyMethod, MethodParameter[]::new, (javaClassFileReader) ->

@@ -22,10 +22,10 @@
 
 package com.stormmq.java.classfile.domain.information;
 
-import com.stormmq.java.classfile.domain.signatures.Signature;
 import com.stormmq.java.classfile.domain.attributes.annotations.AnnotationValue;
 import com.stormmq.java.classfile.domain.attributes.annotations.TypeAnnotation;
-import com.stormmq.java.classfile.domain.descriptors.FieldDescriptor;
+import com.stormmq.java.classfile.domain.signatures.Signature;
+import com.stormmq.java.classfile.domain.uniqueness.FieldUniqueness;
 import com.stormmq.java.parsing.utilities.FieldFinality;
 import com.stormmq.java.parsing.utilities.Visibility;
 import org.jetbrains.annotations.NotNull;
@@ -33,7 +33,7 @@ import org.jetbrains.annotations.Nullable;
 
 public class FieldInformation
 {
-	@NotNull private final String fieldName;
+	@NotNull private final FieldUniqueness fieldUniqueness;
 	private final boolean isSynthetic;
 	@NotNull private final Visibility fieldVisibility;
 	@NotNull private final FieldFinality fieldFinality;
@@ -48,12 +48,11 @@ public class FieldInformation
 	@NotNull private final AnnotationValue[] invisibleAnnotations;
 	@NotNull private final TypeAnnotation[] visibleTypeAnnotations;
 	@NotNull private final TypeAnnotation[] invisibleTypeAnnotations;
-	@NotNull private final FieldDescriptor fieldDescriptor;
 
 	@SuppressWarnings("MethodCanBeVariableArityMethod")
-	public FieldInformation(@NotNull final String fieldName, final boolean isSynthetic, @NotNull final Visibility fieldVisibility, @NotNull final FieldFinality fieldFinality, final boolean isTransient, final boolean isFinal, final boolean isStatic, final boolean isDeprecated, final boolean isSyntheticAttribute, @Nullable final Signature signature, @Nullable final Object constantValue, @NotNull final AnnotationValue[] visibleAnnotations, @NotNull final AnnotationValue[] invisibleAnnotations, @NotNull final TypeAnnotation[] visibleTypeAnnotations, @NotNull final TypeAnnotation[] invisibleTypeAnnotations, @NotNull final FieldDescriptor fieldDescriptor)
+	public FieldInformation(@NotNull final FieldUniqueness fieldUniqueness, final boolean isSynthetic, @NotNull final Visibility fieldVisibility, @NotNull final FieldFinality fieldFinality, final boolean isTransient, final boolean isFinal, final boolean isStatic, final boolean isDeprecated, final boolean isSyntheticAttribute, @Nullable final Signature signature, @Nullable final Object constantValue, @NotNull final AnnotationValue[] visibleAnnotations, @NotNull final AnnotationValue[] invisibleAnnotations, @NotNull final TypeAnnotation[] visibleTypeAnnotations, @NotNull final TypeAnnotation[] invisibleTypeAnnotations)
 	{
-		this.fieldName = fieldName;
+		this.fieldUniqueness = fieldUniqueness;
 		this.isSynthetic = isSynthetic;
 		this.fieldVisibility = fieldVisibility;
 		this.fieldFinality = fieldFinality;
@@ -68,6 +67,5 @@ public class FieldInformation
 		this.invisibleAnnotations = invisibleAnnotations;
 		this.visibleTypeAnnotations = visibleTypeAnnotations;
 		this.invisibleTypeAnnotations = invisibleTypeAnnotations;
-		this.fieldDescriptor = fieldDescriptor;
 	}
 }

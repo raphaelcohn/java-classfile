@@ -22,20 +22,22 @@
 
 package com.stormmq.java.classfile.parser.javaClassFileParsers.constantPool;
 
-import com.stormmq.java.classfile.domain.BootstrapMethodArgument;
-import com.stormmq.java.classfile.domain.MethodHandle;
 import com.stormmq.java.classfile.domain.*;
+import com.stormmq.java.classfile.domain.attributes.code.constants.*;
 import com.stormmq.java.classfile.parser.javaClassFileParsers.constantPool.constants.*;
-import com.stormmq.java.classfile.parser.javaClassFileParsers.constantPool.constants.miscellaneous.*;
+import com.stormmq.java.classfile.parser.javaClassFileParsers.constantPool.constants.miscellaneous.ModifiedUtf8StringConstant;
+import com.stormmq.java.classfile.parser.javaClassFileParsers.constantPool.constants.miscellaneous.PhantomConstant;
 import com.stormmq.java.classfile.parser.javaClassFileParsers.constantPool.constants.numbers.*;
 import com.stormmq.java.classfile.parser.javaClassFileParsers.constantPool.constants.referenceIndexConstants.NameAndTypeReferenceIndexConstant;
 import com.stormmq.java.classfile.parser.javaClassFileParsers.constantPool.constants.referenceIndexConstants.singles.TypeReferenceIndexConstant;
 import com.stormmq.java.classfile.parser.javaClassFileParsers.exceptions.InvalidJavaClassFileException;
 import org.jetbrains.annotations.NotNull;
 
-public final class ConstantPool
-{
+import static java.lang.String.format;
+import static java.util.Locale.ENGLISH;
 
+public final class ConstantPool implements RuntimeConstantPool
+{
 	@NotNull private final Constant[] constants;
 	private final int constantPoolCount;
 
@@ -47,6 +49,50 @@ public final class ConstantPool
 		}
 		constants = new Constant[constantPoolCount];
 		this.constantPoolCount = constantPoolCount;
+	}
+
+	@NotNull
+	@Override
+	public <T> T singleWidthConstantForLoad(final char index, @NotNull final SingleWidthConstantForLoadUser<T> singleWidthConstantForLoadUser) throws InvalidConstantException
+	{
+		final ConstantPoolIndex referenceIndex;
+		try
+		{
+			referenceIndex = new ConstantPoolIndex(index);
+		}
+		catch (final IllegalArgumentException e)
+		{
+			throw new InvalidConstantException(format(ENGLISH, "Index '%1$s' is out of range for single width", (int) index), e);
+		}
+
+		final Constant constant = retrieve(referenceIndex);
+		if (!(constant instanceof SingleWidthConstantForLoad))
+		{
+			throw new InvalidConstantException(format(ENGLISH, "Index '%1$s' is not a single width constant suitable for loading", (int) index));
+		}
+		return ((SingleWidthConstantForLoad) constant).visit(singleWidthConstantForLoadUser);
+	}
+
+	@NotNull
+	@Override
+	public <T> T doubleWidthConstantForLoad(final char index, @NotNull final DoubleWidthConstantForLoadUser<T> doubleWidthConstantForLoadUser) throws InvalidConstantException
+	{
+		final ConstantPoolIndex referenceIndex;
+		try
+		{
+			referenceIndex = new ConstantPoolIndex(index);
+		}
+		catch (final IllegalArgumentException e)
+		{
+			throw new InvalidConstantException(format(ENGLISH, "Index '%1$s' is out of range for double width", (int) index), e);
+		}
+
+		final Constant constant = retrieve(referenceIndex);
+		if (!(constant instanceof DoubleWidthConstantForLoad))
+		{
+			throw new InvalidConstantException(format(ENGLISH, "Index '%1$s' is not a double width constant suitable for loading", (int) index));
+		}
+		return ((DoubleWidthConstantForLoad) constant).visit(doubleWidthConstantForLoadUser);
 	}
 
 	// returns how much to skip

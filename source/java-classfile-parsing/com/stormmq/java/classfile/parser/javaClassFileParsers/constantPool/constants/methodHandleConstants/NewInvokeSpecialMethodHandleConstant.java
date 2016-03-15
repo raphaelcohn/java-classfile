@@ -22,15 +22,16 @@
 
 package com.stormmq.java.classfile.parser.javaClassFileParsers.constantPool.constants.methodHandleConstants;
 
-import com.stormmq.java.classfile.parser.javaClassFileParsers.exceptions.InvalidJavaClassFileException;
+import com.stormmq.java.classfile.domain.names.MethodName;
 import com.stormmq.java.classfile.parser.javaClassFileParsers.constantPool.ConstantPool;
 import com.stormmq.java.classfile.parser.javaClassFileParsers.constantPool.ConstantPoolIndex;
 import com.stormmq.java.classfile.parser.javaClassFileParsers.constantPool.constants.Constant;
 import com.stormmq.java.classfile.parser.javaClassFileParsers.constantPool.constants.referenceIndexConstants.doubles.ClassMethodReferenceIndexConstant;
+import com.stormmq.java.classfile.parser.javaClassFileParsers.exceptions.InvalidJavaClassFileException;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 
-import static com.stormmq.java.parsing.utilities.ReservedIdentifiers.InstanceInitializerMethodName;
+import static com.stormmq.java.classfile.domain.names.MethodName.InstanceInitializer;
 import static java.lang.String.format;
 import static java.util.Locale.ENGLISH;
 
@@ -53,9 +54,9 @@ public final class NewInvokeSpecialMethodHandleConstant extends AbstractInvokeMe
 		final ClassMethodReferenceIndexConstant classMethodReferenceIndexConstant = (ClassMethodReferenceIndexConstant) constant;
 		classMethodReferenceIndexConstant.validateReferenceIndices();
 
-		@NonNls final String methodName = classMethodReferenceIndexConstant.methodName();
+		@NonNls final MethodName methodName = classMethodReferenceIndexConstant.methodName();
 
-		if (methodName.equals(InstanceInitializerMethodName))
+		if (methodName.equals(InstanceInitializer))
 		{
 			return;
 		}

@@ -22,6 +22,8 @@
 
 package com.stormmq.java.classfile.domain;
 
+import static java.lang.Double.longBitsToDouble;
+
 // This class exists because Double.longBitsToDouble() loses signalling NaN information that needs to be preserved
 public final class RawDouble
 {
@@ -30,5 +32,10 @@ public final class RawDouble
 	public RawDouble(final long doubleValueAsRawLongBitsAsJavaLosesNaNInformationOnConversion)
 	{
 		this.doubleValueAsRawLongBitsAsJavaLosesNaNInformationOnConversion = doubleValueAsRawLongBitsAsJavaLosesNaNInformationOnConversion;
+	}
+
+	public double asDouble()
+	{
+		return longBitsToDouble(doubleValueAsRawLongBitsAsJavaLosesNaNInformationOnConversion);
 	}
 }

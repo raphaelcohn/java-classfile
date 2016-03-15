@@ -23,14 +23,14 @@
 package com.stormmq.java.classfile.parser.javaClassFileParsers.accessFlags;
 
 import com.stormmq.java.classfile.domain.JavaClassFileVersion;
+import com.stormmq.java.classfile.domain.names.MethodName;
 import com.stormmq.java.classfile.parser.javaClassFileParsers.exceptions.InvalidJavaClassFileException;
-import com.stormmq.java.parsing.utilities.*;
-import org.jetbrains.annotations.NonNls;
+import com.stormmq.java.parsing.utilities.Completeness;
+import com.stormmq.java.parsing.utilities.Visibility;
 import org.jetbrains.annotations.NotNull;
 
 import static com.stormmq.java.classfile.parser.javaClassFileParsers.accessFlags.AccessFlags.hasFlagSet;
 import static com.stormmq.java.parsing.utilities.Completeness.*;
-import static com.stormmq.java.parsing.utilities.ReservedIdentifiers.InstanceInitializerMethodName;
 import static com.stormmq.java.parsing.utilities.Visibility.*;
 
 public final class MethodAccessFlags
@@ -51,7 +51,7 @@ public final class MethodAccessFlags
 	public static final int MethodAccessFlagsValidityMask = ~(ACC_PUBLIC | ACC_PRIVATE | ACC_PROTECTED | ACC_STATIC | ACC_FINAL | ACC_SYNCHRONIZED | ACC_BRIDGE | ACC_VARARGS | ACC_NATIVE | ACC_ABSTRACT | ACC_STRICT | ACC_SYNTHETIC);
 
 	@NotNull
-	public static Visibility validateAccessFlags(final char accessFlags, final boolean isInterfaceOrAnnotation, @NotNull final JavaClassFileVersion javaClassFileVersion, @NotNull @NonNls final String methodName) throws InvalidJavaClassFileException
+	public static Visibility validateAccessFlags(final char accessFlags, final boolean isInterfaceOrAnnotation, @NotNull final JavaClassFileVersion javaClassFileVersion, @NotNull final MethodName methodName) throws InvalidJavaClassFileException
 	{
 		final boolean isPublic = hasFlagSet(accessFlags, ACC_PUBLIC);
 		final boolean isProtected = hasFlagSet(accessFlags, ACC_PROTECTED);
@@ -147,21 +147,11 @@ public final class MethodAccessFlags
 		}
 
 		// Each instance initialization method (§2.9) may have at most one of its ACC_PUBLIC, ACC_PRIVATE, and ACC_PROTECTED flags set, and may also have its ACC_VARARGS, ACC_STRICT, and ACC_SYNTHETIC flags set, but must not have any of the other flags in Table 4.6-A set.
-		if (methodName.equals(InstanceInitializerMethodName))
+		if (methodName.equals(MethodName.InstanceInitializer))
 		{
-			if (isPublic && isProtected)
-			{
-				throw new InvalidJavaClassFileException("Instance initializers can not be public and protected");
-			}
-
 			if (isPublic && isPrivate)
 			{
 				throw new InvalidJavaClassFileException("Instance initializers can not be public and private");
-			}
-
-			if (isPrivate && isProtected)
-			{
-				throw new InvalidJavaClassFileException("Instance initializers can not be private and protected");
 			}
 
 			// To match JLS language

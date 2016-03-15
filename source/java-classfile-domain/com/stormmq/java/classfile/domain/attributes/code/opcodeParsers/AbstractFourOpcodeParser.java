@@ -20,28 +20,13 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-package com.stormmq.java.classfile.domain.attributes.code;
+package com.stormmq.java.classfile.domain.attributes.code.opcodeParsers;
 
-import com.stormmq.java.classfile.domain.descriptors.FieldDescriptor;
-import org.jetbrains.annotations.NonNls;
-import org.jetbrains.annotations.NotNull;
-
-public final class LocalVariable
+public abstract class AbstractFourOpcodeParser implements OpcodeParser
 {
-	@NotNull public static final LocalVariable[] EmptyLocalVariables = {};
-
-	private final char startProgramCount;
-	private final char length;
-	@NotNull private final String localVariableName;
-	@NotNull private final FieldDescriptor localVariableDescriptor;
-	private final char localVariableIndex;
-
-	public LocalVariable(final char startProgramCount, final char length, @NonNls @NotNull final String localVariableName, @NotNull final FieldDescriptor localVariableDescriptor, final char localVariableIndex)
+	@Override
+	public final char length() throws InvalidOpcodeException
 	{
-		this.startProgramCount = startProgramCount;
-		this.length = length;
-		this.localVariableName = localVariableName;
-		this.localVariableDescriptor = localVariableDescriptor;
-		this.localVariableIndex = localVariableIndex;
+		return 4;
 	}
 }

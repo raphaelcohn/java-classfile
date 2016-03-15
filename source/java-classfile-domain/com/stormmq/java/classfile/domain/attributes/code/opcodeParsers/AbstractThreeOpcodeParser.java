@@ -20,14 +20,13 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-package com.stormmq.java.classfile.domain.attributes.code.operandStack;
+package com.stormmq.java.classfile.domain.attributes.code.opcodeParsers;
 
-public final class LongConstantOperandStackItem implements OperandStackItem
+public abstract class AbstractThreeOpcodeParser implements OpcodeParser
 {
-	private final long value;
-
-	public LongConstantOperandStackItem(final long value)
+	@Override
+	public final char length() throws InvalidOpcodeException
 	{
-		this.value = value;
+		return 3;
 	}
 }

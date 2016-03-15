@@ -22,7 +22,8 @@
 
 package com.stormmq.java.classfile.parser.javaClassFileParsers.versionedClassFileParsers;
 
-import com.stormmq.java.classfile.domain.*;
+import com.stormmq.java.classfile.domain.JavaClassFileVersion;
+import com.stormmq.java.classfile.domain.TypeKind;
 import com.stormmq.java.classfile.domain.attributes.AttributeLocation;
 import com.stormmq.java.classfile.domain.attributes.UnknownAttributes;
 import com.stormmq.java.classfile.domain.attributes.annotations.AnnotationValue;
@@ -34,36 +35,36 @@ import com.stormmq.java.classfile.domain.attributes.type.enclosingMethods.Enclos
 import com.stormmq.java.classfile.domain.descriptors.FieldDescriptor;
 import com.stormmq.java.classfile.domain.descriptors.MethodDescriptor;
 import com.stormmq.java.classfile.domain.information.*;
+import com.stormmq.java.classfile.domain.names.FieldName;
+import com.stormmq.java.classfile.domain.names.MethodName;
 import com.stormmq.java.classfile.domain.signatures.Signature;
-import com.stormmq.java.classfile.domain.uniqueness.MethodUniqueness;
 import com.stormmq.java.classfile.domain.uniqueness.FieldUniqueness;
+import com.stormmq.java.classfile.domain.uniqueness.MethodUniqueness;
+import com.stormmq.java.classfile.parser.JavaClassFileReader;
 import com.stormmq.java.classfile.parser.javaClassFileParsers.attributesParsers.*;
-import com.stormmq.java.classfile.parser.javaClassFileParsers.exceptions.InvalidJavaClassFileException;
 import com.stormmq.java.classfile.parser.javaClassFileParsers.constantPool.*;
-import com.stormmq.java.classfile.parser.javaClassFileParsers.exceptions.JavaClassFileContainsDataTooLongToReadException;
-import com.stormmq.java.classfile.parser.*;
-import com.stormmq.java.classfile.parser.javaClassFileParsers.constantPool.constants.Constant;
 import com.stormmq.java.classfile.parser.javaClassFileParsers.constantPool.constantParsers.ConstantParser;
-import com.stormmq.java.classfile.parser.javaClassFileParsers.functions.*;
+import com.stormmq.java.classfile.parser.javaClassFileParsers.constantPool.constants.Constant;
+import com.stormmq.java.classfile.parser.javaClassFileParsers.exceptions.InvalidJavaClassFileException;
+import com.stormmq.java.classfile.parser.javaClassFileParsers.exceptions.JavaClassFileContainsDataTooLongToReadException;
+import com.stormmq.java.classfile.parser.javaClassFileParsers.functions.InvalidExceptionBiIntConsumer;
 import com.stormmq.java.parsing.utilities.*;
 import com.stormmq.java.parsing.utilities.names.typeNames.referenceTypeNames.KnownReferenceTypeName;
-import org.jetbrains.annotations.*;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
-import java.util.concurrent.atomic.AtomicReference;
 
 import static com.stormmq.java.classfile.domain.TypeKind.Annotation;
 import static com.stormmq.java.classfile.domain.TypeKind.Interface;
-import static com.stormmq.java.classfile.domain.attributes.AttributeLocation.Field;
-import static com.stormmq.java.classfile.domain.attributes.AttributeLocation.Method;
-import static com.stormmq.java.classfile.domain.attributes.AttributeLocation.Type;
+import static com.stormmq.java.classfile.domain.attributes.AttributeLocation.*;
+import static com.stormmq.java.classfile.domain.names.MethodName.StaticInstanceInitializer;
 import static com.stormmq.java.classfile.parser.javaClassFileParsers.accessFlags.FieldAccessFlags.*;
 import static com.stormmq.java.classfile.parser.javaClassFileParsers.accessFlags.MethodAccessFlags.*;
 import static com.stormmq.java.classfile.parser.javaClassFileParsers.accessFlags.TypeAccessFlags.*;
 import static com.stormmq.java.classfile.parser.javaClassFileParsers.constantPool.constantParsers.ConstantParser.constantParsers;
 import static com.stormmq.java.parsing.utilities.Completeness.Abstract;
 import static com.stormmq.java.parsing.utilities.Completeness.Final;
-import static com.stormmq.java.parsing.utilities.ReservedIdentifiers.StaticInitializerMethodName;
 import static com.stormmq.java.parsing.utilities.Visibility.Public;
 import static java.lang.String.format;
 import static java.util.Locale.ENGLISH;
@@ -199,7 +200,7 @@ public final class ModernClassFileVersionedClassFileParser implements VersionedC
 		return constantPoolJavaClassFileReader.parseTableAsMapWith16BitLength((InvalidExceptionBiIntConsumer<Map<FieldUniqueness, FieldInformation>>) (fields, index) ->
 		{
 			final char fieldAccessFlags = constantPoolJavaClassFileReader.readAccessFlags(FieldAccessFlagsValidityMask);
-			final String fieldName = constantPoolJavaClassFileReader.readFieldName("field name");
+			final FieldName fieldName = constantPoolJavaClassFileReader.readFieldName("field name");
 			final FieldDescriptor fieldDescriptor = constantPoolJavaClassFileReader.readFieldDescriptor("field descriptor");
 
 			// This is odd. In Java code, fields must be unique by name, but in the specification, unique by name and type
@@ -227,7 +228,7 @@ public final class ModernClassFileVersionedClassFileParser implements VersionedC
 			@NotNull final TypeAnnotation[] invisibleTypeAnnotations = attributes.runtimeInvisibleTypeAnnotations();
 			@Nullable final Object constantValue = attributes.constantValue(!isStatic);
 
-			fields.put(fieldUniqueness, new FieldInformation(fieldName, isSynthetic, fieldVisibility, fieldFinality, isTransient, isFinal, isStatic, isDeprecated, isSyntheticAttribute, signature, constantValue, visibleAnnotations, invisibleAnnotations, visibleTypeAnnotations, invisibleTypeAnnotations, fieldDescriptor));
+			fields.put(fieldUniqueness, new FieldInformation(fieldUniqueness, isSynthetic, fieldVisibility, fieldFinality, isTransient, isFinal, isStatic, isDeprecated, isSyntheticAttribute, signature, constantValue, visibleAnnotations, invisibleAnnotations, visibleTypeAnnotations, invisibleTypeAnnotations));
 		});
 	}
 
@@ -242,7 +243,7 @@ public final class ModernClassFileVersionedClassFileParser implements VersionedC
 			public void accept(@NotNull final Map<MethodUniqueness, MethodInformation> methods, final int index) throws InvalidJavaClassFileException, JavaClassFileContainsDataTooLongToReadException
 			{
 				final char methodAccessFlags = constantPoolJavaClassFileReader.readAccessFlags(MethodAccessFlagsValidityMask);
-				final String methodName = constantPoolJavaClassFileReader.readMethodName("method name");
+				final MethodName methodName = constantPoolJavaClassFileReader.readMethodName("method name");
 				final MethodDescriptor methodDescriptor = constantPoolJavaClassFileReader.readMethodDescriptor("method descriptor", false);
 
 				// This is a little odd. In Java code, methods must be unique by name and parameters (excluding return type) but in the specification, by name and parameters and return type
@@ -323,7 +324,7 @@ public final class ModernClassFileVersionedClassFileParser implements VersionedC
 
 				// TODO: validate parameters annos match up descriptor and parameter access stuff
 				final MethodInformation methodInformation;
-				if (methodName.equals(StaticInitializerMethodName))
+				if (methodName.equals(StaticInstanceInitializer))
 				{
 					if (methodDescriptor.hasParameters())
 					{
@@ -342,11 +343,11 @@ public final class ModernClassFileVersionedClassFileParser implements VersionedC
 					staticInitializerEncountered = true;
 
 					// Class and interface initialization methods are called implicitly by the Java Virtual Machine. The value of their access_flags item is ignored except for the setting of the ACC_STRICT flag.
-					methodInformation = new MethodInformation(methodName, methodDescriptor, Public, isSynthetic, isBridge, false, Final, false, false, true, isStrictFloatingPoint, isSyntheticAttribute, isDeprecated, signature, visibleAnnotations, invisibleAnnotations, visibleParameterAnnotations, invisibleParameterAnnotations, visibleTypeAnnotations, invisibleTypeAnnotations, exceptions, methodParameters, code, annotationDefault, unknownAttributes);
+					methodInformation = new MethodInformation(methodUniqueness, Public, isSynthetic, isBridge, false, Final, false, false, true, isStrictFloatingPoint, isSyntheticAttribute, isDeprecated, signature, visibleAnnotations, invisibleAnnotations, visibleParameterAnnotations, invisibleParameterAnnotations, visibleTypeAnnotations, invisibleTypeAnnotations, exceptions, methodParameters, code, annotationDefault, unknownAttributes);
 				}
 				else
 				{
-					methodInformation = new MethodInformation(methodName, methodDescriptor, methodVisibility, isSynthetic, isBridge, isVarArgs, methodCompleteness, isSynchronized, isNative, isStatic, isStrictFloatingPoint, isSyntheticAttribute, isDeprecated, signature, visibleAnnotations, invisibleAnnotations, visibleParameterAnnotations, invisibleParameterAnnotations, visibleTypeAnnotations, invisibleTypeAnnotations, exceptions, methodParameters, code, annotationDefault, unknownAttributes);
+					methodInformation = new MethodInformation(methodUniqueness, methodVisibility, isSynthetic, isBridge, isVarArgs, methodCompleteness, isSynchronized, isNative, isStatic, isStrictFloatingPoint, isSyntheticAttribute, isDeprecated, signature, visibleAnnotations, invisibleAnnotations, visibleParameterAnnotations, invisibleParameterAnnotations, visibleTypeAnnotations, invisibleTypeAnnotations, exceptions, methodParameters, code, annotationDefault, unknownAttributes);
 				}
 				methods.put(methodUniqueness, methodInformation);
 			}

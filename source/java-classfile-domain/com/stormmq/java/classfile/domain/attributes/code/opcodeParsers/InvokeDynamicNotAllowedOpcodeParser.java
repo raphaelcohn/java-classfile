@@ -22,8 +22,14 @@
 
 package com.stormmq.java.classfile.domain.attributes.code.opcodeParsers;
 
+import com.stormmq.java.classfile.domain.attributes.code.codeReaders.CodeReader;
+import com.stormmq.java.classfile.domain.attributes.code.constants.RuntimeConstantPool;
+import com.stormmq.java.classfile.domain.attributes.code.localVariables.LocalVariableAtProgramCounter;
 import com.stormmq.java.classfile.domain.attributes.code.operandStack.OperandStack;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Map;
+import java.util.Set;
 
 public final class InvokeDynamicNotAllowedOpcodeParser implements OpcodeParser
 {
@@ -33,11 +39,17 @@ public final class InvokeDynamicNotAllowedOpcodeParser implements OpcodeParser
 
 	private InvokeDynamicNotAllowedOpcodeParser()
 	{
-		invalidOpcodeException = new InvalidOpcodeException(invokedynamic, "invokedynamic is not allowed in versions of Java before Java 7");
+		invalidOpcodeException = new InvalidOpcodeException("invokedynamic is not allowed in versions of Java before Java 7");
 	}
 
 	@Override
-	public void parse(@NotNull final OperandStack operandStack) throws InvalidOpcodeException
+	public char length() throws InvalidOpcodeException
+	{
+		throw invalidOpcodeException;
+	}
+
+	@Override
+	public void parse(@NotNull final OperandStack operandStack, @NotNull final CodeReader codeReader, @NotNull final Set<Character> lineNumbers, @NotNull final Map<Character, LocalVariableAtProgramCounter> localVariablesAtProgramCounter, @NotNull final RuntimeConstantPool runtimeConstantPool) throws InvalidOpcodeException
 	{
 		throw invalidOpcodeException;
 	}

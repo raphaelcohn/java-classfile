@@ -24,6 +24,8 @@ package com.stormmq.java.classfile.parser.javaClassFileParsers.constantPool.cons
 
 import com.stormmq.java.classfile.domain.descriptors.FieldDescriptor;
 import com.stormmq.java.classfile.domain.descriptors.MethodDescriptor;
+import com.stormmq.java.classfile.domain.names.FieldName;
+import com.stormmq.java.classfile.domain.names.MethodName;
 import com.stormmq.java.classfile.parser.javaClassFileParsers.exceptions.InvalidJavaClassFileException;
 import com.stormmq.java.classfile.parser.javaClassFileParsers.constantPool.ConstantPool;
 import com.stormmq.java.classfile.parser.javaClassFileParsers.constantPool.ConstantPoolIndex;
@@ -41,29 +43,33 @@ public final class NameAndTypeReferenceIndexConstant extends AbstractSingleWidth
 {
 	@NonNls
 	@NotNull
-	public static String parseFieldName(@NotNull @NonNls final String rawFieldName) throws InvalidJavaClassFileException
+	public static FieldName parseFieldName(@NotNull @NonNls final String rawFieldName) throws InvalidJavaClassFileException
 	{
+		final String fieldName;
 		try
 		{
-			return validateIsUnqualifiedName(rawFieldName, false);
+			fieldName = validateIsUnqualifiedName(rawFieldName, false);
 		}
 		catch (final InvalidJavaIdentifierException e)
 		{
 			throw new InvalidJavaClassFileException("field name is not a valid unqualified name", e);
 		}
+		return new FieldName(fieldName);
 	}
 
 	@NotNull
-	public static String parseMethodName(@NotNull @NonNls final String rawMethodName) throws InvalidJavaClassFileException
+	public static MethodName parseMethodName(@NotNull @NonNls final String rawMethodName) throws InvalidJavaClassFileException
 	{
+		final String methodName;
 		try
 		{
-			return validateIsUnqualifiedName(rawMethodName, true);
+			methodName = validateIsUnqualifiedName(rawMethodName, true);
 		}
 		catch (final InvalidJavaIdentifierException e)
 		{
 			throw new InvalidJavaClassFileException("method name is not a valid unqualified name", e);
 		}
+		return new MethodName(methodName);
 	}
 
 	@SuppressWarnings("FieldNotUsedInToString") @NotNull private final ConstantPool constantPool;
@@ -139,13 +145,13 @@ public final class NameAndTypeReferenceIndexConstant extends AbstractSingleWidth
 	}
 
 	@NotNull
-	public String fieldName() throws InvalidJavaClassFileException
+	public FieldName fieldName() throws InvalidJavaClassFileException
 	{
 		return parseFieldName(rawName());
 	}
 
 	@NotNull
-	public String methodName() throws InvalidJavaClassFileException
+	public MethodName methodName() throws InvalidJavaClassFileException
 	{
 		final String rawMethodName = rawName();
 

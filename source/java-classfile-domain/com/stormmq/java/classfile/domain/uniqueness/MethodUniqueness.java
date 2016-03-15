@@ -23,6 +23,7 @@
 package com.stormmq.java.classfile.domain.uniqueness;
 
 import com.stormmq.java.classfile.domain.descriptors.MethodDescriptor;
+import com.stormmq.java.classfile.domain.names.MethodName;
 import org.jetbrains.annotations.*;
 
 import static java.lang.String.format;
@@ -30,10 +31,10 @@ import static java.util.Locale.ENGLISH;
 
 public final class MethodUniqueness
 {
-	@NotNull private final String methodName;
+	@NotNull private final MethodName methodName;
 	@NotNull private final MethodDescriptor methodDescriptor;
 
-	public MethodUniqueness(@NotNull @NonNls final String methodName, @NotNull @NonNls final MethodDescriptor methodDescriptor)
+	public MethodUniqueness(@NotNull final MethodName methodName, @NotNull @NonNls final MethodDescriptor methodDescriptor)
 	{
 		this.methodName = methodName;
 		this.methodDescriptor = methodDescriptor;

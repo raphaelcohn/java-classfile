@@ -20,23 +20,16 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-package com.stormmq.java.classfile.domain.attributes.code.opcodeParsers;
+package com.stormmq.java.classfile.domain.attributes.code.operandStackItems.constantOperandStackItems;
 
-import com.stormmq.java.classfile.domain.attributes.code.operandStack.*;
 import org.jetbrains.annotations.NotNull;
 
-public final class LongConstantOpcodeParser implements OpcodeParser
+public final class StringReferenceConstantOperandStackItem implements ConstantOperandStackItem
 {
-	@NotNull private final LongConstantOperandStackItem operandStackItem;
+	@NotNull private final String value;
 
-	public LongConstantOpcodeParser(final long value)
+	public StringReferenceConstantOperandStackItem(@NotNull final String value)
 	{
-		operandStackItem = new LongConstantOperandStackItem(value);
-	}
-
-	@Override
-	public void parse(@NotNull final OperandStack operandStack) throws InvalidOpcodeException, StackOverflowException
-	{
-		operandStack.push(operandStackItem);
+		this.value = value;
 	}
 }

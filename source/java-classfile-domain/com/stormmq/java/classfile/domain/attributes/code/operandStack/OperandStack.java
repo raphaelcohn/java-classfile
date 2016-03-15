@@ -22,10 +22,20 @@
 
 package com.stormmq.java.classfile.domain.attributes.code.operandStack;
 
+import com.stormmq.java.classfile.domain.attributes.code.invalidOperandStackExceptions.*;
+import com.stormmq.java.classfile.domain.attributes.code.operandStackItems.DoNothingOperandStackItem;
+import com.stormmq.java.classfile.domain.attributes.code.operandStackItems.OperandStackItem;
+import com.stormmq.java.classfile.domain.attributes.code.operandStackItems.numericOperandStackItems.NumericOperandStackItem;
+import com.stormmq.java.classfile.domain.attributes.code.typing.ComputationalCategory;
+import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
+
+import static com.stormmq.java.classfile.domain.attributes.code.typing.ComputationalCategory.reference;
 
 public final class OperandStack
 {
+	@NotNull @NonNls private static final String LeftHandMessage = "Operand stack is mismatched; we expected ";
+
 	@NotNull private final OperandStackItem[] operandStack;
 	private final int maximumPointer;
 	private int pointer;
@@ -39,11 +49,11 @@ public final class OperandStack
 
 	@SuppressWarnings("AssignmentToNull")
 	@NotNull
-	public OperandStackItem pop() throws StackUnderflowException
+	private OperandStackItem pop() throws UnderflowInvalidOperandStackException
 	{
 		if (pointer == -1)
 		{
-			throw new StackUnderflowException();
+			throw new UnderflowInvalidOperandStackException();
 		}
 		final OperandStackItem operandStackItem = operandStack[pointer];
 		operandStack[pointer] = null;
@@ -51,13 +61,55 @@ public final class OperandStack
 		return operandStackItem;
 	}
 
-	public void push(@NotNull final OperandStackItem operandStackItem) throws StackOverflowException
+	@NotNull
+	public <N extends Number> NumericOperandStackItem<N> popNumeric(@NotNull final ComputationalCategory computationalCategory) throws UnderflowInvalidOperandStackException, MismatchedTypeInvalidOperandStackException
+	{
+		final OperandStackItem pop = pop();
+		if (pop instanceof NumericOperandStackItem)
+		{
+			final NumericOperandStackItem<?> popped = (NumericOperandStackItem<?>) pop;
+			if (popped.isNotOfComputationalCategory(computationalCategory))
+			{
+				throw new MismatchedTypeInvalidOperandStackException(computationalCategory, LeftHandMessage);
+			}
+		}
+		throw new MismatchedTypeInvalidOperandStackException(computationalCategory, LeftHandMessage);
+	}
+
+	@NotNull
+	public ReferenceOperandStackItem popReference() throws UnderflowInvalidOperandStackException, MismatchedTypeInvalidOperandStackException
+	{
+		final OperandStackItem pop = pop();
+		if (pop instanceof ReferenceOperandStackItem)
+		{
+			return (ReferenceOperandStackItem) pop;
+		}
+		throw new MismatchedTypeInvalidOperandStackException(reference, LeftHandMessage);
+	}
+
+	public void push(@NotNull final OperandStackItem operandStackItem) throws OverflowInvalidOperandStackException
 	{
 		if (pointer == maximumPointer)
 		{
-			throw new StackOverflowException();
+			throw new OverflowInvalidOperandStackException();
 		}
 		pointer++;
 		operandStack[pointer] = operandStackItem;
+	}
+
+	public void pushWithCertainty(@NotNull final OperandStackItem operandStackItem)
+	{
+		try
+		{
+			push(operandStackItem);
+		}
+		catch (final OverflowInvalidOperandStackException e)
+		{
+			throw new IllegalStateException("There is supposed to be space on the operand stack", e);
+		}
+	}
+
+	public void unchanged(@NotNull final DoNothingOperandStackItem doNothingOperandStackItem)
+	{
 	}
 }

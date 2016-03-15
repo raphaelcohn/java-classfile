@@ -20,28 +20,19 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-package com.stormmq.java.parsing.utilities;
+package com.stormmq.java.classfile.domain.attributes.code.codeReaders;
 
-import org.jetbrains.annotations.*;
+import com.stormmq.java.classfile.domain.attributes.code.invalidOperandStackExceptions.NotEnoughBytesInvalidOperandStackException;
 
-import java.util.function.IntFunction;
-
-import static java.lang.System.arraycopy;
-
-public final class ArrayMerge
+public interface CodeReader
 {
-	@NotNull
-	public static <T> T[] merge(@NotNull final T[] ours, @NotNull final T[] theirs, @NotNull final IntFunction<T[]> arrayCreator)
-	{
-		final int ourLength = ours.length;
-		final int theirLength = theirs.length;
-		final T[] copy = arrayCreator.apply(ourLength + theirLength);
-		arraycopy(ours, 0, copy, 0, ourLength);
-		arraycopy(theirs, 0, copy, ourLength, theirLength);
-		return copy;
-	}
+	int ByteMask = 0xFF;
 
-	private ArrayMerge()
-	{
-	}
+	byte readSignedBBitInteger() throws NotEnoughBytesInvalidOperandStackException;
+
+	short readUnsigned8BitInteger() throws NotEnoughBytesInvalidOperandStackException;
+
+	char readBigEndianUnsigned16BitInteger() throws NotEnoughBytesInvalidOperandStackException;
+
+	short readSigned16BitInteger() throws NotEnoughBytesInvalidOperandStackException;
 }

@@ -22,15 +22,16 @@
 
 package com.stormmq.java.classfile.domain.attributes.annotations;
 
+import com.stormmq.java.classfile.domain.names.FieldName;
 import com.stormmq.java.parsing.utilities.names.typeNames.referenceTypeNames.KnownReferenceTypeName;
 import org.jetbrains.annotations.NotNull;
 
 public final class EnumConstantAnnotationDefaultValue
 {
 	@NotNull private final KnownReferenceTypeName enumTypeName;
-	@NotNull private final String enumConstantName;
+	@NotNull private final FieldName enumConstantName;
 
-	public EnumConstantAnnotationDefaultValue(@NotNull final KnownReferenceTypeName enumTypeName, @NotNull final String enumConstantName)
+	public EnumConstantAnnotationDefaultValue(@NotNull final KnownReferenceTypeName enumTypeName, @NotNull final FieldName enumConstantName)
 	{
 		this.enumTypeName = enumTypeName;
 		this.enumConstantName = enumConstantName;

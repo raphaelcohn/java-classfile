@@ -22,6 +22,7 @@
 
 package com.stormmq.java.classfile.parser.javaClassFileParsers.constantPool.constants.referenceIndexConstants.doubles;
 
+import com.stormmq.java.classfile.domain.names.MethodName;
 import com.stormmq.java.classfile.parser.javaClassFileParsers.constantPool.ConstantPoolIndex;
 import com.stormmq.java.classfile.parser.javaClassFileParsers.constantPool.ConstantPool;
 import com.stormmq.java.classfile.domain.descriptors.MethodDescriptor;
@@ -36,7 +37,7 @@ public final class ClassMethodReferenceIndexConstant extends AbstractDoubleRefer
 	}
 
 	@NotNull
-	public String methodName() throws InvalidJavaClassFileException
+	public MethodName methodName() throws InvalidJavaClassFileException
 	{
 		return methodNameX();
 	}

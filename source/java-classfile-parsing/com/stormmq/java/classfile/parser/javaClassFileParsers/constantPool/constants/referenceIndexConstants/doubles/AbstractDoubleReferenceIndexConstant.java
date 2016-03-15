@@ -23,6 +23,8 @@
 package com.stormmq.java.classfile.parser.javaClassFileParsers.constantPool.constants.referenceIndexConstants.doubles;
 
 import com.stormmq.java.classfile.domain.InternalTypeName;
+import com.stormmq.java.classfile.domain.names.FieldName;
+import com.stormmq.java.classfile.domain.names.MethodName;
 import com.stormmq.java.classfile.parser.javaClassFileParsers.constantPool.ConstantPool;
 import com.stormmq.java.classfile.parser.javaClassFileParsers.constantPool.ConstantPoolIndex;
 import com.stormmq.java.classfile.parser.javaClassFileParsers.constantPool.constants.AbstractSingleWidthConstant;
@@ -122,19 +124,7 @@ public abstract class AbstractDoubleReferenceIndexConstant extends AbstractSingl
 	}
 
 	@NotNull
-	protected final String methodNameX() throws InvalidJavaClassFileException
-	{
-		return nameAndTypeReferenceIndexConstant().methodName();
-	}
-
-	@NotNull
-	protected final MethodDescriptor methodDescriptorX() throws InvalidJavaClassFileException
-	{
-		return nameAndTypeReferenceIndexConstant().methodDescriptor();
-	}
-
-	@NotNull
-	protected final String fieldNameX() throws InvalidJavaClassFileException
+	protected final FieldName fieldNameX() throws InvalidJavaClassFileException
 	{
 		return nameAndTypeReferenceIndexConstant().fieldName();
 	}
@@ -143,5 +133,17 @@ public abstract class AbstractDoubleReferenceIndexConstant extends AbstractSingl
 	protected final FieldDescriptor fieldDescriptorX() throws InvalidJavaClassFileException
 	{
 		return nameAndTypeReferenceIndexConstant().fieldDescriptor();
+	}
+
+	@NotNull
+	protected final MethodName methodNameX() throws InvalidJavaClassFileException
+	{
+		return nameAndTypeReferenceIndexConstant().methodName();
+	}
+
+	@NotNull
+	protected final MethodDescriptor methodDescriptorX() throws InvalidJavaClassFileException
+	{
+		return nameAndTypeReferenceIndexConstant().methodDescriptor();
 	}
 }

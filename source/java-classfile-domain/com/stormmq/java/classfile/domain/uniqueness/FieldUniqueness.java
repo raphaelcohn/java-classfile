@@ -23,6 +23,7 @@
 package com.stormmq.java.classfile.domain.uniqueness;
 
 import com.stormmq.java.classfile.domain.descriptors.FieldDescriptor;
+import com.stormmq.java.classfile.domain.names.FieldName;
 import org.jetbrains.annotations.*;
 
 import static java.lang.String.format;
@@ -30,10 +31,10 @@ import static java.util.Locale.ENGLISH;
 
 public final class FieldUniqueness
 {
-	@NotNull private final String fieldName;
+	@NotNull private final FieldName fieldName;
 	@NotNull private final FieldDescriptor fieldDescriptor;
 
-	public FieldUniqueness(@NotNull @NonNls final String fieldName, @NotNull @NonNls final FieldDescriptor fieldDescriptor)
+	public FieldUniqueness(@NotNull final FieldName fieldName, @NotNull @NonNls final FieldDescriptor fieldDescriptor)
 	{
 		this.fieldName = fieldName;
 		this.fieldDescriptor = fieldDescriptor;

@@ -22,12 +22,13 @@
 
 package com.stormmq.java.classfile.parser.javaClassFileParsers.constantPool.constants.numbers;
 
-import com.stormmq.java.classfile.parser.javaClassFileParsers.constantPool.constants.AbstractSingleWidthConstant;
-import com.stormmq.java.classfile.parser.javaClassFileParsers.constantPool.constants.FieldConstant;
+import com.stormmq.java.classfile.domain.attributes.code.constants.SingleWidthConstantForLoad;
+import com.stormmq.java.classfile.domain.attributes.code.constants.SingleWidthConstantForLoadUser;
+import com.stormmq.java.classfile.parser.javaClassFileParsers.constantPool.constants.*;
 import com.stormmq.java.classfile.parser.javaClassFileParsers.exceptions.InvalidJavaClassFileException;
 import org.jetbrains.annotations.NotNull;
 
-public final class IntegerConstant extends AbstractSingleWidthConstant implements FieldConstant
+public final class IntegerConstant extends AbstractSingleWidthConstant implements FieldConstant, SingleWidthConstantForLoad
 {
 	private final int signed32BitIntegerValue;
 
@@ -58,5 +59,12 @@ public final class IntegerConstant extends AbstractSingleWidthConstant implement
 	public Integer value()
 	{
 		return signed32BitIntegerValue;
+	}
+
+	@NotNull
+	@Override
+	public <T> T visit(@NotNull final SingleWidthConstantForLoadUser<T> singleWidthConstantForLoadUser)
+	{
+		return singleWidthConstantForLoadUser.useInteger(signed32BitIntegerValue);
 	}
 }

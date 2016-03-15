@@ -22,7 +22,6 @@
 
 package com.stormmq.java.classfile.parser.javaClassFileParsers.constantPool.constants;
 
-import com.stormmq.java.classfile.domain.BootstrapMethodArgument;
 import org.jetbrains.annotations.NotNull;
 
 public interface FieldConstant extends Constant

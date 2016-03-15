@@ -24,10 +24,10 @@ package com.stormmq.java.classfile.domain.attributes.code;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.*;
+
 public final class LineNumberEntry
 {
-	@NotNull public static final LineNumberEntry[] EmptyLineNumberEntries = {};
-	
 	private final char startProgramCounter;
 	private final char lineNumber;
 
@@ -35,5 +35,17 @@ public final class LineNumberEntry
 	{
 		this.startProgramCounter = startProgramCounter;
 		this.lineNumber = lineNumber;
+	}
+
+	public boolean isAfterEndOfCode(final long codeLength)
+	{
+		return startProgramCounter >= codeLength;
+	}
+
+	public void add(@NotNull final Map<Character, Set<Character>> programCounterToLineNumberEntryMap)
+	{
+		final Set<Character> set = programCounterToLineNumberEntryMap.getOrDefault(startProgramCounter, new HashSet<>(1));
+		set.add(lineNumber);
+		programCounterToLineNumberEntryMap.putIfAbsent(startProgramCounter, set);
 	}
 }

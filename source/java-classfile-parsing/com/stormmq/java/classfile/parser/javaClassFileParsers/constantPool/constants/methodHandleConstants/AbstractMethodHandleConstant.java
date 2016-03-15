@@ -23,10 +23,13 @@
 package com.stormmq.java.classfile.parser.javaClassFileParsers.constantPool.constants.methodHandleConstants;
 
 import com.stormmq.java.classfile.domain.MethodHandle;
-import com.stormmq.java.classfile.parser.javaClassFileParsers.constantPool.*;
+import com.stormmq.java.classfile.domain.attributes.code.constants.SingleWidthConstantForLoadUser;
+import com.stormmq.java.classfile.parser.javaClassFileParsers.constantPool.ConstantPool;
+import com.stormmq.java.classfile.parser.javaClassFileParsers.constantPool.ConstantPoolIndex;
+import com.stormmq.java.classfile.parser.javaClassFileParsers.constantPool.constants.AbstractSingleWidthConstant;
+import com.stormmq.java.classfile.parser.javaClassFileParsers.constantPool.constants.Constant;
 import com.stormmq.java.classfile.parser.javaClassFileParsers.exceptions.InvalidJavaClassFileException;
-import com.stormmq.java.classfile.parser.javaClassFileParsers.constantPool.constants.*;
-import org.jetbrains.annotations.*;
+import org.jetbrains.annotations.NotNull;
 
 public abstract class AbstractMethodHandleConstant extends AbstractSingleWidthConstant implements Constant, MethodHandle
 {
@@ -64,5 +67,12 @@ public abstract class AbstractMethodHandleConstant extends AbstractSingleWidthCo
 	protected final Constant retrieveConstant()
 	{
 		return constantPool.retrieve(referenceIndex);
+	}
+
+	@NotNull
+	@Override
+	public final <T> T visit(@NotNull final SingleWidthConstantForLoadUser<T> singleWidthConstantForLoadUser)
+	{
+		return singleWidthConstantForLoadUser.useMethodHandle(this);
 	}
 }

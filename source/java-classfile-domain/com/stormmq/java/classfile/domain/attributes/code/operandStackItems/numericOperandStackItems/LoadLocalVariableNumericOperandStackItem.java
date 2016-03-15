@@ -20,11 +20,25 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-package com.stormmq.java.classfile.domain;
+package com.stormmq.java.classfile.domain.attributes.code.operandStackItems.numericOperandStackItems;
 
+import com.stormmq.java.classfile.domain.attributes.code.localVariables.LocalVariable;
+import com.stormmq.java.classfile.domain.attributes.code.localVariables.LocalVariableType;
+import com.stormmq.java.classfile.domain.attributes.code.typing.ComputationalCategory;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-public interface BootstrapMethodArgument
+public final class LoadLocalVariableNumericOperandStackItem<N extends Number> extends AbstractNumericOperandStackItem<N>
 {
-	@NotNull BootstrapMethodArgument[] EmptyBootstrapMethodArgumentConstants = {};
+	private final char localVariableIndex;
+	@NotNull private final LocalVariable localVariable;
+	@Nullable private final LocalVariableType localVariableType;
+
+	public LoadLocalVariableNumericOperandStackItem(@NotNull final ComputationalCategory computationalCategory, final char localVariableIndex, @NotNull final LocalVariable localVariable, @Nullable final LocalVariableType localVariableType)
+	{
+		super(computationalCategory);
+		this.localVariableIndex = localVariableIndex;
+		this.localVariable = localVariable;
+		this.localVariableType = localVariableType;
+	}
 }

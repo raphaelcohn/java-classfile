@@ -23,6 +23,7 @@
 package com.stormmq.java.classfile.domain.attributes.annotations;
 
 import com.stormmq.java.classfile.domain.descriptors.FieldDescriptor;
+import com.stormmq.java.classfile.domain.names.MethodName;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
@@ -33,9 +34,9 @@ public final class AnnotationValue
 	@NotNull public static final AnnotationValue[][] EmptyParameterAnnotations = new AnnotationValue[0][0];
 
 	@NotNull private final FieldDescriptor typeIndexFieldDescriptor;
-	@NotNull private final Map<String, Object> fieldValues;
+	@NotNull private final Map<MethodName, Object> fieldValues;
 
-	public AnnotationValue(@NotNull final FieldDescriptor typeIndexFieldDescriptor, @NotNull final Map<String, Object> fieldValues)
+	public AnnotationValue(@NotNull final FieldDescriptor typeIndexFieldDescriptor, @NotNull final Map<MethodName, Object> fieldValues)
 	{
 		this.typeIndexFieldDescriptor = typeIndexFieldDescriptor;
 		this.fieldValues = fieldValues;

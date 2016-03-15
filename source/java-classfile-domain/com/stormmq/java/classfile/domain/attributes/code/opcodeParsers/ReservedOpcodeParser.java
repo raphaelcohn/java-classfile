@@ -22,9 +22,15 @@
 
 package com.stormmq.java.classfile.domain.attributes.code.opcodeParsers;
 
+import com.stormmq.java.classfile.domain.attributes.code.codeReaders.CodeReader;
+import com.stormmq.java.classfile.domain.attributes.code.constants.RuntimeConstantPool;
+import com.stormmq.java.classfile.domain.attributes.code.localVariables.LocalVariableAtProgramCounter;
 import com.stormmq.java.classfile.domain.attributes.code.operandStack.OperandStack;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Map;
+import java.util.Set;
 
 import static java.lang.String.format;
 import static java.util.Locale.ENGLISH;
@@ -35,11 +41,17 @@ public final class ReservedOpcodeParser implements OpcodeParser
 
 	public ReservedOpcodeParser(final short opcode, @NotNull @NonNls final String name)
 	{
-		invalidOpcodeException = new InvalidOpcodeException(opcode, format(ENGLISH, "The opcode '%1$s' (known as '%2$s') is reserved", (int) opcode, name));
+		invalidOpcodeException = new InvalidOpcodeException(format(ENGLISH, "The opcode '%1$s' (known as '%2$s') is reserved", (int) opcode, name));
 	}
 
 	@Override
-	public void parse(@NotNull final OperandStack operandStack) throws InvalidOpcodeException
+	public char length() throws InvalidOpcodeException
+	{
+		throw invalidOpcodeException;
+	}
+
+	@Override
+	public void parse(@NotNull final OperandStack operandStack, @NotNull final CodeReader codeReader, @NotNull final Set<Character> lineNumbers, @NotNull final Map<Character, LocalVariableAtProgramCounter> localVariablesAtProgramCounter, @NotNull final RuntimeConstantPool runtimeConstantPool) throws InvalidOpcodeException
 	{
 		throw invalidOpcodeException;
 	}

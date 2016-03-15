@@ -22,7 +22,7 @@
 
 package com.stormmq.java.classfile.domain.attributes.type;
 
-import com.stormmq.java.classfile.domain.BootstrapMethodArgument;
+import com.stormmq.java.classfile.domain.attributes.code.constants.BootstrapMethodArgument;
 import com.stormmq.java.classfile.domain.MethodHandle;
 import org.jetbrains.annotations.NotNull;
 

@@ -22,16 +22,16 @@
 
 package com.stormmq.java.classfile.parser.javaClassFileParsers.constantPool.constants.referenceIndexConstants.singles;
 
+import com.stormmq.java.classfile.domain.attributes.code.constants.*;
 import com.stormmq.java.classfile.parser.javaClassFileParsers.constantPool.ConstantPoolIndex;
 import com.stormmq.java.classfile.parser.javaClassFileParsers.constantPool.ConstantPool;
 import com.stormmq.java.classfile.domain.descriptors.MethodDescriptor;
 import com.stormmq.java.classfile.parser.javaClassFileParsers.exceptions.InvalidJavaClassFileException;
-import com.stormmq.java.classfile.domain.BootstrapMethodArgument;
 import org.jetbrains.annotations.NotNull;
 
 import static com.stormmq.java.classfile.parser.javaClassFileParsers.constantPool.MethodDescriptorParser.parseMethodDescriptor;
 
-public final class MethodTypeReferenceIndexConstant extends AbstractSingleReferenceIndexConstant implements BootstrapMethodArgument
+public final class MethodTypeReferenceIndexConstant extends AbstractSingleReferenceIndexConstant implements BootstrapMethodArgument, SingleWidthConstantForLoad
 {
 	public MethodTypeReferenceIndexConstant(@NotNull final ConstantPool constantPool, @NotNull final ConstantPoolIndex modifiedUtf8StringIndex)
 	{
@@ -60,5 +60,21 @@ public final class MethodTypeReferenceIndexConstant extends AbstractSingleRefere
 	public boolean isValidBootstrapArgument()
 	{
 		return true;
+	}
+
+	@NotNull
+	@Override
+	public void visit(@NotNull final SingleWidthConstantForLoadUser singleWidthConstantForLoadUser) throws InvalidConstantException
+	{
+		final MethodDescriptor methodDescriptor;
+		try
+		{
+			methodDescriptor = methodDescriptor();
+		}
+		catch (final InvalidJavaClassFileException e)
+		{
+			throw new InvalidConstantException("Could not parse method descriptor", e);
+		}
+		singleWidthConstantForLoadUser.useMethodType(methodDescriptor);
 	}
 }

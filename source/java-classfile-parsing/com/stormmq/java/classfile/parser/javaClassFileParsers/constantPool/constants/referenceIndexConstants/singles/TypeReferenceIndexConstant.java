@@ -22,23 +22,21 @@
 
 package com.stormmq.java.classfile.parser.javaClassFileParsers.constantPool.constants.referenceIndexConstants.singles;
 
-import com.stormmq.java.classfile.domain.*;
+import com.stormmq.java.classfile.domain.InternalTypeName;
+import com.stormmq.java.classfile.domain.attributes.code.constants.*;
 import com.stormmq.java.classfile.parser.javaClassFileParsers.constantPool.ConstantPool;
 import com.stormmq.java.classfile.parser.javaClassFileParsers.constantPool.ConstantPoolIndex;
 import com.stormmq.java.classfile.parser.javaClassFileParsers.exceptions.InvalidJavaClassFileException;
-import com.stormmq.java.classfile.domain.BootstrapMethodArgument;
 import com.stormmq.java.parsing.utilities.InvalidJavaIdentifierException;
 import com.stormmq.java.parsing.utilities.names.typeNames.referenceTypeNames.KnownReferenceTypeName;
 import org.jetbrains.annotations.NotNull;
 
 import static com.stormmq.java.classfile.parser.javaClassFileParsers.constantPool.MethodDescriptorParser.processSimpleTypeDescriptor;
-import static com.stormmq.java.parsing.utilities.StringConstants.ArrayTypeCodeCharacter;
-import static com.stormmq.java.parsing.utilities.StringConstants.ExternalTypeNameSeparator;
-import static com.stormmq.java.parsing.utilities.StringConstants.InternalTypeNameSeparatorString;
 import static com.stormmq.java.parsing.utilities.ReservedIdentifiers.validateIsJavaIdentifier;
+import static com.stormmq.java.parsing.utilities.StringConstants.*;
 import static com.stormmq.java.parsing.utilities.names.typeNames.referenceTypeNames.KnownReferenceTypeName.knownReferenceTypeName;
 
-public final class TypeReferenceIndexConstant extends AbstractSingleReferenceIndexConstant implements BootstrapMethodArgument
+public final class TypeReferenceIndexConstant extends AbstractSingleReferenceIndexConstant implements BootstrapMethodArgument, SingleWidthConstantForLoad
 {
 	public TypeReferenceIndexConstant(@NotNull final ConstantPool constantPool, @NotNull final ConstantPoolIndex modifiedUtf8StringIndex)
 	{
@@ -116,5 +114,21 @@ public final class TypeReferenceIndexConstant extends AbstractSingleReferenceInd
 		}
 
 		return knownReferenceTypeName(stringBuilder.toString());
+	}
+
+	@NotNull
+	@Override
+	public <T> T visit(@NotNull final SingleWidthConstantForLoadUser<T> singleWidthConstantForLoadUser) throws InvalidConstantException
+	{
+		final InternalTypeName internalTypeName;
+		try
+		{
+			internalTypeName = internalTypeName();
+		}
+		catch (final InvalidJavaClassFileException e)
+		{
+			throw new InvalidConstantException("Type constant is invalid", e);
+		}
+		return singleWidthConstantForLoadUser.useType(internalTypeName);
 	}
 }

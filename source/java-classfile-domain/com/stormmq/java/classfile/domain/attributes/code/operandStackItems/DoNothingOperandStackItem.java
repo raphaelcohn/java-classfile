@@ -20,12 +20,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-package com.stormmq.java.classfile.domain.attributes.code.operandStack;
+package com.stormmq.java.classfile.domain.attributes.code.operandStackItems;
 
-public final class StackUnderflowException extends Exception
+public interface DoNothingOperandStackItem
 {
-	public StackUnderflowException()
-	{
-		super("Stack underflow on pop");
-	}
 }

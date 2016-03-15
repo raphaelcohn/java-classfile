@@ -27,8 +27,8 @@ import com.stormmq.java.classfile.domain.attributes.annotations.AnnotationValue;
 import com.stormmq.java.classfile.domain.attributes.annotations.TypeAnnotation;
 import com.stormmq.java.classfile.domain.attributes.code.Code;
 import com.stormmq.java.classfile.domain.attributes.method.MethodParameter;
-import com.stormmq.java.classfile.domain.descriptors.MethodDescriptor;
 import com.stormmq.java.classfile.domain.signatures.Signature;
+import com.stormmq.java.classfile.domain.uniqueness.MethodUniqueness;
 import com.stormmq.java.parsing.utilities.Completeness;
 import com.stormmq.java.parsing.utilities.Visibility;
 import com.stormmq.java.parsing.utilities.names.typeNames.referenceTypeNames.KnownReferenceTypeName;
@@ -39,8 +39,7 @@ import java.util.Set;
 
 public final class MethodInformation
 {
-	@NotNull private final String methodName;
-	@NotNull private final MethodDescriptor methodDescriptor;
+	@NotNull private final MethodUniqueness methodUniqueness;
 	@NotNull private final Visibility visibility;
 	private final boolean isSynthetic;
 	private final boolean isBridge;
@@ -65,10 +64,9 @@ public final class MethodInformation
 	@NotNull private final UnknownAttributes unknownAttributes;
 	@Nullable private final Code code;
 
-	public MethodInformation(@NotNull final String methodName, @NotNull final MethodDescriptor methodDescriptor, @NotNull final Visibility visibility, final boolean isSynthetic, final boolean isBridge, final boolean isVarArgs, @NotNull final Completeness completeness, final boolean isSynchronized, final boolean isNative, final boolean isStatic, final boolean isStrictFloatingPoint, final boolean isSyntheticAttribute, final boolean isDeprecated, @Nullable final Signature signature, @NotNull final AnnotationValue[] visibleAnnotations, @NotNull final AnnotationValue[] invisibleAnnotations, @NotNull final AnnotationValue[][] visibleParameterAnnotations, @NotNull final AnnotationValue[][] invisibleParameterAnnotations, @NotNull final TypeAnnotation[] visibleTypeAnnotations, @NotNull final TypeAnnotation[] invisibleTypeAnnotationss, @NotNull final Set<KnownReferenceTypeName> exceptions, @NotNull final MethodParameter[] methodParameters, @Nullable final Code code, @Nullable final Object annotationDefault, @NotNull final UnknownAttributes unknownAttributes)
+	public MethodInformation(@NotNull final MethodUniqueness methodUniqueness, @NotNull final Visibility visibility, final boolean isSynthetic, final boolean isBridge, final boolean isVarArgs, @NotNull final Completeness completeness, final boolean isSynchronized, final boolean isNative, final boolean isStatic, final boolean isStrictFloatingPoint, final boolean isSyntheticAttribute, final boolean isDeprecated, @Nullable final Signature signature, @NotNull final AnnotationValue[] visibleAnnotations, @NotNull final AnnotationValue[] invisibleAnnotations, @NotNull final AnnotationValue[][] visibleParameterAnnotations, @NotNull final AnnotationValue[][] invisibleParameterAnnotations, @NotNull final TypeAnnotation[] visibleTypeAnnotations, @NotNull final TypeAnnotation[] invisibleTypeAnnotationss, @NotNull final Set<KnownReferenceTypeName> exceptions, @NotNull final MethodParameter[] methodParameters, @Nullable final Code code, @Nullable final Object annotationDefault, @NotNull final UnknownAttributes unknownAttributes)
 	{
-		this.methodName = methodName;
-		this.methodDescriptor = methodDescriptor;
+		this.methodUniqueness = methodUniqueness;
 		this.code = code;
 		this.visibility = visibility;
 		this.isSynthetic = isSynthetic;

@@ -27,11 +27,13 @@ import org.jetbrains.annotations.NotNull;
 
 public final class InvalidOpcodeException extends Exception
 {
-	private final short opcode;
-
-	public InvalidOpcodeException(final short opcode, @NonNls @NotNull final String message)
+	public InvalidOpcodeException(@NonNls @NotNull final String message)
 	{
 		super(message);
-		this.opcode = opcode;
+	}
+
+	public InvalidOpcodeException(@NonNls @NotNull final String message, @NotNull final Exception cause)
+	{
+		super(message, cause);
 	}
 }

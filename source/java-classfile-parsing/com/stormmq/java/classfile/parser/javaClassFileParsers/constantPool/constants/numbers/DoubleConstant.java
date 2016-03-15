@@ -23,6 +23,7 @@
 package com.stormmq.java.classfile.parser.javaClassFileParsers.constantPool.constants.numbers;
 
 import com.stormmq.java.classfile.domain.RawDouble;
+import com.stormmq.java.classfile.domain.attributes.code.constants.DoubleWidthConstantForLoadUser;
 import com.stormmq.java.classfile.parser.javaClassFileParsers.constantPool.constants.AbstractDoubleWidthConstant;
 import org.jetbrains.annotations.NotNull;
 
@@ -46,5 +47,12 @@ public final class DoubleConstant extends AbstractDoubleWidthConstant
 	public boolean isValidBootstrapArgument()
 	{
 		return true;
+	}
+
+	@NotNull
+	@Override
+	public <T> T visit(@NotNull final DoubleWidthConstantForLoadUser<T> doubleWidthConstantForLoadUser)
+	{
+		return doubleWidthConstantForLoadUser.useDouble(value());
 	}
 }

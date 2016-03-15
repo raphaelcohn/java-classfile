@@ -27,26 +27,27 @@ import com.stormmq.java.classfile.domain.attributes.UnknownAttributes;
 import com.stormmq.java.classfile.domain.attributes.annotations.AnnotationValue;
 import com.stormmq.java.classfile.domain.attributes.annotations.TypeAnnotation;
 import com.stormmq.java.classfile.domain.attributes.code.*;
+import com.stormmq.java.classfile.domain.attributes.code.localVariables.*;
 import com.stormmq.java.classfile.domain.attributes.code.stackMapFrames.StackMapFrame;
 import com.stormmq.java.classfile.domain.attributes.method.MethodParameter;
 import com.stormmq.java.classfile.domain.attributes.type.BootstrapMethod;
-import com.stormmq.java.classfile.domain.attributes.type.enclosingMethods.EnclosingMethod;
 import com.stormmq.java.classfile.domain.descriptors.FieldDescriptor;
 import com.stormmq.java.classfile.domain.descriptors.MethodDescriptor;
-import com.stormmq.java.classfile.domain.signatures.Signature;
 import com.stormmq.java.classfile.parser.javaClassFileParsers.exceptions.InvalidJavaClassFileException;
 import com.stormmq.java.parsing.utilities.names.typeNames.referenceTypeNames.KnownReferenceTypeName;
 import org.jetbrains.annotations.*;
 
 import java.util.*;
+import java.util.function.IntFunction;
 
-import static com.stormmq.java.classfile.domain.attributes.code.stackMapFrames.StackMapFrame.ImplicitStackMap;
-import static com.stormmq.java.classfile.domain.attributes.method.MethodParameter.EmptyMethodParameters;
 import static com.stormmq.java.classfile.domain.attributes.annotations.AnnotationValue.EmptyAnnotationValues;
 import static com.stormmq.java.classfile.domain.attributes.annotations.AnnotationValue.EmptyParameterAnnotations;
 import static com.stormmq.java.classfile.domain.attributes.annotations.TypeAnnotation.EmptyTypeAnnotations;
+import static com.stormmq.java.classfile.domain.attributes.code.stackMapFrames.StackMapFrame.ImplicitStackMap;
+import static com.stormmq.java.classfile.domain.attributes.method.MethodParameter.EmptyMethodParameters;
 import static com.stormmq.java.classfile.domain.attributes.type.BootstrapMethod.EmptyBootstrapMethods;
-import static java.util.Collections.emptyList;
+import static com.stormmq.java.classfile.parser.javaClassFileParsers.attributesParsers.ArrayMerge.arrayMerge;
+import static java.util.Collections.emptyMap;
 import static java.util.Collections.emptySet;
 
 public final class Attributes
@@ -67,11 +68,6 @@ public final class Attributes
 	@NonNls @NotNull public static final String RuntimeInvisibleTypeAnnotations = "RuntimeInvisibleTypeAnnotations";
 	@NonNls @NotNull public static final String Signature = "Signature";
 	@NonNls @NotNull public static final String Synthetic = "Synthetic";
-
-
-
-
-
 	@NonNls @NotNull public static final String EnclosingMethod = "EnclosingMethod";
 	@NonNls @NotNull public static final String InnerClasses = "InnerClasses";
 	@NonNls @NotNull public static final String BootstrapMethods = "BootstrapMethods";
@@ -80,9 +76,7 @@ public final class Attributes
 	@NonNls @NotNull public static final String SourceDebugExtension = "SourceDebugExtension";
 	@NonNls @NotNull public static final String SourceFile = "SourceFile";
 	@NotNull private static final Set<KnownReferenceTypeName> EmptyExceptions = emptySet();
-	@NotNull private static final List<LineNumberEntry[]> EmptyLineNumberEntries = emptyList();
-	@NotNull private static final List<LocalVariable[]> EmptyLocalVariables = emptyList();
-	@NotNull private static final List<LocalVariableType[]> EmptyLocalVariableTypes = emptyList();
+	@NotNull private static final LineNumberEntry[] EmptyLineNumberEntries = {};
 
 	@NotNull private final Map<String, Object> attributes;
 	@NotNull private final Map<String, List<UnknownAttributeData>> unknownAttributes;
@@ -147,22 +141,92 @@ public final class Attributes
 		return exceptions;
 	}
 
+	@SuppressWarnings("ForLoopReplaceableByForEach")
 	@NotNull
-	public List<LineNumberEntry[]> lineNumberEntries() throws InvalidJavaClassFileException
+	public Map<Character, Set<Character>> lineNumberEntries(final long codeLength) throws InvalidJavaClassFileException
 	{
-		return getAttributeValueNotNull(LineNumberTable, EmptyLineNumberEntries);
+		final LineNumberEntry[] lineNumberEntries = getArrayMerged(LineNumberEntry[]::new, LineNumberTable, EmptyLineNumberEntries);
+
+		final int length = lineNumberEntries.length;
+		if (length == 0)
+		{
+			return emptyMap();
+		}
+
+		final Map<Character, Set<Character>> programCounterToLineNumberEntryMap = new HashMap<>(length);
+		for (int index = 0; index < length; index++)
+		{
+			final LineNumberEntry lineNumberEntry = lineNumberEntries[index];
+			if (lineNumberEntry.isAfterEndOfCode(codeLength))
+			{
+				throw new InvalidJavaClassFileException("LineNumberEntry exceeds code length");
+			}
+			lineNumberEntry.add(programCounterToLineNumberEntryMap);
+		}
+
+		return programCounterToLineNumberEntryMap;
 	}
 
 	@NotNull
-	public List<LocalVariable[]> localVariables() throws InvalidJavaClassFileException
+	public LocalVariables localVariableWithSignatures(final long codeLength, final char maximumLocals) throws InvalidJavaClassFileException
 	{
-		return getAttributeValueNotNull(LocalVariableTable, EmptyLocalVariables);
+		final LocalVariableInformation[] localVariableInformationByLocalVariableIndex = new LocalVariableInformation[maximumLocals];
+		final Map<Character, Map<Character, Character>> localVariableLengthsByProgramCounter = new HashMap<>(maximumLocals * 10);
+
+		variablesByVariableIndex(codeLength, maximumLocals, LocalVariableTable, localVariableInformationByLocalVariableIndex, localVariableLengthsByProgramCounter);
+		variablesByVariableIndex(codeLength, maximumLocals, LocalVariableTypeTable, localVariableInformationByLocalVariableIndex, localVariableLengthsByProgramCounter);
+
+		return new LocalVariables(localVariableInformationByLocalVariableIndex, localVariableLengthsByProgramCounter);
 	}
 
-	@NotNull
-	public List<LocalVariableType[]> localVariableTypes() throws InvalidJavaClassFileException
+	@SuppressWarnings("ForLoopReplaceableByForEach")
+	private void variablesByVariableIndex(final long codeLength, final char maximumLocals, @NotNull final String attributeName, @NotNull final LocalVariableInformation[] localVariableInformationByLocalVariableIndex, @NotNull final Map<Character, Map<Character, Character>> localVariableLengthsByProgramCounter) throws InvalidJavaClassFileException
 	{
-		return getAttributeValueNotNull(LocalVariableTypeTable, EmptyLocalVariableTypes);
+		@SuppressWarnings("unchecked") @Nullable final List<LocalVariableEntry[]> variables = (List<LocalVariableEntry[]>) attributes.get(attributeName);
+		if (variables == null)
+		{
+			return;
+		}
+
+		if (variables.size() > maximumLocals)
+		{
+			throw new InvalidJavaClassFileException("There may be no more than one " + attributeName + " attribute per local variable in the attributes table of a Code attribute.");
+		}
+
+		final Map<VariableKey, LocalVariableEntry> encountered = new HashMap<>(maximumLocals * 10);
+		for (final LocalVariableEntry[] variable : variables)
+		{
+			for (final LocalVariableEntry variableEntry : variable)
+			{
+				variableEntry.validateNotAfterEndOfCode(codeLength);
+				variableEntry.validateDoesNotHaveALocalVariableIndexWhichIsTooLarge(maximumLocals);
+
+				final char startProgramCounter = variableEntry.startProgramCounter();
+				final char localVariableIndex = variableEntry.localVariableIndex();
+				final VariableKey variableKey = new VariableKey(startProgramCounter, localVariableIndex);
+				@Nullable final LocalVariableEntry existing = encountered.putIfAbsent(variableKey, variableEntry);
+				if (existing != null)
+				{
+					throw new InvalidJavaClassFileException("Already encountered " + variableKey);
+				}
+
+				final Map<Character, Character> localVariableLengths = localVariableLengthsByProgramCounter.getOrDefault(startProgramCounter, new HashMap<>(1));
+				@Nullable final Character length = localVariableLengths.get(localVariableIndex);
+				if (length == null)
+				{
+					localVariableLengths.put(localVariableIndex, variableEntry.length());
+				}
+				else
+				{
+					variableEntry.validateLengthMatches(length);
+				}
+				localVariableLengthsByProgramCounter.putIfAbsent(startProgramCounter, localVariableLengths);
+
+				@Nullable final LocalVariableInformation localVariableInformation = localVariableInformationByLocalVariableIndex[localVariableIndex];
+				final LocalVariableInformation replacement = localVariableInformation == null ? variableEntry.toLocalVariableInformation() : variableEntry.validateIsCompatibleWith(localVariableInformation);
+				localVariableInformationByLocalVariableIndex[localVariableIndex] = replacement;
+			}
+		}
 	}
 
 	@NotNull
@@ -302,6 +366,18 @@ public final class Attributes
 			}
 		}
 		return values;
+	}
+
+	@SuppressWarnings({"MethodCanBeVariableArityMethod", "unchecked"})
+	@NotNull
+	private <V> V[] getArrayMerged(@NotNull final IntFunction<V[]> arrayCreator, @NotNull @NonNls final String attributeName, @NotNull final V[] empty)
+	{
+		@Nullable final Object value = attributes.get(attributeName);
+		if (value == null)
+		{
+			return empty;
+		}
+		return arrayMerge(arrayCreator, (List<V[]>) value);
 	}
 
 	@SuppressWarnings("unchecked")

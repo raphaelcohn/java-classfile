@@ -22,6 +22,7 @@
 
 package com.stormmq.java.classfile.parser.javaClassFileParsers.constantPool.constants.referenceIndexConstants.doubles;
 
+import com.stormmq.java.classfile.domain.names.FieldName;
 import com.stormmq.java.classfile.parser.javaClassFileParsers.constantPool.ConstantPool;
 import com.stormmq.java.classfile.parser.javaClassFileParsers.constantPool.ConstantPoolIndex;
 import com.stormmq.java.classfile.domain.descriptors.FieldDescriptor;
@@ -36,7 +37,7 @@ public final class FieldReferenceIndexConstant extends AbstractDoubleReferenceIn
 	}
 
 	@NotNull
-	public String fieldName() throws InvalidJavaClassFileException
+	public FieldName fieldName() throws InvalidJavaClassFileException
 	{
 		return fieldNameX();
 	}

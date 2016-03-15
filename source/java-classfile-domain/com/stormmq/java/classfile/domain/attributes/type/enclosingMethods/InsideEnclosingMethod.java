@@ -23,16 +23,17 @@
 package com.stormmq.java.classfile.domain.attributes.type.enclosingMethods;
 
 import com.stormmq.java.classfile.domain.descriptors.MethodDescriptor;
+import com.stormmq.java.classfile.domain.names.MethodName;
 import com.stormmq.java.parsing.utilities.names.typeNames.referenceTypeNames.KnownReferenceTypeName;
 import org.jetbrains.annotations.NotNull;
 
 public final class InsideEnclosingMethod implements EnclosingMethod
 {
 	@NotNull private final KnownReferenceTypeName enclosingTypeName;
-	@NotNull private final String methodName;
+	@NotNull private final MethodName methodName;
 	@NotNull private final MethodDescriptor methodDescriptor;
 
-	public InsideEnclosingMethod(@NotNull final KnownReferenceTypeName enclosingTypeName, @NotNull final String methodName, @NotNull final MethodDescriptor methodDescriptor)
+	public InsideEnclosingMethod(@NotNull final KnownReferenceTypeName enclosingTypeName, @NotNull final MethodName methodName, @NotNull final MethodDescriptor methodDescriptor)
 	{
 		this.enclosingTypeName = enclosingTypeName;
 		this.methodName = methodName;

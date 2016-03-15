@@ -20,8 +20,14 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-package com.stormmq.java.classfile.domain.attributes.code.operandStack;
+package com.stormmq.java.classfile.domain.attributes.code.operandStackItems.constantOperandStackItems;
 
-public interface OperandStackItem
+public final class FloatConstantOperandStackItem implements ConstantOperandStackItem
 {
+	private final float value;
+
+	public FloatConstantOperandStackItem(final float value)
+	{
+		this.value = value;
+	}
 }

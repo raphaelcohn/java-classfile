@@ -24,6 +24,10 @@ package com.stormmq.java.classfile.domain.attributes.code;
 
 import com.stormmq.java.classfile.domain.attributes.UnknownAttributes;
 import com.stormmq.java.classfile.domain.attributes.annotations.TypeAnnotation;
+import com.stormmq.java.classfile.domain.attributes.code.codeReaders.ByteBufferCodeReader;
+import com.stormmq.java.classfile.domain.attributes.code.codeReaders.CodeReader;
+import com.stormmq.java.classfile.domain.attributes.code.invalidOperandStackExceptions.*;
+import com.stormmq.java.classfile.domain.attributes.code.localVariables.*;
 import com.stormmq.java.classfile.domain.attributes.code.opcodeParsers.InvalidOpcodeException;
 import com.stormmq.java.classfile.domain.attributes.code.opcodeParsers.OpcodeParser;
 import com.stormmq.java.classfile.domain.attributes.code.operandStack.OperandStack;
@@ -31,49 +35,53 @@ import com.stormmq.java.classfile.domain.attributes.code.stackMapFrames.StackMap
 import org.jetbrains.annotations.NotNull;
 
 import java.nio.ByteBuffer;
-import java.util.List;
-import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
 
-import static com.stormmq.java.classfile.domain.attributes.code.opcodeParsers.OpcodeParser.Java6AndEarlierOpcodeParser;
-import static com.stormmq.java.classfile.domain.attributes.code.opcodeParsers.OpcodeParser.Java7AndLaterOpcodeParsers;
-import static com.stormmq.java.classfile.domain.attributes.code.opcodeParsers.OpcodeParser.unsigned8BitInteger;
+import static com.stormmq.java.classfile.domain.attributes.code.opcodeParsers.OpcodeParser.chooseOpcodeParsers;
+import static java.lang.String.format;
+import static java.util.Collections.emptyMap;
+import static java.util.Collections.emptySet;
+import static java.util.Locale.ENGLISH;
 
 public final class Code
 {
 	public static final long MaximumCodeLength = 65535L;
+	@NotNull private static final Set<Character> NoLineNumbers = emptySet();
+	@NotNull private static final Map<Character, LocalVariableWithSignature> NoLocalVariables = emptyMap();
 
 	private final char maximumDepthOfTheOperandStackOfTheMethod;
 	private final char maximumLocals;
 	private final long codeLength;
 	@NotNull private final ByteBuffer code;
 	@NotNull private final ExceptionCode[] exceptionCode;
-	private final List<LineNumberEntry[]> lineNumberEntries;
-	private final List<LocalVariable[]> localVariables;
-	private final List<LocalVariableType[]> localVariableTypes;
+	private final Map<Character, Set<Character>> programCounterToLineNumberEntryMap;
+	private final LocalVariables localVariables;
 	private final StackMapFrame[] stackMapFrames;
 	@NotNull private final UnknownAttributes unknownAttributes;
 	@NotNull private final TypeAnnotation[] visibleTypeAnnotations;
 	@NotNull private final TypeAnnotation[] invisibleTypeAnnotations;
 	private final boolean opcode186IsPermittedBecauseThisIsForJava7OrLater;
 
-	public Code(final char maximumDepthOfTheOperandStackOfTheMethod, final char maximumLocals, final long codeLength, @NotNull final ByteBuffer code, @NotNull final ExceptionCode[] exceptionCode, final List<LineNumberEntry[]> lineNumberEntries, final List<LocalVariable[]> localVariables, final List<LocalVariableType[]> localVariableTypes, final StackMapFrame[] stackMapFrames, @NotNull final UnknownAttributes unknownAttributes, @NotNull final TypeAnnotation[] visibleTypeAnnotations, @NotNull final TypeAnnotation[] invisibleTypeAnnotations, final boolean opcode186IsPermittedBecauseThisIsForJava7OrLater)
+	public Code(final char maximumDepthOfTheOperandStackOfTheMethod, final char maximumLocals, final long codeLength, @NotNull final ByteBuffer code, @NotNull final ExceptionCode[] exceptionCode, @NotNull final Map<Character, Set<Character>> programCounterToLineNumberEntryMap, @NotNull final LocalVariables localVariables, final StackMapFrame[] stackMapFrames, @NotNull final UnknownAttributes unknownAttributes, @NotNull final TypeAnnotation[] visibleTypeAnnotations, @NotNull final TypeAnnotation[] invisibleTypeAnnotations, final boolean opcode186IsPermittedBecauseThisIsForJava7OrLater)
 	{
 		if (codeLength <= 0L)
 		{
-			throw new IllegalArgumentException(String.format(Locale.ENGLISH, "code length can not be zero or less bytes (ie not '%1$s')", codeLength));
+			throw new IllegalArgumentException(format(ENGLISH, "code length can not be zero or less bytes (ie not '%1$s')", codeLength));
 		}
+
 		if (codeLength > MaximumCodeLength)
 		{
-			throw new IllegalArgumentException(String.format(Locale.ENGLISH, "code length can not be more than '%1$s' bytes (ie not '%2$s')", MaximumCodeLength, codeLength));
+			throw new IllegalArgumentException(format(ENGLISH, "code length can not be more than '%1$s' bytes (ie not '%2$s')", MaximumCodeLength, codeLength));
 		}
+
 		this.maximumDepthOfTheOperandStackOfTheMethod = maximumDepthOfTheOperandStackOfTheMethod;
 		this.maximumLocals = maximumLocals;
 		this.codeLength = codeLength;
 		this.code = code;
 		this.exceptionCode = exceptionCode;
-		this.lineNumberEntries = lineNumberEntries;
+		this.programCounterToLineNumberEntryMap = programCounterToLineNumberEntryMap;
 		this.localVariables = localVariables;
-		this.localVariableTypes = localVariableTypes;
 		this.stackMapFrames = stackMapFrames;
 		this.unknownAttributes = unknownAttributes;
 		this.visibleTypeAnnotations = visibleTypeAnnotations;
@@ -81,24 +89,35 @@ public final class Code
 		this.opcode186IsPermittedBecauseThisIsForJava7OrLater = opcode186IsPermittedBecauseThisIsForJava7OrLater;
 	}
 
-	public void parseCode() throws InvalidOpcodeException
+	public void parseCode(final boolean isStrictFloatingPoint) throws InvalidOpcodeException, UnderflowInvalidOperandStackException, MismatchedVariableInvalidOperandStackException, MismatchedTypeInvalidOperandStackException, NotEnoughBytesInvalidOperandStackException
 	{
 		final OperandStack operandStack = new OperandStack(maximumDepthOfTheOperandStackOfTheMethod);
 
-		final OpcodeParser[] opcodeParsers = opcode186IsPermittedBecauseThisIsForJava7OrLater ? Java7AndLaterOpcodeParsers : Java6AndEarlierOpcodeParser;
+		final OpcodeParser[] opcodeParsers = chooseOpcodeParsers(opcode186IsPermittedBecauseThisIsForJava7OrLater, isStrictFloatingPoint);
 
 		code.position(0);
 
-		int programCounter = 0;
+		final CodeReader codeReader = new ByteBufferCodeReader(code);
+
+		char programCounter = 0;
 		do
 		{
-			final int opcode = unsigned8BitInteger(code);
-			opcodeParsers[opcode].parse(operandStack);
+			final short opcode = codeReader.readUnsigned8BitInteger();
+			final OpcodeParser opcodeParser = opcodeParsers[opcode];
+			final char length = opcodeParser.length();
 
+			final int futureProgramCounter = programCounter + length;
+			if (futureProgramCounter > codeLength)
+			{
+				throw new NotEnoughBytesInvalidOperandStackException(futureProgramCounter - codeLength);
+			}
 
-			programCounter += 1;
+			final Set<Character> lineNumbers = programCounterToLineNumberEntryMap.getOrDefault(programCounter, NoLineNumbers);
+			final Map<Character, LocalVariableAtProgramCounter> localVariablesAtProgramCounter = localVariables.atProgramCounter(programCounter, codeLength, length);
+
+			opcodeParser.parse(operandStack, codeReader, lineNumbers, localVariablesAtProgramCounter, runtimeConstantPool);
+			programCounter = (char) futureProgramCounter;
 		}
-		while (programCounter < codeLength);
+		while (programCounter != codeLength);
 	}
-
 }
