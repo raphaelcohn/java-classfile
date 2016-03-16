@@ -20,19 +20,37 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-package com.stormmq.java.classfile.domain.attributes.code.operandStackItems.referenceOperandStackItems;
+package com.stormmq.java.classfile.domain.attributes.code.typing;
 
-import com.stormmq.java.classfile.domain.attributes.code.operandStackItems.numericOperandStackItems.NumericOperandStackItem;
+import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 
-public final class ArrayReferenceOperandStackItem implements ReferenceOperandStackItem
+public enum ByteCharOrShort
 {
-	@NotNull private final ReferenceOperandStackItem arrayReference;
-	@NotNull private final NumericOperandStackItem<Integer> index;
+	_byte,
+	_char,
+	_short,
+	;
 
-	public ArrayReferenceOperandStackItem(@NotNull final ReferenceOperandStackItem arrayReference, @NotNull final NumericOperandStackItem<Integer> index)
+	@NotNull @NonNls private final String actualName;
+
+	ByteCharOrShort()
 	{
-		this.arrayReference = arrayReference;
-		this.index = index;
+		actualName = actualName();
+	}
+
+	@NotNull
+	private String actualName()
+	{
+		final String actualName;
+		final String name = name();
+
+		if (name.isEmpty())
+		{
+			throw new IllegalStateException("name() should not be empty");
+		}
+
+		actualName = name.charAt(0) != '_' ? name : name.substring(1);
+		return actualName;
 	}
 }

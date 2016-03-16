@@ -27,24 +27,29 @@ import com.stormmq.java.classfile.domain.attributes.code.constants.RuntimeConsta
 import com.stormmq.java.classfile.domain.attributes.code.invalidOperandStackExceptions.*;
 import com.stormmq.java.classfile.domain.attributes.code.localVariables.LocalVariableAtProgramCounter;
 import com.stormmq.java.classfile.domain.attributes.code.operandStack.OperandStack;
-import com.stormmq.java.classfile.domain.attributes.code.operandStackItems.constantOperandStackItems.IntegerConstantOperandStackItem;
+import com.stormmq.java.classfile.domain.attributes.code.operandStackItems.numericOperandStackItems.StoreNumericLocalVariableOperandStackItem;
+import com.stormmq.java.classfile.domain.attributes.code.typing.ComputationalCategory;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
 import java.util.Set;
 
-public final class BytePushOpcodeParser extends AbstractTwoOpcodeParser
+public final class NarrowFixedStoreNumericVariableOpcodeParser extends AbstractOneOpcodeParser
 {
-	@NotNull public static final OpcodeParser BytePush = new BytePushOpcodeParser();
+	@NotNull private final ComputationalCategory computationalCategory;
+	private final char localVariableIndex;
 
-	private BytePushOpcodeParser()
+	public NarrowFixedStoreNumericVariableOpcodeParser(@NotNull final ComputationalCategory computationalCategory, final char localVariableIndex)
 	{
+		this.computationalCategory = computationalCategory;
+		this.localVariableIndex = localVariableIndex;
 	}
 
 	@Override
 	public void parse(@NotNull final OperandStack operandStack, @NotNull final CodeReader codeReader, @NotNull final Set<Character> lineNumbers, @NotNull final Map<Character, LocalVariableAtProgramCounter> localVariablesAtProgramCounter, @NotNull final RuntimeConstantPool runtimeConstantPool) throws InvalidOpcodeException, UnderflowInvalidOperandStackException, MismatchedTypeInvalidOperandStackException, OverflowInvalidOperandStackException, NotEnoughBytesInvalidOperandStackException
 	{
-		final byte value = codeReader.readSignedBBitInteger();
-		operandStack.push(new IntegerConstantOperandStackItem(value));
+		@Nullable final LocalVariableAtProgramCounter localVariableAtProgramCounter = localVariablesAtProgramCounter.get(localVariableIndex);
+		operandStack.push(new StoreNumericLocalVariableOperandStackItem<>(computationalCategory, localVariableIndex, localVariableAtProgramCounter));
 	}
 }

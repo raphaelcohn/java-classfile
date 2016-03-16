@@ -37,7 +37,7 @@ public interface SingleWidthConstantForLoadUser<T>
 		@Override
 		public ConstantOperandStackItem useInteger(final int value)
 		{
-			return new ConstantIntegerOperandStackItem(value);
+			return new IntegerConstantOperandStackItem(value);
 		}
 
 		@NotNull

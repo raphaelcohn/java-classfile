@@ -23,8 +23,9 @@
 package com.stormmq.java.classfile.domain.attributes.code.operandStackItems.numericOperandStackItems;
 
 import com.stormmq.java.classfile.domain.attributes.code.invalidOperandStackExceptions.MismatchedTypeInvalidOperandStackException;
-import com.stormmq.java.classfile.domain.attributes.code.operandStackItems.*;
+import com.stormmq.java.classfile.domain.attributes.code.operandStackItems.OperandStackItem;
 import com.stormmq.java.classfile.domain.attributes.code.operandStackItems.operations.*;
+import com.stormmq.java.classfile.domain.attributes.code.typing.ByteCharOrShort;
 import com.stormmq.java.classfile.domain.attributes.code.typing.ComputationalCategory;
 import org.jetbrains.annotations.NotNull;
 
@@ -40,4 +41,10 @@ public interface NumericOperandStackItem<N extends Number> extends OperandStackI
 
 	@NotNull
 	NumericOperandStackItem<N> integerBitOperation(@NotNull final IntegerBitOperation integerBitOperation, @NotNull final NumericOperandStackItem<N> right) throws MismatchedTypeInvalidOperandStackException;
+
+	@NotNull
+	<O extends Number> NumericOperandStackItem<O> convert(@NotNull final ComputationalCategory computationalCategory);
+
+	@NotNull
+	NumericOperandStackItem<Integer> convert(@NotNull final ByteCharOrShort to) throws MismatchedTypeInvalidOperandStackException;
 }

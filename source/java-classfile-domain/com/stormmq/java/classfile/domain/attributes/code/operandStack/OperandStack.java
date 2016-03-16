@@ -28,89 +28,33 @@ import com.stormmq.java.classfile.domain.attributes.code.operandStackItems.Opera
 import com.stormmq.java.classfile.domain.attributes.code.operandStackItems.numericOperandStackItems.NumericOperandStackItem;
 import com.stormmq.java.classfile.domain.attributes.code.operandStackItems.referenceOperandStackItems.ReferenceOperandStackItem;
 import com.stormmq.java.classfile.domain.attributes.code.typing.ComputationalCategory;
-import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 
-import static com.stormmq.java.classfile.domain.attributes.code.typing.ComputationalCategory.reference;
-
-public final class OperandStack
+public interface OperandStack
 {
-	@NotNull @NonNls private static final String LeftHandMessage = "Operand stack is mismatched; we expected ";
+	int EmptyStackPointer = -1;
 
-	@NotNull private final OperandStackItem[] operandStack;
-	private final int maximumPointer;
-	private int pointer;
-
-	public OperandStack(final char maximumDepthOfTheOperandStackOfTheMethod)
-	{
-		operandStack = new OperandStackItem[maximumDepthOfTheOperandStackOfTheMethod];
-		maximumPointer = maximumDepthOfTheOperandStackOfTheMethod - 1;
-		pointer = -1;
-	}
+	int currentStackPointer();
 
 	@SuppressWarnings("AssignmentToNull")
 	@NotNull
-	private OperandStackItem pop() throws UnderflowInvalidOperandStackException
-	{
-		if (pointer == -1)
-		{
-			throw new UnderflowInvalidOperandStackException();
-		}
-		final OperandStackItem operandStackItem = operandStack[pointer];
-		operandStack[pointer] = null;
-		pointer--;
-		return operandStackItem;
-	}
+	OperandStackItem pop() throws UnderflowInvalidOperandStackException;
 
 	@NotNull
-	public <N extends Number> NumericOperandStackItem<N> popNumeric(@NotNull final ComputationalCategory computationalCategory) throws UnderflowInvalidOperandStackException, MismatchedTypeInvalidOperandStackException
-	{
-		final OperandStackItem pop = pop();
-		if (pop instanceof NumericOperandStackItem)
-		{
-			final NumericOperandStackItem<?> popped = (NumericOperandStackItem<?>) pop;
-			if (popped.isNotOfComputationalCategory(computationalCategory))
-			{
-				throw new MismatchedTypeInvalidOperandStackException(computationalCategory, LeftHandMessage);
-			}
-		}
-		throw new MismatchedTypeInvalidOperandStackException(computationalCategory, LeftHandMessage);
-	}
+	OperandStackItem popCategory1ComputationalType() throws UnderflowInvalidOperandStackException, MismatchedTypeInvalidOperandStackException;
 
 	@NotNull
-	public ReferenceOperandStackItem popReference() throws UnderflowInvalidOperandStackException, MismatchedTypeInvalidOperandStackException
-	{
-		final OperandStackItem pop = pop();
-		if (pop instanceof ReferenceOperandStackItem)
-		{
-			return (ReferenceOperandStackItem) pop;
-		}
-		throw new MismatchedTypeInvalidOperandStackException(reference, LeftHandMessage);
-	}
+	OperandStackItem popCategory2ComputationalType() throws UnderflowInvalidOperandStackException, MismatchedTypeInvalidOperandStackException;
 
-	public void push(@NotNull final OperandStackItem operandStackItem) throws OverflowInvalidOperandStackException
-	{
-		if (pointer == maximumPointer)
-		{
-			throw new OverflowInvalidOperandStackException();
-		}
-		pointer++;
-		operandStack[pointer] = operandStackItem;
-	}
+	@NotNull
+	<N extends Number> NumericOperandStackItem<N> popNumeric(@NotNull final ComputationalCategory computationalCategory) throws UnderflowInvalidOperandStackException, MismatchedTypeInvalidOperandStackException;
 
-	public void pushWithCertainty(@NotNull final OperandStackItem operandStackItem)
-	{
-		try
-		{
-			push(operandStackItem);
-		}
-		catch (final OverflowInvalidOperandStackException e)
-		{
-			throw new IllegalStateException("There is supposed to be space on the operand stack", e);
-		}
-	}
+	@NotNull
+	ReferenceOperandStackItem popReference() throws UnderflowInvalidOperandStackException, MismatchedTypeInvalidOperandStackException;
 
-	public void unchanged(@NotNull final DoNothingOperandStackItem doNothingOperandStackItem)
-	{
-	}
+	int push(@NotNull final OperandStackItem operandStackItem) throws OverflowInvalidOperandStackException;
+
+	int pushWithCertainty(@NotNull final OperandStackItem operandStackItem);
+
+	void unchanged(@NotNull final DoNothingOperandStackItem doNothingOperandStackItem);
 }

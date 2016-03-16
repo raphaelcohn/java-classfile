@@ -28,7 +28,7 @@ import com.stormmq.java.classfile.domain.attributes.code.invalidOperandStackExce
 import com.stormmq.java.classfile.domain.attributes.code.localVariables.LocalVariableAtProgramCounter;
 import com.stormmq.java.classfile.domain.attributes.code.operandStack.OperandStack;
 import com.stormmq.java.classfile.domain.attributes.code.operandStackItems.numericOperandStackItems.NumericOperandStackItem;
-import com.stormmq.java.classfile.domain.attributes.code.operandStackItems.referenceOperandStackItems.ArrayReferenceOperandStackItem;
+import com.stormmq.java.classfile.domain.attributes.code.operandStackItems.referenceOperandStackItems.ArrayStoreReferenceOperandStackItem;
 import com.stormmq.java.classfile.domain.attributes.code.operandStackItems.referenceOperandStackItems.ReferenceOperandStackItem;
 import org.jetbrains.annotations.NotNull;
 
@@ -37,11 +37,11 @@ import java.util.Set;
 
 import static com.stormmq.java.classfile.domain.attributes.code.typing.ComputationalCategory._int;
 
-public final class ArrayReferenceOpcodeParser extends AbstractOneOpcodeParser
+public final class ArrayStoreReferenceOpcodeParser extends AbstractOneOpcodeParser
 {
-	@NotNull public static final OpcodeParser ArrayReference = new ArrayReferenceOpcodeParser();
+	@NotNull public static final OpcodeParser ArrayStoreReference = new ArrayStoreReferenceOpcodeParser();
 
-	private ArrayReferenceOpcodeParser()
+	private ArrayStoreReferenceOpcodeParser()
 	{
 	}
 
@@ -50,7 +50,7 @@ public final class ArrayReferenceOpcodeParser extends AbstractOneOpcodeParser
 	{
 		final NumericOperandStackItem<Integer> index = operandStack.popNumeric(_int);
 		final ReferenceOperandStackItem arrayReference = operandStack.popReference();
-		final ReferenceOperandStackItem result = new ArrayReferenceOperandStackItem(arrayReference, index);
+		final ReferenceOperandStackItem result = new ArrayStoreReferenceOperandStackItem(arrayReference, index);
 		operandStack.pushWithCertainty(result);
 	}
 }

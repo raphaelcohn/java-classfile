@@ -22,22 +22,16 @@
 
 package com.stormmq.java.classfile.domain.attributes.code.operandStackItems.numericOperandStackItems;
 
-import com.stormmq.java.classfile.domain.attributes.code.operandStackItems.referenceOperandStackItems.ReferenceOperandStackItem;
 import com.stormmq.java.classfile.domain.attributes.code.typing.ComputationalCategory;
-import com.stormmq.java.classfile.domain.attributes.code.typing.LocalVariableSimpleType;
 import org.jetbrains.annotations.NotNull;
 
-public final class ByteShortOrCharArrayNumericOperandStackItem<N extends Number> extends AbstractNumericOperandStackItem<N>
+public final class ConvertedNumericOperandStackItem<N extends Number, O extends Number> extends AbstractNumericOperandStackItem<N>
 {
-	@NotNull private final LocalVariableSimpleType localVariableSimpleType;
-	@NotNull private final ReferenceOperandStackItem referenceOperandStackItem;
-	@NotNull private final NumericOperandStackItem<N> arrayIndex;
+	@NotNull private final NumericOperandStackItem<O> from;
 
-	public ByteShortOrCharArrayNumericOperandStackItem(@NotNull final ComputationalCategory computationalCategory, @NotNull final LocalVariableSimpleType localVariableSimpleType,@NotNull final ReferenceOperandStackItem referenceOperandStackItem, @NotNull final NumericOperandStackItem<N> arrayIndex)
+	public ConvertedNumericOperandStackItem(@NotNull final ComputationalCategory computationalCategory, @NotNull final NumericOperandStackItem<O> from)
 	{
 		super(computationalCategory);
-		this.localVariableSimpleType = localVariableSimpleType;
-		this.referenceOperandStackItem = referenceOperandStackItem;
-		this.arrayIndex = arrayIndex;
+		this.from = from;
 	}
 }

@@ -24,4 +24,9 @@ package com.stormmq.java.classfile.domain.attributes.code.operandStackItems;
 
 public interface OperandStackItem
 {
+	boolean isCategory1();
+
+	int stackPointer();
+
+	int push(final int stackPointer);
 }

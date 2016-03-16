@@ -26,12 +26,12 @@ import com.stormmq.java.classfile.domain.attributes.code.localVariables.LocalVar
 import com.stormmq.java.classfile.domain.attributes.code.operandStackItems.AbstractOperandStackItem;
 import org.jetbrains.annotations.Nullable;
 
-public final class LoadReferenceLocalVariableOperandStackItem extends AbstractOperandStackItem implements ReferenceOperandStackItem
+public final class StoreReferenceLocalVariableOperandStackItem extends AbstractOperandStackItem implements ReferenceOperandStackItem
 {
 	private final char localVariableIndex;
 	@Nullable private final LocalVariableAtProgramCounter localVariableAtProgramCounter;
 
-	public LoadReferenceLocalVariableOperandStackItem(final char localVariableIndex, @Nullable final LocalVariableAtProgramCounter localVariableAtProgramCounter)
+	public StoreReferenceLocalVariableOperandStackItem(final char localVariableIndex, @Nullable final LocalVariableAtProgramCounter localVariableAtProgramCounter)
 	{
 		this.localVariableIndex = localVariableIndex;
 		this.localVariableAtProgramCounter = localVariableAtProgramCounter;

@@ -20,20 +20,25 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-package com.stormmq.java.classfile.domain.attributes.code.operandStackItems.referenceOperandStackItems;
+package com.stormmq.java.classfile.domain.attributes.code.operandStackItems;
 
-import com.stormmq.java.classfile.domain.attributes.code.localVariables.LocalVariableAtProgramCounter;
-import com.stormmq.java.classfile.domain.attributes.code.operandStackItems.AbstractOperandStackItem;
-import org.jetbrains.annotations.Nullable;
+import static com.stormmq.java.classfile.domain.attributes.code.operandStack.OperandStack.EmptyStackPointer;
 
-public final class LoadReferenceLocalVariableOperandStackItem extends AbstractOperandStackItem implements ReferenceOperandStackItem
+public abstract class AbstractOperandStackItem implements OperandStackItem
 {
-	private final char localVariableIndex;
-	@Nullable private final LocalVariableAtProgramCounter localVariableAtProgramCounter;
+	private int stackPointer = EmptyStackPointer;
 
-	public LoadReferenceLocalVariableOperandStackItem(final char localVariableIndex, @Nullable final LocalVariableAtProgramCounter localVariableAtProgramCounter)
+	@Override
+	public final int stackPointer()
 	{
-		this.localVariableIndex = localVariableIndex;
-		this.localVariableAtProgramCounter = localVariableAtProgramCounter;
+		return stackPointer;
+	}
+
+	@Override
+	public final int push(final int stackPointer)
+	{
+		final int oldStackPointer = this.stackPointer;
+		this.stackPointer = stackPointer;
+		return oldStackPointer;
 	}
 }

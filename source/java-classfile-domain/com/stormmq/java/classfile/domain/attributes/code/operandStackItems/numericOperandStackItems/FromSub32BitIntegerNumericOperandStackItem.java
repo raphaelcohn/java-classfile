@@ -20,14 +20,27 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-package com.stormmq.java.classfile.domain.attributes.code.operandStackItems.constantOperandStackItems;
+package com.stormmq.java.classfile.domain.attributes.code.operandStackItems.numericOperandStackItems;
 
-public final class ConstantIntegerOperandStackItem implements ConstantOperandStackItem
+import com.stormmq.java.classfile.domain.attributes.code.typing.ByteCharOrShort;
+import com.stormmq.java.classfile.domain.attributes.code.typing.ComputationalCategory;
+import org.jetbrains.annotations.NotNull;
+
+public final class FromSub32BitIntegerNumericOperandStackItem extends AbstractNumericOperandStackItem<Integer>
 {
-	private final int value;
+	@NotNull private final ByteCharOrShort from;
+	@NotNull private final NumericOperandStackItem<Integer> underlyingByteCharOrShortValue;
 
-	public ConstantIntegerOperandStackItem(final int value)
+	public FromSub32BitIntegerNumericOperandStackItem(@NotNull final ComputationalCategory computationalCategory, @NotNull final ByteCharOrShort from, @NotNull final NumericOperandStackItem<Integer> underlyingByteCharOrShortValue)
 	{
-		this.value = value;
+		super(computationalCategory);
+		this.from = from;
+		this.underlyingByteCharOrShortValue = underlyingByteCharOrShortValue;
+	}
+
+	@Override
+	protected boolean isAlreadyByteCharOrShort()
+	{
+		return false;
 	}
 }

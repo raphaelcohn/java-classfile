@@ -23,10 +23,11 @@
 package com.stormmq.java.classfile.domain.attributes.code.operandStackItems.constantOperandStackItems;
 
 import com.stormmq.java.classfile.domain.MethodHandle;
+import com.stormmq.java.classfile.domain.attributes.code.operandStackItems.AbstractOperandStackItem;
 import com.stormmq.java.classfile.domain.attributes.code.operandStackItems.referenceOperandStackItems.ReferenceOperandStackItem;
 import org.jetbrains.annotations.NotNull;
 
-public final class MethodHandleReferenceConstantOperandStackItem implements ConstantOperandStackItem, ReferenceOperandStackItem
+public final class MethodHandleReferenceConstantOperandStackItem extends AbstractOperandStackItem implements ConstantOperandStackItem, ReferenceOperandStackItem
 {
 	@NotNull private final MethodHandle methodHandle;
 

@@ -22,18 +22,18 @@
 
 package com.stormmq.java.classfile.domain.attributes.code.operandStackItems.referenceOperandStackItems;
 
-import com.stormmq.java.classfile.domain.attributes.code.localVariables.LocalVariableAtProgramCounter;
 import com.stormmq.java.classfile.domain.attributes.code.operandStackItems.AbstractOperandStackItem;
-import org.jetbrains.annotations.Nullable;
+import com.stormmq.java.classfile.domain.attributes.code.operandStackItems.numericOperandStackItems.NumericOperandStackItem;
+import org.jetbrains.annotations.NotNull;
 
-public final class LoadReferenceLocalVariableOperandStackItem extends AbstractOperandStackItem implements ReferenceOperandStackItem
+public final class ArrayStoreReferenceOperandStackItem extends AbstractOperandStackItem implements ReferenceOperandStackItem
 {
-	private final char localVariableIndex;
-	@Nullable private final LocalVariableAtProgramCounter localVariableAtProgramCounter;
+	@NotNull private final ReferenceOperandStackItem arrayReference;
+	@NotNull private final NumericOperandStackItem<Integer> index;
 
-	public LoadReferenceLocalVariableOperandStackItem(final char localVariableIndex, @Nullable final LocalVariableAtProgramCounter localVariableAtProgramCounter)
+	public ArrayStoreReferenceOperandStackItem(@NotNull final ReferenceOperandStackItem arrayReference, @NotNull final NumericOperandStackItem<Integer> index)
 	{
-		this.localVariableIndex = localVariableIndex;
-		this.localVariableAtProgramCounter = localVariableAtProgramCounter;
+		this.arrayReference = arrayReference;
+		this.index = index;
 	}
 }

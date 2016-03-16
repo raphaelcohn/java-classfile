@@ -41,6 +41,8 @@ public enum LocalVariableSimpleType
 	@NotNull private final String actualName;
 	@NotNull private final ComputationalCategory computationalCategory;
 	private final int category;
+	private final boolean isByteCharOrShort;
+	public final boolean isNotByteCharOrShort;
 
 	LocalVariableSimpleType(@NotNull final ComputationalCategory computationalCategory, final int category)
 	{
@@ -59,5 +61,7 @@ public enum LocalVariableSimpleType
 		actualName = name.charAt(0) != '_' ? name : name.substring(1);
 		this.computationalCategory = computationalCategory;
 		this.category = category;
+		isByteCharOrShort = actualName.equals("byte") || actualName.equals("char") || actualName.equals("short");
+		isNotByteCharOrShort = !isByteCharOrShort;
 	}
 }

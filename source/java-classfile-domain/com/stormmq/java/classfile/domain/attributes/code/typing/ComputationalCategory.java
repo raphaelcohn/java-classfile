@@ -27,10 +27,10 @@ import org.jetbrains.annotations.Nullable;
 
 public enum ComputationalCategory
 {
-	_int(true, Integer.class),
-	_float(false, Float.class),
-	_long(true, Long.class),
-	_double(false, Double.class),
+	_int(true, Integer.class, true),
+	_float(false, Float.class, true),
+	_long(true, Long.class, false),
+	_double(false, Double.class, false),
 	reference,
 	returnAddress,
 	;
@@ -41,6 +41,7 @@ public enum ComputationalCategory
 	public final boolean isNotIntegerNumber;
 	@Nullable private final Class<? extends Number> numberClass;
 	@NotNull public final String actualName;
+	public final boolean isCategory1;
 
 	ComputationalCategory()
 	{
@@ -50,9 +51,10 @@ public enum ComputationalCategory
 		isNotIntegerNumber = true;
 		numberClass = null;
 		actualName = actualName();
+		isCategory1 = true;
 	}
 
-	ComputationalCategory(final boolean isIntegerNumber, @NotNull final Class<? extends Number> numberClass)
+	ComputationalCategory(final boolean isIntegerNumber, @NotNull final Class<? extends Number> numberClass, final boolean isCategory1)
 	{
 		isNumeric = true;
 		isNotNumeric = false;
@@ -60,6 +62,7 @@ public enum ComputationalCategory
 		isNotIntegerNumber = !isIntegerNumber;
 		this.numberClass = numberClass;
 		actualName = actualName();
+		this.isCategory1 = isCategory1;
 	}
 
 	@NotNull

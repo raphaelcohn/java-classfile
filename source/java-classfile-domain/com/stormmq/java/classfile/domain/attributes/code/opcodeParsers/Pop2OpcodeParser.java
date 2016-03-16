@@ -27,32 +27,27 @@ import com.stormmq.java.classfile.domain.attributes.code.constants.RuntimeConsta
 import com.stormmq.java.classfile.domain.attributes.code.invalidOperandStackExceptions.*;
 import com.stormmq.java.classfile.domain.attributes.code.localVariables.LocalVariableAtProgramCounter;
 import com.stormmq.java.classfile.domain.attributes.code.operandStack.OperandStack;
-import com.stormmq.java.classfile.domain.attributes.code.operandStackItems.numericOperandStackItems.ArrayNumericOperandStackItem;
-import com.stormmq.java.classfile.domain.attributes.code.operandStackItems.numericOperandStackItems.NumericOperandStackItem;
-import com.stormmq.java.classfile.domain.attributes.code.operandStackItems.referenceOperandStackItems.ReferenceOperandStackItem;
-import com.stormmq.java.classfile.domain.attributes.code.typing.ComputationalCategory;
+import com.stormmq.java.classfile.domain.attributes.code.operandStackItems.OperandStackItem;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
 import java.util.Set;
 
-import static com.stormmq.java.classfile.domain.attributes.code.typing.ComputationalCategory._int;
-
-public final class ArrayNumericOpcodeParser extends AbstractOneOpcodeParser
+public final class Pop2OpcodeParser extends AbstractOneOpcodeParser
 {
-	@NotNull private final ComputationalCategory computationalCategory;
+	@NotNull public static final OpcodeParser Pop2 = new Pop2OpcodeParser();
 
-	public ArrayNumericOpcodeParser(@NotNull final ComputationalCategory computationalCategory)
+	private Pop2OpcodeParser()
 	{
-		this.computationalCategory = computationalCategory;
 	}
 
 	@Override
 	public void parse(@NotNull final OperandStack operandStack, @NotNull final CodeReader codeReader, @NotNull final Set<Character> lineNumbers, @NotNull final Map<Character, LocalVariableAtProgramCounter> localVariablesAtProgramCounter, @NotNull final RuntimeConstantPool runtimeConstantPool) throws InvalidOpcodeException, UnderflowInvalidOperandStackException, MismatchedTypeInvalidOperandStackException, OverflowInvalidOperandStackException, NotEnoughBytesInvalidOperandStackException
 	{
-		final NumericOperandStackItem<Integer> index = operandStack.popNumeric(_int);
-		final ReferenceOperandStackItem arrayReference = operandStack.popReference();
-		final NumericOperandStackItem<?> result = new ArrayNumericOperandStackItem<>(computationalCategory, arrayReference, index);
-		operandStack.pushWithCertainty(result);
+		final OperandStackItem popped = operandStack.pop();
+		if (popped.isCategory1())
+		{
+			operandStack.pop();
+		}
 	}
 }

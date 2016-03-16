@@ -31,6 +31,7 @@ import com.stormmq.java.classfile.domain.attributes.code.localVariables.*;
 import com.stormmq.java.classfile.domain.attributes.code.opcodeParsers.InvalidOpcodeException;
 import com.stormmq.java.classfile.domain.attributes.code.opcodeParsers.OpcodeParser;
 import com.stormmq.java.classfile.domain.attributes.code.operandStack.OperandStack;
+import com.stormmq.java.classfile.domain.attributes.code.operandStack.TrackingOperandStack;
 import com.stormmq.java.classfile.domain.attributes.code.stackMapFrames.StackMapFrame;
 import org.jetbrains.annotations.NotNull;
 
@@ -91,7 +92,7 @@ public final class Code
 
 	public void parseCode(final boolean isStrictFloatingPoint) throws InvalidOpcodeException, UnderflowInvalidOperandStackException, MismatchedVariableInvalidOperandStackException, MismatchedTypeInvalidOperandStackException, NotEnoughBytesInvalidOperandStackException
 	{
-		final OperandStack operandStack = new OperandStack(maximumDepthOfTheOperandStackOfTheMethod);
+		final OperandStack operandStack = new TrackingOperandStack(maximumDepthOfTheOperandStackOfTheMethod);
 
 		final OpcodeParser[] opcodeParsers = chooseOpcodeParsers(opcode186IsPermittedBecauseThisIsForJava7OrLater, isStrictFloatingPoint);
 

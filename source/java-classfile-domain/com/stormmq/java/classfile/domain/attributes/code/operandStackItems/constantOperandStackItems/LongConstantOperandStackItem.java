@@ -22,14 +22,17 @@
 
 package com.stormmq.java.classfile.domain.attributes.code.operandStackItems.constantOperandStackItems;
 
-import com.stormmq.java.classfile.domain.attributes.code.operandStackItems.constantOperandStackItems.ConstantOperandStackItem;
+import com.stormmq.java.classfile.domain.attributes.code.operandStackItems.numericOperandStackItems.AbstractNumericOperandStackItem;
 
-public final class LongConstantOperandStackItem implements ConstantOperandStackItem
+import static com.stormmq.java.classfile.domain.attributes.code.typing.ComputationalCategory._long;
+
+public final class LongConstantOperandStackItem extends AbstractNumericOperandStackItem<Long> implements ConstantOperandStackItem
 {
 	private final long value;
 
 	public LongConstantOperandStackItem(final long value)
 	{
+		super(_long);
 		this.value = value;
 	}
 }

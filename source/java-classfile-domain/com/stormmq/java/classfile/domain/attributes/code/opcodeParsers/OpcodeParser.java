@@ -27,32 +27,40 @@ import com.stormmq.java.classfile.domain.attributes.code.constants.RuntimeConsta
 import com.stormmq.java.classfile.domain.attributes.code.invalidOperandStackExceptions.*;
 import com.stormmq.java.classfile.domain.attributes.code.localVariables.LocalVariableAtProgramCounter;
 import com.stormmq.java.classfile.domain.attributes.code.operandStack.OperandStack;
+import com.stormmq.java.classfile.domain.attributes.code.operandStackItems.OperandStackItem;
+import com.stormmq.java.classfile.domain.attributes.code.typing.ByteCharOrShort;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
 import java.util.Set;
 
-import static com.stormmq.java.classfile.domain.attributes.code.opcodeParsers.ArrayReferenceOpcodeParser.ArrayReference;
+import static com.stormmq.java.classfile.domain.attributes.code.opcodeParsers.ArrayLoadReferenceOpcodeParser.ArrayLoadReference;
+import static com.stormmq.java.classfile.domain.attributes.code.opcodeParsers.ArrayStoreReferenceOpcodeParser.ArrayStoreReference;
 import static com.stormmq.java.classfile.domain.attributes.code.opcodeParsers.BinaryOperationOpcodeParser.binaryOperationOpcodeParser;
 import static com.stormmq.java.classfile.domain.attributes.code.opcodeParsers.BytePushOpcodeParser.BytePush;
+import static com.stormmq.java.classfile.domain.attributes.code.opcodeParsers.DuplicateOpcodeParser.Duplicate;
 import static com.stormmq.java.classfile.domain.attributes.code.opcodeParsers.IntegerBitOperationOpcodeParser.integerBitOperationOpcodeParser;
 import static com.stormmq.java.classfile.domain.attributes.code.opcodeParsers.InvokeDynamicNotAllowedOpcodeParser.InvokeDynamicNotAllowed;
 import static com.stormmq.java.classfile.domain.attributes.code.opcodeParsers.LoadDoubleWidthConstantOpcodeParser.LoadWideDoubleWidthConstant;
 import static com.stormmq.java.classfile.domain.attributes.code.opcodeParsers.LoadSingleWidthConstantOpcodeParser.LoadNarrowSingleWidthConstant;
 import static com.stormmq.java.classfile.domain.attributes.code.opcodeParsers.LoadSingleWidthConstantOpcodeParser.LoadWideSingleWidthConstant;
+import static com.stormmq.java.classfile.domain.attributes.code.opcodeParsers.LocalVariableIntegerIncrementOpcodeParser.LocalVariableIntegerIncrement;
 import static com.stormmq.java.classfile.domain.attributes.code.opcodeParsers.NarrowLoadReferenceVariableOpcodeParser.NarrowLoadReferenceVariable;
+import static com.stormmq.java.classfile.domain.attributes.code.opcodeParsers.NarrowStoreReferenceVariableOpcodeParser.NarrowStoreReferenceVariable;
 import static com.stormmq.java.classfile.domain.attributes.code.opcodeParsers.NoOperationOpcodeParser.NoOperation;
-import static com.stormmq.java.classfile.domain.attributes.code.opcodeParsers.PushConstantOpcodeParser.pushConstantOpcodeParser;
+import static com.stormmq.java.classfile.domain.attributes.code.opcodeParsers.Pop2OpcodeParser.Pop2;
+import static com.stormmq.java.classfile.domain.attributes.code.opcodeParsers.PopOpcodeParser.Pop;
 import static com.stormmq.java.classfile.domain.attributes.code.opcodeParsers.ShortPushOpcodeParser.ShortPush;
+import static com.stormmq.java.classfile.domain.attributes.code.opcodeParsers.SwapOpcodeParser.Swap;
 import static com.stormmq.java.classfile.domain.attributes.code.opcodeParsers.UnaryOperationOpcodeParser.unaryOperationOpcodeParser;
 import static com.stormmq.java.classfile.domain.attributes.code.operandStackItems.constantOperandStackItems.NullReferenceConstantOperandStackItem.NullConstant;
 import static com.stormmq.java.classfile.domain.attributes.code.operandStackItems.operations.BinaryOperation.*;
 import static com.stormmq.java.classfile.domain.attributes.code.operandStackItems.operations.IntegerBitOperation.*;
 import static com.stormmq.java.classfile.domain.attributes.code.operandStackItems.operations.UnaryOperation.negate;
-import static com.stormmq.java.classfile.domain.attributes.code.typing.ComputationalCategory.*;
-import static com.stormmq.java.classfile.domain.attributes.code.typing.LocalVariableSimpleType._byte;
-import static com.stormmq.java.classfile.domain.attributes.code.typing.LocalVariableSimpleType._char;
-import static com.stormmq.java.classfile.domain.attributes.code.typing.LocalVariableSimpleType._short;
+import static com.stormmq.java.classfile.domain.attributes.code.typing.ComputationalCategory._double;
+import static com.stormmq.java.classfile.domain.attributes.code.typing.ComputationalCategory._float;
+import static com.stormmq.java.classfile.domain.attributes.code.typing.ComputationalCategory._int;
+import static com.stormmq.java.classfile.domain.attributes.code.typing.ComputationalCategory._long;
 
 public interface OpcodeParser
 {
@@ -534,39 +542,56 @@ public interface OpcodeParser
 	static OpcodeParser[] initialiseOpcodeParsers(final boolean opcode186IsPermittedBecauseThisIsForJava7OrLater, final boolean isStrictFloatingPoint)
 	{
 		final short length = 256;
-
 		final OpcodeParser[] opcodeParsers = new OpcodeParser[length];
-
-		opcodeParsers[breakpoint] = new ReservedOpcodeParser(breakpoint, "breakpoint");
-		opcodeParsers[impdep1] = new ReservedOpcodeParser(impdep1, "impdep1");
-		opcodeParsers[impdep2] = new ReservedOpcodeParser(impdep2, "impdep2");
 
 		opcodeParsers[invokedynamic] = opcode186IsPermittedBecauseThisIsForJava7OrLater ? InvokeDynamicOpcodeParser.InvokeDynamicAllowed : InvokeDynamicNotAllowed;
 
-		// Constants
+		constants(opcodeParsers);
+		loads(opcodeParsers);
+		store(opcodeParsers);
+		stack(opcodeParsers);
+		math(opcodeParsers, isStrictFloatingPoint);
+		conversions(opcodeParsers);
+		comparisons(opcodeParsers);
+		control(opcodeParsers);
+		references(opcodeParsers);
+		extended(opcodeParsers);
+		reserved(opcodeParsers);
+		internal(opcodeParsers, length);
+
+		return opcodeParsers;
+	}
+
+	@SuppressWarnings("MethodCanBeVariableArityMethod")
+	static void constants(@NotNull final OpcodeParser[] opcodeParsers)
+	{
 		opcodeParsers[nop] = NoOperation;
 		opcodeParsers[aconst_null] = new PushConstantOpcodeParser(NullConstant);
-		opcodeParsers[iconst_m1] = pushConstantOpcodeParser(_int, -1);
-		opcodeParsers[iconst_0] = pushConstantOpcodeParser(_int, 0);
-		opcodeParsers[iconst_1] = pushConstantOpcodeParser(_int, 1);
-		opcodeParsers[iconst_2] = pushConstantOpcodeParser(_int, 2);
-		opcodeParsers[iconst_3] = pushConstantOpcodeParser(_int, 3);
-		opcodeParsers[iconst_4] = pushConstantOpcodeParser(_int, 4);
-		opcodeParsers[iconst_5] = pushConstantOpcodeParser(_int, 5);
-		opcodeParsers[lconst_0] = pushConstantOpcodeParser(_long, 0L);
-		opcodeParsers[lconst_1] = pushConstantOpcodeParser(_long, 1L);
-		opcodeParsers[fconst_0] = pushConstantOpcodeParser(_float, 0.0f);
-		opcodeParsers[fconst_1] = pushConstantOpcodeParser(_float, 1.0f);
-		opcodeParsers[fconst_2] = pushConstantOpcodeParser(_float, 2.0f);
-		opcodeParsers[dconst_0] = pushConstantOpcodeParser(_double, 0.0d);
-		opcodeParsers[dconst_1] = pushConstantOpcodeParser(_double, 1.0d);
+		final Integer number = -1;
+		opcodeParsers[iconst_m1] = new PushConstantOpcodeParser(_int, number);
+		opcodeParsers[iconst_0] = new PushConstantOpcodeParser(_int, 0);
+		opcodeParsers[iconst_1] = new PushConstantOpcodeParser(_int, 1);
+		opcodeParsers[iconst_2] = new PushConstantOpcodeParser(_int, 2);
+		opcodeParsers[iconst_3] = new PushConstantOpcodeParser(_int, 3);
+		opcodeParsers[iconst_4] = new PushConstantOpcodeParser(_int, 4);
+		opcodeParsers[iconst_5] = new PushConstantOpcodeParser(_int, 5);
+		opcodeParsers[lconst_0] = new PushConstantOpcodeParser(_long, 0L);
+		opcodeParsers[lconst_1] = new PushConstantOpcodeParser(_long, 1L);
+		opcodeParsers[fconst_0] = new PushConstantOpcodeParser(_float, 0.0f);
+		opcodeParsers[fconst_1] = new PushConstantOpcodeParser(_float, 1.0f);
+		opcodeParsers[fconst_2] = new PushConstantOpcodeParser(_float, 2.0f);
+		opcodeParsers[dconst_0] = new PushConstantOpcodeParser(_double, 0.0d);
+		opcodeParsers[dconst_1] = new PushConstantOpcodeParser(_double, 1.0d);
 		opcodeParsers[bipush] = BytePush;
 		opcodeParsers[sipush] = ShortPush;
 		opcodeParsers[ldc] = LoadNarrowSingleWidthConstant;
 		opcodeParsers[ldc_w] = LoadWideSingleWidthConstant;
 		opcodeParsers[ldc2_w] = LoadWideDoubleWidthConstant;
+	}
 
-		// Loads
+	@SuppressWarnings("MethodCanBeVariableArityMethod")
+	static void loads(@NotNull final OpcodeParser[] opcodeParsers)
+	{
 		opcodeParsers[iload] = new NarrowLoadNumericVariableOpcodeParser(_int);
 		opcodeParsers[lload] = new NarrowLoadNumericVariableOpcodeParser(_long);
 		opcodeParsers[fload] = new NarrowLoadNumericVariableOpcodeParser(_float);
@@ -592,16 +617,209 @@ public interface OpcodeParser
 		opcodeParsers[aload_1] = new NarrowFixedLoadReferenceVariableOpcodeParser((char) 1);
 		opcodeParsers[aload_2] = new NarrowFixedLoadReferenceVariableOpcodeParser((char) 2);
 		opcodeParsers[aload_3] = new NarrowFixedLoadReferenceVariableOpcodeParser((char) 3);
-		opcodeParsers[iaload] = new ArrayNumericOpcodeParser(_int);
-		opcodeParsers[laload] = new ArrayNumericOpcodeParser(_long);
-		opcodeParsers[faload] = new ArrayNumericOpcodeParser(_float);
-		opcodeParsers[daload] = new ArrayNumericOpcodeParser(_double);
-		opcodeParsers[aaload] = ArrayReference;
-		opcodeParsers[baload] = new ArrayByteShortOrCharNumericOpcodeParser(_byte); // also used for boolean arrays
-		opcodeParsers[caload] = new ArrayByteShortOrCharNumericOpcodeParser(_char);
-		opcodeParsers[saload] = new ArrayByteShortOrCharNumericOpcodeParser(_short);
+		opcodeParsers[iaload] = new ArrayLoadNumericOpcodeParser(_int);
+		opcodeParsers[laload] = new ArrayLoadNumericOpcodeParser(_long);
+		opcodeParsers[faload] = new ArrayLoadNumericOpcodeParser(_float);
+		opcodeParsers[daload] = new ArrayLoadNumericOpcodeParser(_double);
+		opcodeParsers[aaload] = ArrayLoadReference;
+		opcodeParsers[baload] = new ArrayByteShortOrCharLoadNumericOpcodeParser(ByteCharOrShort._byte); // also used for boolean arrays
+		opcodeParsers[caload] = new ArrayByteShortOrCharLoadNumericOpcodeParser(ByteCharOrShort._char);
+		opcodeParsers[saload] = new ArrayByteShortOrCharLoadNumericOpcodeParser(ByteCharOrShort._char);
+	}
 
-		// Math
+	@SuppressWarnings("MethodCanBeVariableArityMethod")
+	static void store(@NotNull final OpcodeParser[] opcodeParsers)
+	{
+		opcodeParsers[istore] = new NarrowStoreNumericVariableOpcodeParser(_int);
+		opcodeParsers[lstore] = new NarrowStoreNumericVariableOpcodeParser(_long);
+		opcodeParsers[fstore] = new NarrowStoreNumericVariableOpcodeParser(_float);
+		opcodeParsers[dstore] = new NarrowStoreNumericVariableOpcodeParser(_double);
+		opcodeParsers[astore] = NarrowStoreReferenceVariable;
+		opcodeParsers[istore_0] = new NarrowFixedStoreNumericVariableOpcodeParser(_int, (char) 0);
+		opcodeParsers[istore_0] = new NarrowFixedStoreNumericVariableOpcodeParser(_int, (char) 0);
+		opcodeParsers[istore_1] = new NarrowFixedStoreNumericVariableOpcodeParser(_int, (char) 1);
+		opcodeParsers[istore_2] = new NarrowFixedStoreNumericVariableOpcodeParser(_int, (char) 2);
+		opcodeParsers[istore_3] = new NarrowFixedStoreNumericVariableOpcodeParser(_int, (char) 3);
+		opcodeParsers[lstore_0] = new NarrowFixedStoreNumericVariableOpcodeParser(_long, (char) 0);
+		opcodeParsers[lstore_1] = new NarrowFixedStoreNumericVariableOpcodeParser(_long, (char) 1);
+		opcodeParsers[lstore_2] = new NarrowFixedStoreNumericVariableOpcodeParser(_long, (char) 2);
+		opcodeParsers[lstore_3] = new NarrowFixedStoreNumericVariableOpcodeParser(_long, (char) 3);
+		opcodeParsers[fstore_0] = new NarrowFixedStoreNumericVariableOpcodeParser(_float, (char) 0);
+		opcodeParsers[fstore_1] = new NarrowFixedStoreNumericVariableOpcodeParser(_float, (char) 1);
+		opcodeParsers[fstore_2] = new NarrowFixedStoreNumericVariableOpcodeParser(_float, (char) 2);
+		opcodeParsers[fstore_3] = new NarrowFixedStoreNumericVariableOpcodeParser(_float, (char) 3);
+		opcodeParsers[dstore_0] = new NarrowFixedStoreNumericVariableOpcodeParser(_double, (char) 0);
+		opcodeParsers[dstore_1] = new NarrowFixedStoreNumericVariableOpcodeParser(_double, (char) 1);
+		opcodeParsers[dstore_2] = new NarrowFixedStoreNumericVariableOpcodeParser(_double, (char) 2);
+		opcodeParsers[dstore_3] = new NarrowFixedStoreNumericVariableOpcodeParser(_double, (char) 3);
+		opcodeParsers[astore_0] = new NarrowFixedStoreReferenceVariableOpcodeParser((char) 0);
+		opcodeParsers[astore_1] = new NarrowFixedStoreReferenceVariableOpcodeParser((char) 1);
+		opcodeParsers[astore_2] = new NarrowFixedStoreReferenceVariableOpcodeParser((char) 2);
+		opcodeParsers[astore_3] = new NarrowFixedStoreReferenceVariableOpcodeParser((char) 3);
+		opcodeParsers[iastore] = new ArrayStoreNumericOpcodeParser(_int);
+		opcodeParsers[lastore] = new ArrayStoreNumericOpcodeParser(_long);
+		opcodeParsers[fastore] = new ArrayStoreNumericOpcodeParser(_float);
+		opcodeParsers[dastore] = new ArrayStoreNumericOpcodeParser(_double);
+		opcodeParsers[aastore] = ArrayStoreReference;
+		opcodeParsers[bastore] = new ArrayByteShortOrCharStoreNumericOpcodeParser(ByteCharOrShort._byte); // also used for boolean arrays
+		opcodeParsers[castore] = new ArrayByteShortOrCharStoreNumericOpcodeParser(ByteCharOrShort._char);
+		opcodeParsers[sastore] = new ArrayByteShortOrCharStoreNumericOpcodeParser(ByteCharOrShort._char);
+	}
+
+	@SuppressWarnings("MethodCanBeVariableArityMethod")
+	static void stack(@NotNull final OpcodeParser[] opcodeParsers)
+	{
+		opcodeParsers[pop] = Pop;
+		opcodeParsers[pop2] = Pop2;
+		opcodeParsers[dup] = Duplicate;
+		opcodeParsers[dup_x1] = new AbstractOneOpcodeParser()
+		{
+			@Override
+			public void parse(@NotNull final OperandStack operandStack, @NotNull final CodeReader codeReader, @NotNull final Set<Character> lineNumbers, @NotNull final Map<Character, LocalVariableAtProgramCounter> localVariablesAtProgramCounter, @NotNull final RuntimeConstantPool runtimeConstantPool) throws InvalidOpcodeException, UnderflowInvalidOperandStackException, MismatchedTypeInvalidOperandStackException, OverflowInvalidOperandStackException, NotEnoughBytesInvalidOperandStackException
+			{
+				final OperandStackItem value1 = operandStack.popCategory1ComputationalType();
+				final OperandStackItem value2 = operandStack.popCategory1ComputationalType();
+				operandStack.pushWithCertainty(value1);
+				operandStack.pushWithCertainty(value2);
+				operandStack.push(value1);
+			}
+		};
+		opcodeParsers[dup_x2] = new AbstractOneOpcodeParser()
+		{
+			@Override
+			public void parse(@NotNull final OperandStack operandStack, @NotNull final CodeReader codeReader, @NotNull final Set<Character> lineNumbers, @NotNull final Map<Character, LocalVariableAtProgramCounter> localVariablesAtProgramCounter, @NotNull final RuntimeConstantPool runtimeConstantPool) throws InvalidOpcodeException, UnderflowInvalidOperandStackException, MismatchedTypeInvalidOperandStackException, OverflowInvalidOperandStackException, NotEnoughBytesInvalidOperandStackException
+			{
+				final OperandStackItem value1 = operandStack.popCategory1ComputationalType();
+				final OperandStackItem value2 = operandStack.pop();
+				if (value2.isCategory1())
+				{
+					final OperandStackItem value3 = operandStack.popCategory1ComputationalType();
+					operandStack.pushWithCertainty(value1);
+					operandStack.pushWithCertainty(value3);
+					operandStack.pushWithCertainty(value2);
+					operandStack.push(value1);
+				}
+				else
+				{
+					operandStack.pushWithCertainty(value1);
+					operandStack.pushWithCertainty(value2);
+					operandStack.push(value1);
+				}
+			}
+		};
+		opcodeParsers[dup2] = new AbstractOneOpcodeParser()
+		{
+			@Override
+			public void parse(@NotNull final OperandStack operandStack, @NotNull final CodeReader codeReader, @NotNull final Set<Character> lineNumbers, @NotNull final Map<Character, LocalVariableAtProgramCounter> localVariablesAtProgramCounter, @NotNull final RuntimeConstantPool runtimeConstantPool) throws InvalidOpcodeException, UnderflowInvalidOperandStackException, MismatchedTypeInvalidOperandStackException, OverflowInvalidOperandStackException, NotEnoughBytesInvalidOperandStackException
+			{
+				final OperandStackItem value = operandStack.pop();
+				if (value.isCategory1())
+				{
+					final OperandStackItem value1 = value;
+					final OperandStackItem value2 = operandStack.popCategory1ComputationalType();
+					operandStack.pushWithCertainty(value2);
+					operandStack.pushWithCertainty(value1);
+					operandStack.push(value2);
+					operandStack.push(value1);
+				}
+				else
+				{
+					operandStack.pushWithCertainty(value);
+					operandStack.push(value);
+				}
+			}
+		};
+		opcodeParsers[dup2_x1] = new AbstractOneOpcodeParser()
+		{
+			@Override
+			public void parse(@NotNull final OperandStack operandStack, @NotNull final CodeReader codeReader, @NotNull final Set<Character> lineNumbers, @NotNull final Map<Character, LocalVariableAtProgramCounter> localVariablesAtProgramCounter, @NotNull final RuntimeConstantPool runtimeConstantPool) throws InvalidOpcodeException, UnderflowInvalidOperandStackException, MismatchedTypeInvalidOperandStackException, OverflowInvalidOperandStackException, NotEnoughBytesInvalidOperandStackException
+			{
+				final OperandStackItem value1 = operandStack.pop();
+				if (value1.isCategory1())
+				{
+					final OperandStackItem value2 = operandStack.popCategory1ComputationalType();
+					final OperandStackItem value3 = operandStack.popCategory1ComputationalType();
+					operandStack.pushWithCertainty(value2);
+					operandStack.pushWithCertainty(value1);
+					operandStack.pushWithCertainty(value3);
+					operandStack.push(value2);
+					operandStack.push(value1);
+				}
+				else
+				{
+					final OperandStackItem value2 = operandStack.popCategory2ComputationalType();
+					operandStack.pushWithCertainty(value1);
+					operandStack.pushWithCertainty(value2);
+					operandStack.push(value1);
+				}
+			}
+		};
+		opcodeParsers[dup_x2] = new AbstractOneOpcodeParser()
+		{
+			@Override
+			public void parse(@NotNull final OperandStack operandStack, @NotNull final CodeReader codeReader, @NotNull final Set<Character> lineNumbers, @NotNull final Map<Character, LocalVariableAtProgramCounter> localVariablesAtProgramCounter, @NotNull final RuntimeConstantPool runtimeConstantPool) throws InvalidOpcodeException, UnderflowInvalidOperandStackException, MismatchedTypeInvalidOperandStackException, OverflowInvalidOperandStackException, NotEnoughBytesInvalidOperandStackException
+			{
+				final OperandStackItem value1 = operandStack.pop();
+				if (value1.isCategory1())
+				{
+					final OperandStackItem value2 = operandStack.pop();
+					if (value2.isCategory1())
+					{
+						final OperandStackItem value3 = operandStack.pop();
+						// "Form 1"
+						if (value3.isCategory1())
+						{
+							final OperandStackItem value4 = operandStack.popCategory1ComputationalType();
+							operandStack.pushWithCertainty(value2);
+							operandStack.pushWithCertainty(value1);
+							operandStack.pushWithCertainty(value4);
+							operandStack.pushWithCertainty(value3);
+							operandStack.push(value2);
+							operandStack.push(value1);
+						}
+						// "Form 3"
+						else
+						{
+							operandStack.pushWithCertainty(value2);
+							operandStack.pushWithCertainty(value1);
+							operandStack.pushWithCertainty(value3);
+							operandStack.push(value2);
+							operandStack.push(value1);
+						}
+					}
+					else
+					{
+						throw new InvalidOpcodeException("dup_x2 has category 1 value1 but category 2 value2");
+					}
+				}
+				else
+				{
+					final OperandStackItem value2 = operandStack.pop();
+					// "Form 2"
+					if (value2.isCategory1())
+					{
+						final OperandStackItem value3 = operandStack.popCategory1ComputationalType();
+						operandStack.pushWithCertainty(value1);
+						operandStack.pushWithCertainty(value3);
+						operandStack.pushWithCertainty(value2);
+						operandStack.push(value1);
+					}
+					// "Form 4"
+					else
+					{
+						operandStack.pushWithCertainty(value1);
+						operandStack.pushWithCertainty(value2);
+						operandStack.push(value1);
+					}
+				}
+			}
+		};
+
+		opcodeParsers[swap] = Swap;
+	}
+
+	static void math(@NotNull final OpcodeParser[] opcodeParsers, final boolean isStrictFloatingPoint)
+	{
 		opcodeParsers[iadd] = binaryOperationOpcodeParser(_int, add, isStrictFloatingPoint);
 		opcodeParsers[ladd] = binaryOperationOpcodeParser(_long, add, isStrictFloatingPoint);
 		opcodeParsers[fadd] = binaryOperationOpcodeParser(_float, add, isStrictFloatingPoint);
@@ -638,8 +856,59 @@ public interface OpcodeParser
 		opcodeParsers[lor] = integerBitOperationOpcodeParser(_long, or);
 		opcodeParsers[ixor] = integerBitOperationOpcodeParser(_int, xor);
 		opcodeParsers[lxor] = integerBitOperationOpcodeParser(_long, xor);
-		opcodeParsers[iinc] = new LocalVariableIntegerIncrementOpcodeParser();
+		opcodeParsers[iinc] = LocalVariableIntegerIncrement;
+	}
 
+	@SuppressWarnings("MethodCanBeVariableArityMethod")
+	static void conversions(@NotNull final OpcodeParser[] opcodeParsers)
+	{
+		opcodeParsers[i2l] = new NumericConversionOpcodeParser(_int, _long);
+		opcodeParsers[i2f] = new NumericConversionOpcodeParser(_int, _float);
+		opcodeParsers[i2d] = new NumericConversionOpcodeParser(_int, _double);
+		opcodeParsers[l2i] = new NumericConversionOpcodeParser(_long, _int);
+		opcodeParsers[l2f] = new NumericConversionOpcodeParser(_long, _float);
+		opcodeParsers[l2d] = new NumericConversionOpcodeParser(_long, _double);
+		opcodeParsers[f2i] = new NumericConversionOpcodeParser(_float, _int);
+		opcodeParsers[f2l] = new NumericConversionOpcodeParser(_float, _long);
+		opcodeParsers[f2d] = new NumericConversionOpcodeParser(_float, _double);
+		opcodeParsers[d2i] = new NumericConversionOpcodeParser(_double, _int);
+		opcodeParsers[d2l] = new NumericConversionOpcodeParser(_double, _long);
+		opcodeParsers[d2f] = new NumericConversionOpcodeParser(_double, _float);
+		opcodeParsers[i2b] = new DowncastNumericConversionOpcodeParser(ByteCharOrShort._byte);
+		opcodeParsers[i2c] = new DowncastNumericConversionOpcodeParser(ByteCharOrShort._char);
+		opcodeParsers[i2s] = new DowncastNumericConversionOpcodeParser(ByteCharOrShort._short);
+	}
+
+	@SuppressWarnings("MethodCanBeVariableArityMethod")
+	static void comparisons(@NotNull final OpcodeParser[] opcodeParsers)
+	{
+	}
+
+	@SuppressWarnings("MethodCanBeVariableArityMethod")
+	static void control(@NotNull final OpcodeParser[] opcodeParsers)
+	{
+	}
+
+	@SuppressWarnings("MethodCanBeVariableArityMethod")
+	static void references(@NotNull final OpcodeParser[] opcodeParsers)
+	{
+	}
+
+	@SuppressWarnings("MethodCanBeVariableArityMethod")
+	static void extended(@NotNull final OpcodeParser[] opcodeParsers)
+	{
+	}
+
+	@SuppressWarnings("MethodCanBeVariableArityMethod")
+	static void reserved(@NotNull final OpcodeParser[] opcodeParsers)
+	{
+		opcodeParsers[breakpoint] = new ReservedOpcodeParser(breakpoint, "breakpoint");
+		opcodeParsers[impdep1] = new ReservedOpcodeParser(impdep1, "impdep1");
+		opcodeParsers[impdep2] = new ReservedOpcodeParser(impdep2, "impdep2");
+	}
+
+	static void internal(@NotNull final OpcodeParser[] opcodeParsers, final short length)
+	{
 		for (short opcode = 0; opcode < length; opcode++)
 		{
 			if (opcodeParsers[opcode] == null)
@@ -647,8 +916,6 @@ public interface OpcodeParser
 				opcodeParsers[opcode] = new InternalOpcodeParser(opcode);
 			}
 		}
-
-		return opcodeParsers;
 	}
 
 }

@@ -26,4 +26,9 @@ import com.stormmq.java.classfile.domain.attributes.code.operandStackItems.Opera
 
 public interface ReferenceOperandStackItem extends OperandStackItem
 {
+	@Override
+	default boolean isCategory1()
+	{
+		return true;
+	}
 }

@@ -20,20 +20,19 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-package com.stormmq.java.classfile.domain.attributes.code.operandStackItems.referenceOperandStackItems;
+package com.stormmq.java.classfile.domain.attributes.code.operandStackItems.constantOperandStackItems;
 
-import com.stormmq.java.classfile.domain.attributes.code.localVariables.LocalVariableAtProgramCounter;
-import com.stormmq.java.classfile.domain.attributes.code.operandStackItems.AbstractOperandStackItem;
-import org.jetbrains.annotations.Nullable;
+import com.stormmq.java.classfile.domain.attributes.code.operandStackItems.numericOperandStackItems.AbstractNumericOperandStackItem;
 
-public final class LoadReferenceLocalVariableOperandStackItem extends AbstractOperandStackItem implements ReferenceOperandStackItem
+import static com.stormmq.java.classfile.domain.attributes.code.typing.ComputationalCategory._int;
+
+public final class IntegerConstantOperandStackItem extends AbstractNumericOperandStackItem<Integer> implements ConstantOperandStackItem
 {
-	private final char localVariableIndex;
-	@Nullable private final LocalVariableAtProgramCounter localVariableAtProgramCounter;
+	private final int value;
 
-	public LoadReferenceLocalVariableOperandStackItem(final char localVariableIndex, @Nullable final LocalVariableAtProgramCounter localVariableAtProgramCounter)
+	public IntegerConstantOperandStackItem(final int value)
 	{
-		this.localVariableIndex = localVariableIndex;
-		this.localVariableAtProgramCounter = localVariableAtProgramCounter;
+		super(_int);
+		this.value = value;
 	}
 }

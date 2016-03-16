@@ -27,7 +27,7 @@ import com.stormmq.java.classfile.domain.attributes.code.constants.RuntimeConsta
 import com.stormmq.java.classfile.domain.attributes.code.invalidOperandStackExceptions.*;
 import com.stormmq.java.classfile.domain.attributes.code.localVariables.LocalVariableAtProgramCounter;
 import com.stormmq.java.classfile.domain.attributes.code.operandStack.OperandStack;
-import com.stormmq.java.classfile.domain.attributes.code.operandStackItems.constantOperandStackItems.ConstantIntegerOperandStackItem;
+import com.stormmq.java.classfile.domain.attributes.code.operandStackItems.constantOperandStackItems.IntegerConstantOperandStackItem;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
@@ -45,6 +45,6 @@ public final class ShortPushOpcodeParser extends AbstractThreeOpcodeParser
 	public void parse(@NotNull final OperandStack operandStack, @NotNull final CodeReader codeReader, @NotNull final Set<Character> lineNumbers, @NotNull final Map<Character, LocalVariableAtProgramCounter> localVariablesAtProgramCounter, @NotNull final RuntimeConstantPool runtimeConstantPool) throws InvalidOpcodeException, UnderflowInvalidOperandStackException, MismatchedTypeInvalidOperandStackException, OverflowInvalidOperandStackException, NotEnoughBytesInvalidOperandStackException
 	{
 		final short value = codeReader.readSigned16BitInteger();
-		operandStack.push(new ConstantIntegerOperandStackItem(value));
+		operandStack.push(new IntegerConstantOperandStackItem(value));
 	}
 }

@@ -22,12 +22,17 @@
 
 package com.stormmq.java.classfile.domain.attributes.code.operandStackItems.constantOperandStackItems;
 
-public final class DoubleConstantOperandStackItem implements ConstantOperandStackItem
+import com.stormmq.java.classfile.domain.attributes.code.operandStackItems.numericOperandStackItems.AbstractNumericOperandStackItem;
+
+import static com.stormmq.java.classfile.domain.attributes.code.typing.ComputationalCategory._double;
+
+public final class DoubleConstantOperandStackItem extends AbstractNumericOperandStackItem<Double> implements ConstantOperandStackItem
 {
 	private final double value;
 
 	public DoubleConstantOperandStackItem(final double value)
 	{
+		super(_double);
 		this.value = value;
 	}
 }

@@ -22,12 +22,17 @@
 
 package com.stormmq.java.classfile.domain.attributes.code.operandStackItems.constantOperandStackItems;
 
-public final class FloatConstantOperandStackItem implements ConstantOperandStackItem
+import com.stormmq.java.classfile.domain.attributes.code.operandStackItems.numericOperandStackItems.AbstractNumericOperandStackItem;
+
+import static com.stormmq.java.classfile.domain.attributes.code.typing.ComputationalCategory._float;
+
+public final class FloatConstantOperandStackItem extends AbstractNumericOperandStackItem<Float> implements ConstantOperandStackItem
 {
 	private final float value;
 
 	public FloatConstantOperandStackItem(final float value)
 	{
+		super(_float);
 		this.value = value;
 	}
 }

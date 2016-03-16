@@ -24,10 +24,9 @@ package com.stormmq.java.classfile.domain.attributes.code.opcodeParsers;
 
 import com.stormmq.java.classfile.domain.attributes.code.codeReaders.CodeReader;
 import com.stormmq.java.classfile.domain.attributes.code.constants.RuntimeConstantPool;
-import com.stormmq.java.classfile.domain.attributes.code.localVariables.LocalVariableAtProgramCounter;
-import com.stormmq.java.classfile.domain.attributes.code.operandStack.*;
 import com.stormmq.java.classfile.domain.attributes.code.invalidOperandStackExceptions.OverflowInvalidOperandStackException;
-import com.stormmq.java.classfile.domain.attributes.code.operandStackItems.constantOperandStackItems.ConstantOperandStackItem;
+import com.stormmq.java.classfile.domain.attributes.code.localVariables.LocalVariableAtProgramCounter;
+import com.stormmq.java.classfile.domain.attributes.code.operandStack.OperandStack;
 import com.stormmq.java.classfile.domain.attributes.code.operandStackItems.numericOperandStackItems.ConstantNumericOperandStackItem;
 import com.stormmq.java.classfile.domain.attributes.code.typing.ComputationalCategory;
 import org.jetbrains.annotations.NotNull;
@@ -37,22 +36,18 @@ import java.util.Set;
 
 public final class PushConstantOpcodeParser extends AbstractOneOpcodeParser
 {
-	@NotNull
-	public static <N extends Number> OpcodeParser pushConstantOpcodeParser(@NotNull final ComputationalCategory computationalCategory, @NotNull final N number)
-	{
-		return new PushConstantOpcodeParser(new ConstantNumericOperandStackItem<>(computationalCategory, number));
-	}
+	@NotNull private final ComputationalCategory computationalCategory;
+	@NotNull private final Number number;
 
-	@NotNull private final ConstantOperandStackItem constantOperandStackItem;
-
-	public PushConstantOpcodeParser(@NotNull final ConstantOperandStackItem constantOperandStackItem)
+	public PushConstantOpcodeParser(@NotNull final ComputationalCategory computationalCategory, @NotNull final Number number)
 	{
-		this.constantOperandStackItem = constantOperandStackItem;
+		this.computationalCategory = computationalCategory;
+		this.number = number;
 	}
 
 	@Override
 	public void parse(@NotNull final OperandStack operandStack, @NotNull final CodeReader codeReader, @NotNull final Set<Character> lineNumbers, @NotNull final Map<Character, LocalVariableAtProgramCounter> localVariablesAtProgramCounter, @NotNull final RuntimeConstantPool runtimeConstantPool) throws InvalidOpcodeException, OverflowInvalidOperandStackException
 	{
-		operandStack.push(constantOperandStackItem);
+		operandStack.push(new ConstantNumericOperandStackItem<>(computationalCategory, number));
 	}
 }

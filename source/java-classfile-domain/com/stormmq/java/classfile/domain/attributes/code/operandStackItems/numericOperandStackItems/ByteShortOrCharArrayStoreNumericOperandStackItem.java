@@ -20,18 +20,31 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-package com.stormmq.java.classfile.domain.attributes.code.operandStackItems.constantOperandStackItems;
+package com.stormmq.java.classfile.domain.attributes.code.operandStackItems.numericOperandStackItems;
 
-import com.stormmq.java.classfile.domain.attributes.code.operandStackItems.AbstractOperandStackItem;
 import com.stormmq.java.classfile.domain.attributes.code.operandStackItems.referenceOperandStackItems.ReferenceOperandStackItem;
+import com.stormmq.java.classfile.domain.attributes.code.typing.ByteCharOrShort;
+import com.stormmq.java.classfile.domain.attributes.code.typing.ComputationalCategory;
 import org.jetbrains.annotations.NotNull;
 
-public final class StringReferenceConstantOperandStackItem extends AbstractOperandStackItem implements ConstantOperandStackItem, ReferenceOperandStackItem
+public final class ByteShortOrCharArrayStoreNumericOperandStackItem extends AbstractNumericOperandStackItem<Integer>
 {
-	@NotNull private final String value;
+	@NotNull private final ByteCharOrShort byteCharOrShort;
+	@NotNull private final ReferenceOperandStackItem referenceOperandStackItem;
+	@NotNull private final NumericOperandStackItem<Integer> arrayIndex;
 
-	public StringReferenceConstantOperandStackItem(@NotNull final String value)
+	public ByteShortOrCharArrayStoreNumericOperandStackItem(@NotNull final ComputationalCategory computationalCategory, @NotNull final ByteCharOrShort byteCharOrShort, @NotNull final ReferenceOperandStackItem referenceOperandStackItem, @NotNull final NumericOperandStackItem<Integer> arrayIndex)
 	{
-		this.value = value;
+		super(computationalCategory);
+		this.byteCharOrShort = byteCharOrShort;
+		this.referenceOperandStackItem = referenceOperandStackItem;
+		this.arrayIndex = arrayIndex;
+	}
+
+	@SuppressWarnings("RefusedBequest")
+	@Override
+	protected boolean isAlreadyByteCharOrShort()
+	{
+		return true;
 	}
 }

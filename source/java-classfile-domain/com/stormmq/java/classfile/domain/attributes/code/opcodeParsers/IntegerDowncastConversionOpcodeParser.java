@@ -27,24 +27,33 @@ import com.stormmq.java.classfile.domain.attributes.code.constants.RuntimeConsta
 import com.stormmq.java.classfile.domain.attributes.code.invalidOperandStackExceptions.*;
 import com.stormmq.java.classfile.domain.attributes.code.localVariables.LocalVariableAtProgramCounter;
 import com.stormmq.java.classfile.domain.attributes.code.operandStack.OperandStack;
-import com.stormmq.java.classfile.domain.attributes.code.operandStackItems.constantOperandStackItems.IntegerConstantOperandStackItem;
+import com.stormmq.java.classfile.domain.attributes.code.operandStackItems.numericOperandStackItems.NumericOperandStackItem;
+import com.stormmq.java.classfile.domain.attributes.code.typing.ComputationalCategory;
+import com.stormmq.java.classfile.domain.attributes.code.typing.LocalVariableSimpleType;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
 import java.util.Set;
 
-public final class BytePushOpcodeParser extends AbstractTwoOpcodeParser
-{
-	@NotNull public static final OpcodeParser BytePush = new BytePushOpcodeParser();
+import static com.stormmq.java.classfile.domain.attributes.code.typing.ComputationalCategory._int;
 
-	private BytePushOpcodeParser()
+public class IntegerDowncastConversionOpcodeParser extends AbstractOneOpcodeParser
+{
+	@NotNull private final LocalVariableSimpleType to;
+
+	public IntegerDowncastConversionOpcodeParser(@NotNull final LocalVariableSimpleType to)
 	{
+		if (to.isNotByteCharOrShort)
+		{
+			throw new IllegalArgumentException("to is not byte, char or short");
+		}
+		this.to = to;
 	}
 
 	@Override
 	public void parse(@NotNull final OperandStack operandStack, @NotNull final CodeReader codeReader, @NotNull final Set<Character> lineNumbers, @NotNull final Map<Character, LocalVariableAtProgramCounter> localVariablesAtProgramCounter, @NotNull final RuntimeConstantPool runtimeConstantPool) throws InvalidOpcodeException, UnderflowInvalidOperandStackException, MismatchedTypeInvalidOperandStackException, OverflowInvalidOperandStackException, NotEnoughBytesInvalidOperandStackException
 	{
-		final byte value = codeReader.readSignedBBitInteger();
-		operandStack.push(new IntegerConstantOperandStackItem(value));
+		final NumericOperandStackItem<?> currentNumeric = operandStack.popNumeric(_int);
+		operandStack.pushWithCertainty(currentNumeric.convert(to));
 	}
 }

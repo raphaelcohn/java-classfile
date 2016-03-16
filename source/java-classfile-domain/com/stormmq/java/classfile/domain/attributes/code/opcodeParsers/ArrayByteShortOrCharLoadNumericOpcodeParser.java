@@ -27,24 +27,32 @@ import com.stormmq.java.classfile.domain.attributes.code.constants.RuntimeConsta
 import com.stormmq.java.classfile.domain.attributes.code.invalidOperandStackExceptions.*;
 import com.stormmq.java.classfile.domain.attributes.code.localVariables.LocalVariableAtProgramCounter;
 import com.stormmq.java.classfile.domain.attributes.code.operandStack.OperandStack;
-import com.stormmq.java.classfile.domain.attributes.code.operandStackItems.constantOperandStackItems.IntegerConstantOperandStackItem;
+import com.stormmq.java.classfile.domain.attributes.code.operandStackItems.numericOperandStackItems.ByteShortOrCharArrayLoadNumericOperandStackItem;
+import com.stormmq.java.classfile.domain.attributes.code.operandStackItems.numericOperandStackItems.NumericOperandStackItem;
+import com.stormmq.java.classfile.domain.attributes.code.operandStackItems.referenceOperandStackItems.ReferenceOperandStackItem;
+import com.stormmq.java.classfile.domain.attributes.code.typing.ByteCharOrShort;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
 import java.util.Set;
 
-public final class BytePushOpcodeParser extends AbstractTwoOpcodeParser
-{
-	@NotNull public static final OpcodeParser BytePush = new BytePushOpcodeParser();
+import static com.stormmq.java.classfile.domain.attributes.code.typing.ComputationalCategory._int;
 
-	private BytePushOpcodeParser()
+public final class ArrayByteShortOrCharLoadNumericOpcodeParser extends AbstractOneOpcodeParser
+{
+	@NotNull private final ByteCharOrShort byteCharOrShort;
+
+	public ArrayByteShortOrCharLoadNumericOpcodeParser(@NotNull final ByteCharOrShort byteCharOrShort)
 	{
+		this.byteCharOrShort = byteCharOrShort;
 	}
 
 	@Override
 	public void parse(@NotNull final OperandStack operandStack, @NotNull final CodeReader codeReader, @NotNull final Set<Character> lineNumbers, @NotNull final Map<Character, LocalVariableAtProgramCounter> localVariablesAtProgramCounter, @NotNull final RuntimeConstantPool runtimeConstantPool) throws InvalidOpcodeException, UnderflowInvalidOperandStackException, MismatchedTypeInvalidOperandStackException, OverflowInvalidOperandStackException, NotEnoughBytesInvalidOperandStackException
 	{
-		final byte value = codeReader.readSignedBBitInteger();
-		operandStack.push(new IntegerConstantOperandStackItem(value));
+		final NumericOperandStackItem<Integer> index = operandStack.popNumeric(_int);
+		final ReferenceOperandStackItem arrayReference = operandStack.popReference();
+		final NumericOperandStackItem<Integer> result = new ByteShortOrCharArrayLoadNumericOperandStackItem(_int, byteCharOrShort, arrayReference, index);
+		operandStack.pushWithCertainty(result);
 	}
 }

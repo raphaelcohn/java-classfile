@@ -20,20 +20,21 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-package com.stormmq.java.classfile.domain.attributes.code.operandStackItems.referenceOperandStackItems;
+package com.stormmq.java.classfile.domain.attributes.code.operandStackItems.numericOperandStackItems;
 
-import com.stormmq.java.classfile.domain.attributes.code.localVariables.LocalVariableAtProgramCounter;
-import com.stormmq.java.classfile.domain.attributes.code.operandStackItems.AbstractOperandStackItem;
-import org.jetbrains.annotations.Nullable;
+import com.stormmq.java.classfile.domain.attributes.code.operandStackItems.referenceOperandStackItems.ReferenceOperandStackItem;
+import com.stormmq.java.classfile.domain.attributes.code.typing.ComputationalCategory;
+import org.jetbrains.annotations.NotNull;
 
-public final class LoadReferenceLocalVariableOperandStackItem extends AbstractOperandStackItem implements ReferenceOperandStackItem
+public final class ArrayLoadNumericOperandStackItem<N extends Number> extends AbstractNumericOperandStackItem<N>
 {
-	private final char localVariableIndex;
-	@Nullable private final LocalVariableAtProgramCounter localVariableAtProgramCounter;
+	@NotNull private final ReferenceOperandStackItem referenceOperandStackItem;
+	@NotNull private final NumericOperandStackItem<N> arrayIndex;
 
-	public LoadReferenceLocalVariableOperandStackItem(final char localVariableIndex, @Nullable final LocalVariableAtProgramCounter localVariableAtProgramCounter)
+	public ArrayLoadNumericOperandStackItem(@NotNull final ComputationalCategory computationalCategory, @NotNull final ReferenceOperandStackItem referenceOperandStackItem, @NotNull final NumericOperandStackItem<N> arrayIndex)
 	{
-		this.localVariableIndex = localVariableIndex;
-		this.localVariableAtProgramCounter = localVariableAtProgramCounter;
+		super(computationalCategory);
+		this.referenceOperandStackItem = referenceOperandStackItem;
+		this.arrayIndex = arrayIndex;
 	}
 }

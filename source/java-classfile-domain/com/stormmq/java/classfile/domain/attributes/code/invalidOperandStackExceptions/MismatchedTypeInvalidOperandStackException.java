@@ -30,8 +30,13 @@ import static com.stormmq.java.parsing.utilities.string.StringUtilities.aOrAn;
 
 public final class MismatchedTypeInvalidOperandStackException extends InvalidOperandStackException
 {
+	public MismatchedTypeInvalidOperandStackException(@NotNull @NonNls final String message)
+	{
+		super(message);
+	}
+
 	public MismatchedTypeInvalidOperandStackException(@NotNull @NonNls final ComputationalCategory computationalCategory, @NotNull @NonNls final String leftHandMessage)
 	{
-		super(leftHandMessage + aOrAn(computationalCategory.actualName) + " '" + computationalCategory.actualName + '\'');
+		this(leftHandMessage + aOrAn(computationalCategory.actualName) + " '" + computationalCategory.actualName + '\'');
 	}
 }

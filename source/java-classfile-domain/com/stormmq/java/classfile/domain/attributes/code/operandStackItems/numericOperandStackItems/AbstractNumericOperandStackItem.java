@@ -23,13 +23,15 @@
 package com.stormmq.java.classfile.domain.attributes.code.operandStackItems.numericOperandStackItems;
 
 import com.stormmq.java.classfile.domain.attributes.code.invalidOperandStackExceptions.MismatchedTypeInvalidOperandStackException;
+import com.stormmq.java.classfile.domain.attributes.code.operandStackItems.AbstractOperandStackItem;
 import com.stormmq.java.classfile.domain.attributes.code.operandStackItems.operations.*;
+import com.stormmq.java.classfile.domain.attributes.code.typing.ByteCharOrShort;
 import com.stormmq.java.classfile.domain.attributes.code.typing.ComputationalCategory;
 import org.jetbrains.annotations.NotNull;
 
 import static com.stormmq.java.classfile.domain.attributes.code.typing.ComputationalCategory._int;
 
-public abstract class AbstractNumericOperandStackItem<N extends Number> implements NumericOperandStackItem<N>
+public abstract class AbstractNumericOperandStackItem<N extends Number> extends AbstractOperandStackItem implements NumericOperandStackItem<N>
 {
 	@NotNull private final ComputationalCategory computationalCategory;
 
@@ -72,7 +74,7 @@ public abstract class AbstractNumericOperandStackItem<N extends Number> implemen
 	{
 		if (computationalCategory.isNotIntegerNumber)
 		{
-			throw new IllegalArgumentException("this computationalCategory is not integer number");
+			throw new IllegalArgumentException("this computationalCategory is not an integer number");
 		}
 		if (right.isNotOfComputationalCategory(_int))
 		{
@@ -80,4 +82,47 @@ public abstract class AbstractNumericOperandStackItem<N extends Number> implemen
 		}
 		return new IntegerBitOperationNumericOperandStackItem<>(computationalCategory, this, integerBitOperation, right);
 	}
+
+	@NotNull
+	@Override
+	public final <O extends Number> NumericOperandStackItem<O> convert(@NotNull final ComputationalCategory computationalCategory)
+	{
+		if (computationalCategory.isNotNumeric)
+		{
+			throw new IllegalArgumentException("computationalCategory is not numeric for conversion");
+		}
+		if (computationalCategory == this.computationalCategory)
+		{
+			throw new IllegalArgumentException("computationalCategory must not match");
+		}
+		return new ConvertedNumericOperandStackItem<>(computationalCategory, this);
+	}
+
+	@SuppressWarnings("unchecked")
+	@NotNull
+	@Override
+	public final NumericOperandStackItem<Integer> convert(@NotNull final ByteCharOrShort to) throws MismatchedTypeInvalidOperandStackException
+	{
+		if (computationalCategory != _int)
+		{
+			throw new IllegalArgumentException("this computationalCategory is not a 32-bit integer number");
+		}
+		if (isAlreadyByteCharOrShort())
+		{
+			throw new MismatchedTypeInvalidOperandStackException("Can not convert an already converted type");
+		}
+		return new FromSub32BitIntegerNumericOperandStackItem(_int, to, (NumericOperandStackItem<Integer>) this);
+	}
+
+	protected boolean isAlreadyByteCharOrShort()
+	{
+		return false;
+	}
+
+	@Override
+	public final boolean isCategory1()
+	{
+		return computationalCategory.isCategory1;
+	}
+
 }

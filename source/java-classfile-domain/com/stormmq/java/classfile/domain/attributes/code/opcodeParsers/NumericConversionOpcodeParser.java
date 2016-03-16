@@ -27,24 +27,40 @@ import com.stormmq.java.classfile.domain.attributes.code.constants.RuntimeConsta
 import com.stormmq.java.classfile.domain.attributes.code.invalidOperandStackExceptions.*;
 import com.stormmq.java.classfile.domain.attributes.code.localVariables.LocalVariableAtProgramCounter;
 import com.stormmq.java.classfile.domain.attributes.code.operandStack.OperandStack;
-import com.stormmq.java.classfile.domain.attributes.code.operandStackItems.constantOperandStackItems.IntegerConstantOperandStackItem;
+import com.stormmq.java.classfile.domain.attributes.code.operandStackItems.numericOperandStackItems.NumericOperandStackItem;
+import com.stormmq.java.classfile.domain.attributes.code.typing.ComputationalCategory;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
 import java.util.Set;
 
-public final class BytePushOpcodeParser extends AbstractTwoOpcodeParser
+public class NumericConversionOpcodeParser extends AbstractOneOpcodeParser
 {
-	@NotNull public static final OpcodeParser BytePush = new BytePushOpcodeParser();
+	@NotNull private final ComputationalCategory from;
+	@NotNull private final ComputationalCategory to;
 
-	private BytePushOpcodeParser()
+	public NumericConversionOpcodeParser(@NotNull final ComputationalCategory from, @NotNull final ComputationalCategory to)
 	{
+		if (from == to)
+		{
+			throw new IllegalArgumentException("from and to are the same");
+		}
+		if (from.isNotNumeric)
+		{
+			throw new IllegalArgumentException("from is not numeric");
+		}
+		if (to.isNotNumeric)
+		{
+			throw new IllegalArgumentException("to is not numeric");
+		}
+		this.from = from;
+		this.to = to;
 	}
 
 	@Override
 	public void parse(@NotNull final OperandStack operandStack, @NotNull final CodeReader codeReader, @NotNull final Set<Character> lineNumbers, @NotNull final Map<Character, LocalVariableAtProgramCounter> localVariablesAtProgramCounter, @NotNull final RuntimeConstantPool runtimeConstantPool) throws InvalidOpcodeException, UnderflowInvalidOperandStackException, MismatchedTypeInvalidOperandStackException, OverflowInvalidOperandStackException, NotEnoughBytesInvalidOperandStackException
 	{
-		final byte value = codeReader.readSignedBBitInteger();
-		operandStack.push(new IntegerConstantOperandStackItem(value));
+		final NumericOperandStackItem<?> currentNumeric = operandStack.popNumeric(from);
+		operandStack.pushWithCertainty(currentNumeric.convert(to));
 	}
 }

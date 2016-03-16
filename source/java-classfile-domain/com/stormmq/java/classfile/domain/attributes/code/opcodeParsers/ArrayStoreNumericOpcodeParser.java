@@ -27,10 +27,10 @@ import com.stormmq.java.classfile.domain.attributes.code.constants.RuntimeConsta
 import com.stormmq.java.classfile.domain.attributes.code.invalidOperandStackExceptions.*;
 import com.stormmq.java.classfile.domain.attributes.code.localVariables.LocalVariableAtProgramCounter;
 import com.stormmq.java.classfile.domain.attributes.code.operandStack.OperandStack;
-import com.stormmq.java.classfile.domain.attributes.code.operandStackItems.numericOperandStackItems.ByteShortOrCharArrayNumericOperandStackItem;
+import com.stormmq.java.classfile.domain.attributes.code.operandStackItems.numericOperandStackItems.ArrayStoreNumericOperandStackItem;
 import com.stormmq.java.classfile.domain.attributes.code.operandStackItems.numericOperandStackItems.NumericOperandStackItem;
 import com.stormmq.java.classfile.domain.attributes.code.operandStackItems.referenceOperandStackItems.ReferenceOperandStackItem;
-import com.stormmq.java.classfile.domain.attributes.code.typing.LocalVariableSimpleType;
+import com.stormmq.java.classfile.domain.attributes.code.typing.ComputationalCategory;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
@@ -38,13 +38,13 @@ import java.util.Set;
 
 import static com.stormmq.java.classfile.domain.attributes.code.typing.ComputationalCategory._int;
 
-public final class ArrayByteShortOrCharNumericOpcodeParser extends AbstractOneOpcodeParser
+public final class ArrayStoreNumericOpcodeParser extends AbstractOneOpcodeParser
 {
-	@NotNull private final LocalVariableSimpleType localVariableSimpleType;
+	@NotNull private final ComputationalCategory computationalCategory;
 
-	public ArrayByteShortOrCharNumericOpcodeParser(@NotNull final LocalVariableSimpleType localVariableSimpleType)
+	public ArrayStoreNumericOpcodeParser(@NotNull final ComputationalCategory computationalCategory)
 	{
-		this.localVariableSimpleType = localVariableSimpleType;
+		this.computationalCategory = computationalCategory;
 	}
 
 	@Override
@@ -52,7 +52,7 @@ public final class ArrayByteShortOrCharNumericOpcodeParser extends AbstractOneOp
 	{
 		final NumericOperandStackItem<Integer> index = operandStack.popNumeric(_int);
 		final ReferenceOperandStackItem arrayReference = operandStack.popReference();
-		final NumericOperandStackItem<Integer> result = new ByteShortOrCharArrayNumericOperandStackItem<>(_int, localVariableSimpleType, arrayReference, index);
+		final NumericOperandStackItem<?> result = new ArrayStoreNumericOperandStackItem<>(computationalCategory, arrayReference, index);
 		operandStack.pushWithCertainty(result);
 	}
 }

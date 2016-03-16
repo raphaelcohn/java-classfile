@@ -37,6 +37,12 @@ import java.util.Set;
 
 public final class LocalVariableIntegerIncrementOpcodeParser extends AbstractThreeOpcodeParser
 {
+	@NotNull public static final OpcodeParser LocalVariableIntegerIncrement = new LocalVariableIntegerIncrementOpcodeParser();
+
+	private LocalVariableIntegerIncrementOpcodeParser()
+	{
+	}
+
 	@Override
 	public void parse(@NotNull final OperandStack operandStack, @NotNull final CodeReader codeReader, @NotNull final Set<Character> lineNumbers, @NotNull final Map<Character, LocalVariableAtProgramCounter> localVariablesAtProgramCounter, @NotNull final RuntimeConstantPool runtimeConstantPool) throws InvalidOpcodeException, NotEnoughBytesInvalidOperandStackException
 	{

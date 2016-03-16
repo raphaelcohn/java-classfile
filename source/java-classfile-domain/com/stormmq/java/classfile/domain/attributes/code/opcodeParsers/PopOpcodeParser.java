@@ -27,24 +27,22 @@ import com.stormmq.java.classfile.domain.attributes.code.constants.RuntimeConsta
 import com.stormmq.java.classfile.domain.attributes.code.invalidOperandStackExceptions.*;
 import com.stormmq.java.classfile.domain.attributes.code.localVariables.LocalVariableAtProgramCounter;
 import com.stormmq.java.classfile.domain.attributes.code.operandStack.OperandStack;
-import com.stormmq.java.classfile.domain.attributes.code.operandStackItems.constantOperandStackItems.IntegerConstantOperandStackItem;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
 import java.util.Set;
 
-public final class BytePushOpcodeParser extends AbstractTwoOpcodeParser
+public final class PopOpcodeParser extends AbstractOneOpcodeParser
 {
-	@NotNull public static final OpcodeParser BytePush = new BytePushOpcodeParser();
+	@NotNull public static final OpcodeParser Pop = new PopOpcodeParser();
 
-	private BytePushOpcodeParser()
+	private PopOpcodeParser()
 	{
 	}
 
 	@Override
 	public void parse(@NotNull final OperandStack operandStack, @NotNull final CodeReader codeReader, @NotNull final Set<Character> lineNumbers, @NotNull final Map<Character, LocalVariableAtProgramCounter> localVariablesAtProgramCounter, @NotNull final RuntimeConstantPool runtimeConstantPool) throws InvalidOpcodeException, UnderflowInvalidOperandStackException, MismatchedTypeInvalidOperandStackException, OverflowInvalidOperandStackException, NotEnoughBytesInvalidOperandStackException
 	{
-		final byte value = codeReader.readSignedBBitInteger();
-		operandStack.push(new IntegerConstantOperandStackItem(value));
+		operandStack.popCategory1ComputationalType();
 	}
 }
