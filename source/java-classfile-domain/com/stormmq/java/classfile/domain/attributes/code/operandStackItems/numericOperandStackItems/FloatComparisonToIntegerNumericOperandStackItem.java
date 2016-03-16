@@ -20,21 +20,23 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-package com.stormmq.java.classfile.domain.attributes.code.codeReaders;
+package com.stormmq.java.classfile.domain.attributes.code.operandStackItems.numericOperandStackItems;
 
-import com.stormmq.java.classfile.domain.attributes.code.invalidOperandStackExceptions.NotEnoughBytesInvalidOperandStackException;
+import org.jetbrains.annotations.NotNull;
 
-public interface CodeReader
+import static com.stormmq.java.classfile.domain.attributes.code.typing.ComputationalCategory._int;
+
+public final class FloatComparisonToIntegerNumericOperandStackItem extends AbstractNumericOperandStackItem<Integer>
 {
-	int ByteMask = 0xFF;
+	@NotNull private final NumericOperandStackItem<Float> left;
+	@NotNull private final NumericOperandStackItem<Float> right;
+	private final int nanValue;
 
-	byte readSignedBBitInteger() throws NotEnoughBytesInvalidOperandStackException;
-
-	short readUnsigned8BitInteger() throws NotEnoughBytesInvalidOperandStackException;
-
-	char readBigEndianUnsigned16BitInteger() throws NotEnoughBytesInvalidOperandStackException;
-
-	short readBigEndianSigned16BitInteger() throws NotEnoughBytesInvalidOperandStackException;
-
-	int readBigEndianSigned32BitInteger() throws NotEnoughBytesInvalidOperandStackException;
+	public FloatComparisonToIntegerNumericOperandStackItem(@NotNull final NumericOperandStackItem<Float> left, @NotNull final NumericOperandStackItem<Float> right, final int nanValue)
+	{
+		super(_int);
+		this.left = left;
+		this.right = right;
+		this.nanValue = nanValue;
+	}
 }

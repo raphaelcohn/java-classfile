@@ -20,21 +20,29 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-package com.stormmq.java.classfile.domain.attributes.code.codeReaders;
+package com.stormmq.java.classfile.domain.attributes.code.operandStackItems.comparisons;
 
-import com.stormmq.java.classfile.domain.attributes.code.invalidOperandStackExceptions.NotEnoughBytesInvalidOperandStackException;
+import com.stormmq.java.classfile.domain.attributes.code.operandStackItems.AbstractOperandStackItem;
+import com.stormmq.java.classfile.domain.attributes.code.operandStackItems.DoNothingOperandStackItem;
+import com.stormmq.java.classfile.domain.attributes.code.operandStackItems.referenceOperandStackItems.ReferenceOperandStackItem;
+import org.jetbrains.annotations.NotNull;
 
-public interface CodeReader
+public final class IfNullOperandStackItem extends AbstractOperandStackItem implements DoNothingOperandStackItem
 {
-	int ByteMask = 0xFF;
+	@NotNull private final ReferenceOperandStackItem left;
+	private final boolean isNull;
+	private final short branch;
 
-	byte readSignedBBitInteger() throws NotEnoughBytesInvalidOperandStackException;
+	public IfNullOperandStackItem(@NotNull final ReferenceOperandStackItem left, final boolean isNull, final short branch)
+	{
+		this.left = left;
+		this.isNull = isNull;
+		this.branch = branch;
+	}
 
-	short readUnsigned8BitInteger() throws NotEnoughBytesInvalidOperandStackException;
-
-	char readBigEndianUnsigned16BitInteger() throws NotEnoughBytesInvalidOperandStackException;
-
-	short readBigEndianSigned16BitInteger() throws NotEnoughBytesInvalidOperandStackException;
-
-	int readBigEndianSigned32BitInteger() throws NotEnoughBytesInvalidOperandStackException;
+	@Override
+	public boolean isCategory1()
+	{
+		return false;
+	}
 }

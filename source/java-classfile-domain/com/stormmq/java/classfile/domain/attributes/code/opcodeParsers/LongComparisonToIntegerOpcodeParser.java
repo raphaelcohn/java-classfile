@@ -27,24 +27,22 @@ import com.stormmq.java.classfile.domain.attributes.code.constants.RuntimeConsta
 import com.stormmq.java.classfile.domain.attributes.code.invalidOperandStackExceptions.*;
 import com.stormmq.java.classfile.domain.attributes.code.localVariables.LocalVariableAtProgramCounter;
 import com.stormmq.java.classfile.domain.attributes.code.operandStack.OperandStack;
-import com.stormmq.java.classfile.domain.attributes.code.operandStackItems.constantOperandStackItems.IntegerConstantOperandStackItem;
+import com.stormmq.java.classfile.domain.attributes.code.operandStackItems.numericOperandStackItems.LongComparisonToIntegerNumericOperandStackItem;
+import com.stormmq.java.classfile.domain.attributes.code.operandStackItems.numericOperandStackItems.NumericOperandStackItem;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
 import java.util.Set;
 
-public final class ShortPushOpcodeParser extends AbstractThreeOpcodeParser
+import static com.stormmq.java.classfile.domain.attributes.code.typing.ComputationalCategory._int;
+
+public final class LongComparisonToIntegerOpcodeParser extends AbstractOneOpcodeParser
 {
-	@NotNull public static final OpcodeParser ShortPush = new ShortPushOpcodeParser();
-
-	private ShortPushOpcodeParser()
-	{
-	}
-
 	@Override
 	public void parse(@NotNull final OperandStack operandStack, @NotNull final CodeReader codeReader, @NotNull final Set<Character> lineNumbers, @NotNull final Map<Character, LocalVariableAtProgramCounter> localVariablesAtProgramCounter, @NotNull final RuntimeConstantPool runtimeConstantPool) throws InvalidOpcodeException, UnderflowInvalidOperandStackException, MismatchedTypeInvalidOperandStackException, OverflowInvalidOperandStackException, NotEnoughBytesInvalidOperandStackException
 	{
-		final short value = codeReader.readBigEndianSigned16BitInteger();
-		operandStack.push(new IntegerConstantOperandStackItem(value));
+		final NumericOperandStackItem<Long> value2 = operandStack.popNumeric(_int);
+		final NumericOperandStackItem<Long> value1 = operandStack.popNumeric(_int);
+		operandStack.pushWithCertainty(new LongComparisonToIntegerNumericOperandStackItem(value1, value2));
 	}
 }

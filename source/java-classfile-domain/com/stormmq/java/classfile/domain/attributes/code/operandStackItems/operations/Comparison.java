@@ -20,21 +20,15 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-package com.stormmq.java.classfile.domain.attributes.code.codeReaders;
+package com.stormmq.java.classfile.domain.attributes.code.operandStackItems.operations;
 
-import com.stormmq.java.classfile.domain.attributes.code.invalidOperandStackExceptions.NotEnoughBytesInvalidOperandStackException;
-
-public interface CodeReader
+public enum Comparison
 {
-	int ByteMask = 0xFF;
-
-	byte readSignedBBitInteger() throws NotEnoughBytesInvalidOperandStackException;
-
-	short readUnsigned8BitInteger() throws NotEnoughBytesInvalidOperandStackException;
-
-	char readBigEndianUnsigned16BitInteger() throws NotEnoughBytesInvalidOperandStackException;
-
-	short readBigEndianSigned16BitInteger() throws NotEnoughBytesInvalidOperandStackException;
-
-	int readBigEndianSigned32BitInteger() throws NotEnoughBytesInvalidOperandStackException;
+	equal,
+	notEqual,
+	lessThan,
+	greaterThanOrEqual,
+	greaterThan,
+	lessThanOrEqual,
+	;
 }

@@ -22,6 +22,6 @@
 
 package com.stormmq.java.classfile.domain.attributes.code.operandStackItems;
 
-public interface DoNothingOperandStackItem
+public interface DoNothingOperandStackItem extends OperandStackItem
 {
 }

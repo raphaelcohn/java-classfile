@@ -27,24 +27,31 @@ import com.stormmq.java.classfile.domain.attributes.code.constants.RuntimeConsta
 import com.stormmq.java.classfile.domain.attributes.code.invalidOperandStackExceptions.*;
 import com.stormmq.java.classfile.domain.attributes.code.localVariables.LocalVariableAtProgramCounter;
 import com.stormmq.java.classfile.domain.attributes.code.operandStack.OperandStack;
-import com.stormmq.java.classfile.domain.attributes.code.operandStackItems.constantOperandStackItems.IntegerConstantOperandStackItem;
+import com.stormmq.java.classfile.domain.attributes.code.operandStackItems.comparisons.IntegerIfZeroOperandStackItem;
+import com.stormmq.java.classfile.domain.attributes.code.operandStackItems.numericOperandStackItems.NumericOperandStackItem;
+import com.stormmq.java.classfile.domain.attributes.code.operandStackItems.operations.Comparison;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
 import java.util.Set;
 
-public final class ShortPushOpcodeParser extends AbstractThreeOpcodeParser
-{
-	@NotNull public static final OpcodeParser ShortPush = new ShortPushOpcodeParser();
+import static com.stormmq.java.classfile.domain.attributes.code.typing.ComputationalCategory._int;
 
-	private ShortPushOpcodeParser()
+public final class IntegerIfZeroOpcodeParser extends AbstractThreeOpcodeParser
+{
+	@NotNull private final Comparison comparison;
+
+	public IntegerIfZeroOpcodeParser(@NotNull final Comparison comparison)
 	{
+		this.comparison = comparison;
 	}
 
 	@Override
 	public void parse(@NotNull final OperandStack operandStack, @NotNull final CodeReader codeReader, @NotNull final Set<Character> lineNumbers, @NotNull final Map<Character, LocalVariableAtProgramCounter> localVariablesAtProgramCounter, @NotNull final RuntimeConstantPool runtimeConstantPool) throws InvalidOpcodeException, UnderflowInvalidOperandStackException, MismatchedTypeInvalidOperandStackException, OverflowInvalidOperandStackException, NotEnoughBytesInvalidOperandStackException
 	{
-		final short value = codeReader.readBigEndianSigned16BitInteger();
-		operandStack.push(new IntegerConstantOperandStackItem(value));
+		final short branch = codeReader.readBigEndianSigned16BitInteger();
+
+		final NumericOperandStackItem<Integer> value = operandStack.popNumeric(_int);
+		operandStack.unchanged(new IntegerIfZeroOperandStackItem(value, comparison, branch));
 	}
 }

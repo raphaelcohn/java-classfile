@@ -27,24 +27,29 @@ import com.stormmq.java.classfile.domain.attributes.code.constants.RuntimeConsta
 import com.stormmq.java.classfile.domain.attributes.code.invalidOperandStackExceptions.*;
 import com.stormmq.java.classfile.domain.attributes.code.localVariables.LocalVariableAtProgramCounter;
 import com.stormmq.java.classfile.domain.attributes.code.operandStack.OperandStack;
-import com.stormmq.java.classfile.domain.attributes.code.operandStackItems.constantOperandStackItems.IntegerConstantOperandStackItem;
+import com.stormmq.java.classfile.domain.attributes.code.operandStackItems.numericOperandStackItems.DoubleComparisonToIntegerNumericOperandStackItem;
+import com.stormmq.java.classfile.domain.attributes.code.operandStackItems.numericOperandStackItems.NumericOperandStackItem;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
 import java.util.Set;
 
-public final class ShortPushOpcodeParser extends AbstractThreeOpcodeParser
-{
-	@NotNull public static final OpcodeParser ShortPush = new ShortPushOpcodeParser();
+import static com.stormmq.java.classfile.domain.attributes.code.typing.ComputationalCategory._double;
 
-	private ShortPushOpcodeParser()
+public final class DoubleComparisonToIntegerOpcodeParser extends AbstractOneOpcodeParser
+{
+	private final int nanValue;
+
+	public DoubleComparisonToIntegerOpcodeParser(final int nanValue)
 	{
+		this.nanValue = nanValue;
 	}
 
 	@Override
 	public void parse(@NotNull final OperandStack operandStack, @NotNull final CodeReader codeReader, @NotNull final Set<Character> lineNumbers, @NotNull final Map<Character, LocalVariableAtProgramCounter> localVariablesAtProgramCounter, @NotNull final RuntimeConstantPool runtimeConstantPool) throws InvalidOpcodeException, UnderflowInvalidOperandStackException, MismatchedTypeInvalidOperandStackException, OverflowInvalidOperandStackException, NotEnoughBytesInvalidOperandStackException
 	{
-		final short value = codeReader.readBigEndianSigned16BitInteger();
-		operandStack.push(new IntegerConstantOperandStackItem(value));
+		final NumericOperandStackItem<Double> value2 = operandStack.popNumeric(_double);
+		final NumericOperandStackItem<Double> value1 = operandStack.popNumeric(_double);
+		operandStack.pushWithCertainty(new DoubleComparisonToIntegerNumericOperandStackItem(value1, value2, nanValue));
 	}
 }

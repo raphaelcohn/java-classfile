@@ -64,7 +64,7 @@ public final class ByteBufferCodeReader implements CodeReader
 	}
 
 	@Override
-	public short readSigned16BitInteger() throws NotEnoughBytesInvalidOperandStackException
+	public short readBigEndianSigned16BitInteger() throws NotEnoughBytesInvalidOperandStackException
 	{
 		try
 		{
@@ -73,6 +73,19 @@ public final class ByteBufferCodeReader implements CodeReader
 		catch (final BufferUnderflowException e)
 		{
 			throw new NotEnoughBytesInvalidOperandStackException(2, e);
+		}
+	}
+
+	@Override
+	public int readBigEndianSigned32BitInteger() throws NotEnoughBytesInvalidOperandStackException
+	{
+		try
+		{
+			return code.getInt();
+		}
+		catch (final BufferUnderflowException e)
+		{
+			throw new NotEnoughBytesInvalidOperandStackException(4, e);
 		}
 	}
 }

@@ -55,6 +55,7 @@ import static com.stormmq.java.classfile.domain.attributes.code.opcodeParsers.Sw
 import static com.stormmq.java.classfile.domain.attributes.code.opcodeParsers.UnaryOperationOpcodeParser.unaryOperationOpcodeParser;
 import static com.stormmq.java.classfile.domain.attributes.code.operandStackItems.constantOperandStackItems.NullReferenceConstantOperandStackItem.NullConstant;
 import static com.stormmq.java.classfile.domain.attributes.code.operandStackItems.operations.BinaryOperation.*;
+import static com.stormmq.java.classfile.domain.attributes.code.operandStackItems.operations.Comparison.*;
 import static com.stormmq.java.classfile.domain.attributes.code.operandStackItems.operations.IntegerBitOperation.*;
 import static com.stormmq.java.classfile.domain.attributes.code.operandStackItems.operations.UnaryOperation.negate;
 import static com.stormmq.java.classfile.domain.attributes.code.typing.ComputationalCategory._double;
@@ -882,6 +883,25 @@ public interface OpcodeParser
 	@SuppressWarnings("MethodCanBeVariableArityMethod")
 	static void comparisons(@NotNull final OpcodeParser[] opcodeParsers)
 	{
+		opcodeParsers[lcmp] = new LongComparisonToIntegerOpcodeParser();
+		opcodeParsers[fcmpl] = new FloatComparisonToIntegerOpcodeParser(-1);
+		opcodeParsers[fcmpg] = new FloatComparisonToIntegerOpcodeParser(1);
+		opcodeParsers[dcmpl] = new DoubleComparisonToIntegerOpcodeParser(-1);
+		opcodeParsers[dcmpg] = new DoubleComparisonToIntegerOpcodeParser(1);
+		opcodeParsers[ifeq] = new IntegerIfZeroOpcodeParser(equal);
+		opcodeParsers[ifne] = new IntegerIfZeroOpcodeParser(notEqual);
+		opcodeParsers[iflt] = new IntegerIfZeroOpcodeParser(lessThan);
+		opcodeParsers[ifge] = new IntegerIfZeroOpcodeParser(greaterThanOrEqual);
+		opcodeParsers[ifgt] = new IntegerIfZeroOpcodeParser(greaterThan);
+		opcodeParsers[ifle] = new IntegerIfZeroOpcodeParser(lessThanOrEqual);
+		opcodeParsers[if_icmpeq] = new IntegerIfOpcodeParser(equal);
+		opcodeParsers[if_icmpne] = new IntegerIfOpcodeParser(notEqual);
+		opcodeParsers[if_icmplt] = new IntegerIfOpcodeParser(lessThan);
+		opcodeParsers[if_icmpge] = new IntegerIfOpcodeParser(greaterThanOrEqual);
+		opcodeParsers[if_icmpgt] = new IntegerIfOpcodeParser(greaterThan);
+		opcodeParsers[if_icmple] = new IntegerIfOpcodeParser(lessThanOrEqual);
+		opcodeParsers[if_acmpeq] = new ReferenceIfOpcodeParser(true);
+		opcodeParsers[if_acmpne] = new ReferenceIfOpcodeParser(false);
 	}
 
 	@SuppressWarnings("MethodCanBeVariableArityMethod")
@@ -897,6 +917,12 @@ public interface OpcodeParser
 	@SuppressWarnings("MethodCanBeVariableArityMethod")
 	static void extended(@NotNull final OpcodeParser[] opcodeParsers)
 	{
+
+
+		opcodeParsers[ifnull] = new IfNullOpcodeParser(true);
+		opcodeParsers[ifnonnull] = new IfNullOpcodeParser(true);
+
+
 	}
 
 	@SuppressWarnings("MethodCanBeVariableArityMethod")

@@ -27,24 +27,28 @@ import com.stormmq.java.classfile.domain.attributes.code.constants.RuntimeConsta
 import com.stormmq.java.classfile.domain.attributes.code.invalidOperandStackExceptions.*;
 import com.stormmq.java.classfile.domain.attributes.code.localVariables.LocalVariableAtProgramCounter;
 import com.stormmq.java.classfile.domain.attributes.code.operandStack.OperandStack;
-import com.stormmq.java.classfile.domain.attributes.code.operandStackItems.constantOperandStackItems.IntegerConstantOperandStackItem;
+import com.stormmq.java.classfile.domain.attributes.code.operandStackItems.comparisons.IfNullOperandStackItem;
+import com.stormmq.java.classfile.domain.attributes.code.operandStackItems.referenceOperandStackItems.ReferenceOperandStackItem;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
 import java.util.Set;
 
-public final class ShortPushOpcodeParser extends AbstractThreeOpcodeParser
+public final class IfNullOpcodeParser extends AbstractThreeOpcodeParser
 {
-	@NotNull public static final OpcodeParser ShortPush = new ShortPushOpcodeParser();
+	private final boolean isNull;
 
-	private ShortPushOpcodeParser()
+	public IfNullOpcodeParser(final boolean isNull)
 	{
+		this.isNull = isNull;
 	}
 
 	@Override
 	public void parse(@NotNull final OperandStack operandStack, @NotNull final CodeReader codeReader, @NotNull final Set<Character> lineNumbers, @NotNull final Map<Character, LocalVariableAtProgramCounter> localVariablesAtProgramCounter, @NotNull final RuntimeConstantPool runtimeConstantPool) throws InvalidOpcodeException, UnderflowInvalidOperandStackException, MismatchedTypeInvalidOperandStackException, OverflowInvalidOperandStackException, NotEnoughBytesInvalidOperandStackException
 	{
-		final short value = codeReader.readBigEndianSigned16BitInteger();
-		operandStack.push(new IntegerConstantOperandStackItem(value));
+		final short branch = codeReader.readBigEndianSigned16BitInteger();
+
+		final ReferenceOperandStackItem value = operandStack.popReference();
+		operandStack.unchanged(new IfNullOperandStackItem(value, isNull, branch));
 	}
 }
