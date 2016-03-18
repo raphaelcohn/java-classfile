@@ -22,10 +22,11 @@
 
 package com.stormmq.java.parsing.utilities.names.typeNames.referenceTypeNames;
 
-import com.stormmq.java.parsing.utilities.StringConstants;
 import com.stormmq.java.parsing.utilities.names.parentNames.AbstractParentName;
+import com.stormmq.string.StringUtilities;
 import org.jetbrains.annotations.*;
 
+import java.io.*;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -33,7 +34,7 @@ import java.util.concurrent.ConcurrentMap;
 import static com.stormmq.java.parsing.utilities.StringConstants.ExternalTypeNameSeparator;
 import static com.stormmq.java.parsing.utilities.StringConstants.ExternalTypeNameSeparatorString;
 import static com.stormmq.java.parsing.utilities.StringConstants.InternalTypeNameSeparator;
-import static com.stormmq.java.parsing.utilities.string.StringUtilities.dataOutputFileModifiedUtf8EncodeSizeCheck;
+import static com.stormmq.string.StringUtilities.maximumUtf16ToUtf8EncodingSize;
 import static java.util.Collections.singleton;
 
 public final class KnownReferenceTypeName extends AbstractParentName implements ReferenceTypeName
@@ -53,6 +54,7 @@ public final class KnownReferenceTypeName extends AbstractParentName implements 
 	@NotNull public static final KnownReferenceTypeName[] EmptyKnownReferenceTypeNames = {};
 	@NotNull public static final KnownReferenceTypeName[] AnnotationKnownReferenceTypeNames = {JavaLangAnnotationAnnotation};
 	@NotNull public static final Set<KnownReferenceTypeName> AnnotationKnownReferenceTypeNamesSet = singleton(JavaLangAnnotationAnnotation);
+	private static final int MaximumSizeOfModifiedUtf8EncodingWithTwoBytePrecedingSize = 65535 + 2;
 
 	@NotNull
 	public static KnownReferenceTypeName knownReferenceTypeName(@NonNls @NotNull final String fullyQualifiedNameUsingDotsAndDollarSigns)
@@ -102,6 +104,42 @@ public final class KnownReferenceTypeName extends AbstractParentName implements 
 
 		return knownReferenceTypeName(fullyQualifiedTypeName);
 	}
+
+	@NotNull
+	public static String dataOutputFileModifiedUtf8EncodeSizeCheck(@NotNull final String fullyQualifiedNameUsingDotsAndDollarSigns, @NotNull final String simpleTypeName, @NotNull final String delimiter)
+	{
+		final String fullyQualifiedTypeName = fullyQualifiedNameUsingDotsAndDollarSigns.isEmpty() ? simpleTypeName : fullyQualifiedNameUsingDotsAndDollarSigns + delimiter + simpleTypeName;
+		final int size;
+		try (DataOutputStream dataOutputStream = new DataOutputStream(new ByteArrayOutputStream(2 + maximumUtf16ToUtf8EncodingSize(fullyQualifiedTypeName))))
+		{
+			try
+			{
+				dataOutputStream.writeUTF(fullyQualifiedTypeName);
+				dataOutputStream.flush();
+			}
+			catch (final IOException e)
+			{
+				throw newShouldNotBePossible(e);
+			}
+			size = dataOutputStream.size();
+		}
+		catch (final IOException e)
+		{
+			throw newShouldNotBePossible(e);
+		}
+		if (size > MaximumSizeOfModifiedUtf8EncodingWithTwoBytePrecedingSize)
+		{
+			throw new IllegalArgumentException("simpleTypeName creates a name which when encoded in Modified UTF-8 is too big for DataOutput (eg a Java class file)");
+		}
+		return fullyQualifiedTypeName;
+	}
+
+	@NotNull
+	private static IllegalStateException newShouldNotBePossible(@NotNull final IOException e)
+	{
+		return new IllegalStateException("Should not be possible", e);
+	}
+
 
 	public KnownReferenceTypeName(@NotNull final String fullyQualifiedNameUsingDotsAndDollarSigns)
 	{

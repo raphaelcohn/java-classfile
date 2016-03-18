@@ -20,19 +20,10 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-package com.stormmq.java.parsing.utilities.string;
+package com.stormmq.string;
 
-import org.jetbrains.annotations.NotNull;
-
-public final class InvalidUtf16StringException extends Exception
+@FunctionalInterface
+public interface Utf8ByteUser<X extends Exception>
 {
-	public InvalidUtf16StringException(@NotNull final String message)
-	{
-		super(message);
-	}
-
-	public InvalidUtf16StringException(@NotNull final String message, @NotNull final Exception cause)
-	{
-		super(message, cause);
-	}
+	void useUnsignedByte(final int utf8Byte) throws X;
 }

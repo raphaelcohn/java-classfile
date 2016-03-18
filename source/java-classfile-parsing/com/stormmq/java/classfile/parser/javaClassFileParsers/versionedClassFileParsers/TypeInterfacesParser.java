@@ -22,7 +22,6 @@
 
 package com.stormmq.java.classfile.parser.javaClassFileParsers.versionedClassFileParsers;
 
-import com.stormmq.java.classfile.domain.InternalTypeName;
 import com.stormmq.java.classfile.domain.TypeKind;
 import com.stormmq.java.classfile.parser.javaClassFileParsers.exceptions.InvalidJavaClassFileException;
 import com.stormmq.java.classfile.parser.javaClassFileParsers.constantPool.ConstantPoolJavaClassFileReader;
@@ -39,7 +38,7 @@ import static com.stormmq.java.classfile.domain.TypeKind.Interface;
 import static com.stormmq.java.parsing.utilities.StringConstants.Should_be_impossible;
 import static com.stormmq.java.parsing.utilities.names.typeNames.referenceTypeNames.KnownReferenceTypeName.*;
 import static com.stormmq.java.parsing.utilities.names.typeNames.referenceTypeNames.KnownReferenceTypeName.JavaLangAnnotationAnnotation;
-import static com.stormmq.java.parsing.utilities.string.StringUtilities.aOrAn;
+import static com.stormmq.string.StringUtilities.aOrAn;
 import static java.lang.String.format;
 import static java.util.Locale.ENGLISH;
 

@@ -22,14 +22,14 @@
 
 package com.stormmq.java.parsing.utilities;
 
-import com.stormmq.java.parsing.utilities.string.InvalidUtf16StringException;
+import com.stormmq.string.InvalidUtf16StringException;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
 import static com.stormmq.java.parsing.utilities.StringConstants.*;
-import static com.stormmq.java.parsing.utilities.string.StringUtilities.iterateOverStringCodePoints;
+import static com.stormmq.string.StringUtilities.iterateOverStringCodePoints;
 import static java.lang.Character.*;
 import static java.lang.String.format;
 import static java.util.Locale.ENGLISH;

@@ -34,7 +34,7 @@ import com.stormmq.java.classfile.parser.javaClassFileParsers.constantPool.const
 import com.stormmq.java.classfile.parser.javaClassFileParsers.constantPool.ConstantPoolJavaClassFileReader;
 import com.stormmq.java.classfile.parser.javaClassFileParsers.constantPool.constants.referenceIndexConstants.doubles.*;
 import com.stormmq.java.classfile.parser.javaClassFileParsers.constantPool.constants.referenceIndexConstants.singles.*;
-import com.stormmq.java.parsing.utilities.string.InvalidUtf16StringException;
+import com.stormmq.string.InvalidUtf16StringException;
 import org.jetbrains.annotations.NotNull;
 
 import static java.lang.String.format;

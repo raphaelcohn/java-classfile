@@ -20,60 +20,19 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-package com.stormmq.java.parsing.utilities.string;
+package com.stormmq.string;
 
-import com.stormmq.java.parsing.utilities.StringConstants;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.*;
-
-import static com.stormmq.java.parsing.utilities.StringConstants.Should_not_be_possible;
-import static java.lang.Character.isHighSurrogate;
-import static java.lang.Character.isLowSurrogate;
-import static java.lang.Character.toCodePoint;
+import static java.lang.Character.*;
 import static java.lang.String.format;
 import static java.util.Locale.ENGLISH;
 
 public final class StringUtilities
 {
-	private static final int MaximumSizeOfModifiedUtf8EncodingWithTwoBytePrecedingSize = 65535 + 2;
 	private static final int HighSurrogateIncrement = 2;
 	private static final int NonSurrogateIncrement = 1;
-
-	public static int maximumUtf16ToUtf8EncodingSize(@NotNull final String fullyQualifiedTypeName)
-	{
-		return fullyQualifiedTypeName.length() * 3;
-	}
-
-	@NotNull
-	public static String dataOutputFileModifiedUtf8EncodeSizeCheck(@NotNull final String fullyQualifiedNameUsingDotsAndDollarSigns, @NotNull final String simpleTypeName, @NotNull final String delimiter)
-	{
-		final String fullyQualifiedTypeName = fullyQualifiedNameUsingDotsAndDollarSigns.isEmpty() ? simpleTypeName : fullyQualifiedNameUsingDotsAndDollarSigns + delimiter + simpleTypeName;
-		final int size;
-		try (DataOutputStream dataOutputStream = new DataOutputStream(new ByteArrayOutputStream(2 + maximumUtf16ToUtf8EncodingSize(fullyQualifiedTypeName))))
-		{
-			try
-			{
-				dataOutputStream.writeUTF(fullyQualifiedTypeName);
-				dataOutputStream.flush();
-			}
-			catch (final IOException e)
-			{
-				throw newShouldNotBePossible(e);
-			}
-			size = dataOutputStream.size();
-		}
-		catch (final IOException e)
-		{
-			throw newShouldNotBePossible(e);
-		}
-		if (size > MaximumSizeOfModifiedUtf8EncodingWithTwoBytePrecedingSize)
-		{
-			throw new IllegalArgumentException("simpleTypeName creates a name which when encoded in Modified UTF-8 is too big for DataOutput (eg a Java class file)");
-		}
-		return fullyQualifiedTypeName;
-	}
 
 	@NonNls
 	@NotNull
@@ -93,6 +52,50 @@ public final class StringUtilities
 			default:
 				return "A";
 		}
+	}
+
+	public static int maximumUtf16ToUtf8EncodingSize(@NotNull final String fullyQualifiedTypeName)
+	{
+		return fullyQualifiedTypeName.length() * 3;
+	}
+
+	@SuppressWarnings("MagicNumber")
+	public static <X extends Exception> void encodeUtf8Bytes(@NotNull final String value, @NotNull final Utf8ByteUser<X> utf8ByteUser) throws InvalidUtf16StringException, X
+	{
+		iterateOverStringCodePoints(value, (index, codePoint) ->
+		{
+			if (codePoint < 0x80)
+			{
+				utf8ByteUser.useUnsignedByte(codePoint);
+				return;
+			}
+
+			if (codePoint < 0x07FF)
+			{
+				utf8ByteUser.useUnsignedByte(192 + (codePoint >>> 6));
+				utf8ByteUser.useUnsignedByte(128 + (codePoint % 64));
+				return;
+			}
+
+			if (codePoint < 0xFFFF)
+			{
+				utf8ByteUser.useUnsignedByte(224 + (codePoint >>> 12));
+				utf8ByteUser.useUnsignedByte(128 + ((codePoint >> 6) & 0x3F));
+				utf8ByteUser.useUnsignedByte(128 + (codePoint & 0x3F));
+				return;
+			}
+
+			if (codePoint < 0x1FFFFF)
+			{
+				utf8ByteUser.useUnsignedByte(240 + (codePoint >>> 18));
+				utf8ByteUser.useUnsignedByte(128 + ((codePoint >>> 12) & 0x3F));
+				utf8ByteUser.useUnsignedByte(128 + ((codePoint >>> 6) & 0x3F));
+				utf8ByteUser.useUnsignedByte(128 + (codePoint & 0x3F));
+				return;
+			}
+
+			throw new IllegalArgumentException(format(ENGLISH, "Invalid Unicode Code Point '0x%1$s' greater than 0x1FFFFF at index '%2$s' which should be impossible to exist in this context", Integer.toBinaryString(codePoint), index));
+		});
 	}
 
 	// We do not use Java's built in methods in string because they incorrectly try to correct for wrong high surrogates, etc
@@ -134,12 +137,6 @@ public final class StringUtilities
 
 			index += indexIncrement;
 		}
-	}
-
-	@NotNull
-	private static IllegalStateException newShouldNotBePossible(@NotNull final IOException e)
-	{
-		return new IllegalStateException(Should_not_be_possible, e);
 	}
 
 	private StringUtilities()
