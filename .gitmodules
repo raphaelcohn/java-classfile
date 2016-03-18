@@ -7,3 +7,6 @@
 [submodule "library/path"]
 	path = library/path
 	url = https://github.com/raphaelcohn/path.git
+[submodule "library/string"]
+	path = library/string
+	url = https://github.com/raphaelcohn/string.git
