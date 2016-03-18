@@ -26,6 +26,7 @@ import com.stormmq.java.classfile.domain.attributes.UnknownAttributes;
 import com.stormmq.java.classfile.domain.attributes.annotations.TypeAnnotation;
 import com.stormmq.java.classfile.domain.attributes.code.codeReaders.ByteBufferCodeReader;
 import com.stormmq.java.classfile.domain.attributes.code.codeReaders.CodeReader;
+import com.stormmq.java.classfile.domain.attributes.code.constants.RuntimeConstantPool;
 import com.stormmq.java.classfile.domain.attributes.code.invalidOperandStackExceptions.*;
 import com.stormmq.java.classfile.domain.attributes.code.localVariables.*;
 import com.stormmq.java.classfile.domain.attributes.code.opcodeParsers.InvalidOpcodeException;
@@ -49,7 +50,6 @@ public final class Code
 {
 	public static final long MaximumCodeLength = 65535L;
 	@NotNull private static final Set<Character> NoLineNumbers = emptySet();
-	@NotNull private static final Map<Character, LocalVariableWithSignature> NoLocalVariables = emptyMap();
 
 	private final char maximumDepthOfTheOperandStackOfTheMethod;
 	private final char maximumLocals;
@@ -63,9 +63,11 @@ public final class Code
 	@NotNull private final TypeAnnotation[] visibleTypeAnnotations;
 	@NotNull private final TypeAnnotation[] invisibleTypeAnnotations;
 	private final boolean opcode186IsPermittedBecauseThisIsForJava7OrLater;
+	@NotNull private final RuntimeConstantPool runtimeConstantPool;
 
-	public Code(final char maximumDepthOfTheOperandStackOfTheMethod, final char maximumLocals, final long codeLength, @NotNull final ByteBuffer code, @NotNull final ExceptionCode[] exceptionCode, @NotNull final Map<Character, Set<Character>> programCounterToLineNumberEntryMap, @NotNull final LocalVariables localVariables, final StackMapFrame[] stackMapFrames, @NotNull final UnknownAttributes unknownAttributes, @NotNull final TypeAnnotation[] visibleTypeAnnotations, @NotNull final TypeAnnotation[] invisibleTypeAnnotations, final boolean opcode186IsPermittedBecauseThisIsForJava7OrLater)
+	public Code(@NotNull final RuntimeConstantPool runtimeConstantPool, final char maximumDepthOfTheOperandStackOfTheMethod, final char maximumLocals, final long codeLength, @NotNull final ByteBuffer code, @NotNull final ExceptionCode[] exceptionCode, @NotNull final Map<Character, Set<Character>> programCounterToLineNumberEntryMap, @NotNull final LocalVariables localVariables, final StackMapFrame[] stackMapFrames, @NotNull final UnknownAttributes unknownAttributes, @NotNull final TypeAnnotation[] visibleTypeAnnotations, @NotNull final TypeAnnotation[] invisibleTypeAnnotations, final boolean opcode186IsPermittedBecauseThisIsForJava7OrLater)
 	{
+		this.runtimeConstantPool = runtimeConstantPool;
 		if (codeLength <= 0L)
 		{
 			throw new IllegalArgumentException(format(ENGLISH, "code length can not be zero or less bytes (ie not '%1$s')", codeLength));
@@ -90,7 +92,7 @@ public final class Code
 		this.opcode186IsPermittedBecauseThisIsForJava7OrLater = opcode186IsPermittedBecauseThisIsForJava7OrLater;
 	}
 
-	public void parseCode(final boolean isStrictFloatingPoint) throws InvalidOpcodeException, UnderflowInvalidOperandStackException, MismatchedVariableInvalidOperandStackException, MismatchedTypeInvalidOperandStackException, NotEnoughBytesInvalidOperandStackException
+	public void parseCode(final boolean isStrictFloatingPoint) throws InvalidOpcodeException, UnderflowInvalidOperandStackException, MismatchedVariableInvalidOperandStackException, MismatchedTypeInvalidOperandStackException, NotEnoughBytesInvalidOperandStackException, OverflowInvalidOperandStackException
 	{
 		final OperandStack operandStack = new TrackingOperandStack(maximumDepthOfTheOperandStackOfTheMethod);
 

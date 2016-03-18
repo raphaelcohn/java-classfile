@@ -53,15 +53,11 @@ import static com.stormmq.java.classfile.domain.attributes.code.opcodeParsers.Po
 import static com.stormmq.java.classfile.domain.attributes.code.opcodeParsers.ShortPushOpcodeParser.ShortPush;
 import static com.stormmq.java.classfile.domain.attributes.code.opcodeParsers.SwapOpcodeParser.Swap;
 import static com.stormmq.java.classfile.domain.attributes.code.opcodeParsers.UnaryOperationOpcodeParser.unaryOperationOpcodeParser;
-import static com.stormmq.java.classfile.domain.attributes.code.operandStackItems.constantOperandStackItems.NullReferenceConstantOperandStackItem.NullConstant;
 import static com.stormmq.java.classfile.domain.attributes.code.operandStackItems.operations.BinaryOperation.*;
 import static com.stormmq.java.classfile.domain.attributes.code.operandStackItems.operations.Comparison.*;
 import static com.stormmq.java.classfile.domain.attributes.code.operandStackItems.operations.IntegerBitOperation.*;
 import static com.stormmq.java.classfile.domain.attributes.code.operandStackItems.operations.UnaryOperation.negate;
-import static com.stormmq.java.classfile.domain.attributes.code.typing.ComputationalCategory._double;
-import static com.stormmq.java.classfile.domain.attributes.code.typing.ComputationalCategory._float;
-import static com.stormmq.java.classfile.domain.attributes.code.typing.ComputationalCategory._int;
-import static com.stormmq.java.classfile.domain.attributes.code.typing.ComputationalCategory._long;
+import static com.stormmq.java.classfile.domain.attributes.code.typing.ComputationalCategory.*;
 
 public interface OpcodeParser
 {
@@ -567,7 +563,7 @@ public interface OpcodeParser
 	static void constants(@NotNull final OpcodeParser[] opcodeParsers)
 	{
 		opcodeParsers[nop] = NoOperation;
-		opcodeParsers[aconst_null] = new PushConstantOpcodeParser(NullConstant);
+		opcodeParsers[aconst_null] = new NullPushConstantOpcodeParser();
 		final Integer number = -1;
 		opcodeParsers[iconst_m1] = new PushConstantOpcodeParser(_int, number);
 		opcodeParsers[iconst_0] = new PushConstantOpcodeParser(_int, 0);

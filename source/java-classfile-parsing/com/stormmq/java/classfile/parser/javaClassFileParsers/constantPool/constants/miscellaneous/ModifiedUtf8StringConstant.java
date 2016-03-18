@@ -24,7 +24,6 @@ package com.stormmq.java.classfile.parser.javaClassFileParsers.constantPool.cons
 
 import com.stormmq.java.classfile.parser.javaClassFileParsers.constantPool.constants.AbstractSingleWidthConstant;
 import com.stormmq.java.classfile.parser.javaClassFileParsers.exceptions.InvalidJavaClassFileException;
-import com.stormmq.java.parsing.utilities.string.*;
 import com.stormmq.string.CodePointUser;
 import com.stormmq.string.InvalidUtf16StringException;
 import org.jetbrains.annotations.NotNull;

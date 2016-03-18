@@ -30,8 +30,6 @@ import com.stormmq.java.classfile.domain.attributes.code.operandStackItems.refer
 import com.stormmq.java.classfile.domain.attributes.code.typing.ComputationalCategory;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Locale;
-
 import static java.lang.String.format;
 import static java.util.Locale.ENGLISH;
 
@@ -82,7 +80,7 @@ public final class ExperimentalOperandStack implements OperandStack
 	@Override
 	public ReferenceOperandStackItem popReference() throws UnderflowInvalidOperandStackException, MismatchedTypeInvalidOperandStackException
 	{
-		final ReferenceOperandStackItem pop = trackingOperandStack.popReference();
+		return trackingOperandStack.popReference();
 	}
 
 	@Override
@@ -92,7 +90,6 @@ public final class ExperimentalOperandStack implements OperandStack
 		// does the stack item have a reference to a stack item stackPointer?
 		// is this an assignment?
 		// when we pop something, we could wrap it with a stackPointer-reference
-		x;
 		final String line;
 		final int fromOperandStackPointer = operandStackItem.stackPointer();
 		if (fromOperandStackPointer != EmptyStackPointer)
@@ -101,7 +98,7 @@ public final class ExperimentalOperandStack implements OperandStack
 		}
 		else
 		{
-			line = xxx;
+			throw new UnsupportedOperationException("Fix me");
 		}
 		System.out.println( "%" + Integer.toString(trackingOperandStack.currentStackPointer()));
 

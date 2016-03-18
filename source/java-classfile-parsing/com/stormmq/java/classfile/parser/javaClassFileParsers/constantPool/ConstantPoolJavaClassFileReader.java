@@ -28,6 +28,7 @@ import com.stormmq.java.classfile.domain.*;
 import com.stormmq.java.classfile.domain.attributes.annotations.*;
 import com.stormmq.java.classfile.domain.attributes.annotations.targetInformations.*;
 import com.stormmq.java.classfile.domain.attributes.annotations.typePathElements.TypePathElement;
+import com.stormmq.java.classfile.domain.attributes.code.constants.RuntimeConstantPool;
 import com.stormmq.java.classfile.domain.descriptors.FieldDescriptor;
 import com.stormmq.java.classfile.domain.descriptors.MethodDescriptor;
 import com.stormmq.java.classfile.domain.names.FieldName;
@@ -651,6 +652,12 @@ public final class ConstantPoolJavaClassFileReader implements JavaClassFileReade
 	public <Key, Value> Map<Key, Value> parseTableAsMapWith16BitLength(@NotNull final InvalidExceptionBiIntConsumer<Map<Key, Value>> parse) throws InvalidJavaClassFileException, JavaClassFileContainsDataTooLongToReadException
 	{
 		return parseTableAsMap(parse, this::getTableLength16Bit);
+	}
+
+	@NotNull
+	public RuntimeConstantPool constantPool()
+	{
+		return constantPool;
 	}
 
 	@NotNull

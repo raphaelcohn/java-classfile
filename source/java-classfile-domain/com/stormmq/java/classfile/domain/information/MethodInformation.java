@@ -26,6 +26,8 @@ import com.stormmq.java.classfile.domain.attributes.UnknownAttributes;
 import com.stormmq.java.classfile.domain.attributes.annotations.AnnotationValue;
 import com.stormmq.java.classfile.domain.attributes.annotations.TypeAnnotation;
 import com.stormmq.java.classfile.domain.attributes.code.Code;
+import com.stormmq.java.classfile.domain.attributes.code.invalidOperandStackExceptions.*;
+import com.stormmq.java.classfile.domain.attributes.code.opcodeParsers.InvalidOpcodeException;
 import com.stormmq.java.classfile.domain.attributes.method.MethodParameter;
 import com.stormmq.java.classfile.domain.signatures.Signature;
 import com.stormmq.java.classfile.domain.uniqueness.MethodUniqueness;
@@ -90,5 +92,14 @@ public final class MethodInformation
 		this.methodParameters = methodParameters;
 		this.annotationDefault = annotationDefault;
 		this.unknownAttributes = unknownAttributes;
+	}
+
+	public void parseCode() throws MismatchedTypeInvalidOperandStackException, NotEnoughBytesInvalidOperandStackException, MismatchedVariableInvalidOperandStackException, InvalidOpcodeException, UnderflowInvalidOperandStackException, OverflowInvalidOperandStackException
+	{
+		if (code == null)
+		{
+			return;
+		}
+		code.parseCode(isStrictFloatingPoint);
 	}
 }

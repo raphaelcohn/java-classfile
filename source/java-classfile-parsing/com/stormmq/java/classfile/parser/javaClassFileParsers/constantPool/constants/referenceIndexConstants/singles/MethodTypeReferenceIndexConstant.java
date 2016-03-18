@@ -62,9 +62,8 @@ public final class MethodTypeReferenceIndexConstant extends AbstractSingleRefere
 		return true;
 	}
 
-	@NotNull
 	@Override
-	public void visit(@NotNull final SingleWidthConstantForLoadUser singleWidthConstantForLoadUser) throws InvalidConstantException
+	public <T> T visit(@NotNull final SingleWidthConstantForLoadUser<T> singleWidthConstantForLoadUser) throws InvalidConstantException
 	{
 		final MethodDescriptor methodDescriptor;
 		try
@@ -75,6 +74,6 @@ public final class MethodTypeReferenceIndexConstant extends AbstractSingleRefere
 		{
 			throw new InvalidConstantException("Could not parse method descriptor", e);
 		}
-		singleWidthConstantForLoadUser.useMethodType(methodDescriptor);
+		return singleWidthConstantForLoadUser.useMethodType(methodDescriptor);
 	}
 }

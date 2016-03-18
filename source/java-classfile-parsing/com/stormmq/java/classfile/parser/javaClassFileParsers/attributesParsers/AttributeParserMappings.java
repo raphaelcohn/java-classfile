@@ -141,7 +141,7 @@ public final class AttributeParserMappings
 			final StackMapFrame[] stackMapFrames = attributes.stackMapFrames();
 			final UnknownAttributes unknownAttributes = attributes.unknownAttributes();
 
-			return new Code(maximumStack, maximumLocals, codeLength, code, exceptionCode, programCounterToLineNumberEntryMap, localVariables, stackMapFrames, unknownAttributes, visibleTypeAnnotations, invisibleTypeAnnotations, javaClassFileVersion.isJava7OrLater());
+			return new Code(javaClassFileReader.constantPool(), maximumStack, maximumLocals, codeLength, code, exceptionCode, programCounterToLineNumberEntryMap, localVariables, stackMapFrames, unknownAttributes, visibleTypeAnnotations, invisibleTypeAnnotations, javaClassFileVersion.isJava7OrLater());
 		});
 
 		mapping(Attributes.ConstantValue, Java1_0_2, OnlyField, (attributeLength, javaClassFileReader) ->
