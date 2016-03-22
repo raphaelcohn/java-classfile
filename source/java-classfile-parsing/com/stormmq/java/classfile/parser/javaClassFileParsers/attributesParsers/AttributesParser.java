@@ -86,16 +86,7 @@ public final class AttributesParser
 					final Object attributeDataToStore;
 					if (AttributesWhichCanOccurMoreThanOnce.contains(attributeName))
 					{
-						final List<Object> canOccurMoreThanOnceList;
-						if (alreadyEncountered == null)
-						{
-							canOccurMoreThanOnceList = new ArrayList<>(4);
-						}
-						else
-						{
-							//noinspection unchecked
-							canOccurMoreThanOnceList = (List<Object>) alreadyEncountered;
-						}
+						final List<Object> canOccurMoreThanOnceList = alreadyEncountered == null ? new ArrayList<>(4) : (List<Object>) alreadyEncountered;
 						canOccurMoreThanOnceList.add(attributeData);
 						attributeDataToStore = canOccurMoreThanOnceList;
 					}
