@@ -119,7 +119,6 @@ public final class InputStreamByteReader implements ByteReader
 	{
 		final byte[] buffer = new byte[length];
 		readBytes(what, buffer, length);
-		bytesReadSoFar += length;
 		return wrap(buffer);
 	}
 }
