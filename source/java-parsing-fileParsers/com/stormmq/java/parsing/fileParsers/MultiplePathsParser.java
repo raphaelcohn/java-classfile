@@ -120,8 +120,10 @@ public final class MultiplePathsParser
 		if (isJavaFile(name))
 		{
 			javaSourceFileParser.parseFile(zipFile, zipEntry);
+			return;
 		}
-		else if (isClassFile(name))
+
+		if (isClassFile(name))
 		{
 			javaClassFileParser.parseFile(zipFile, zipEntry);
 		}
