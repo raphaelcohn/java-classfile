@@ -22,13 +22,13 @@
 
 package com.stormmq.java.classfile.parser.byteReaders;
 
-import org.jetbrains.annotations.*;
+import org.jetbrains.annotations.NonNls;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.EOFException;
 import java.nio.ByteBuffer;
 
 import static java.lang.Math.min;
-import static java.lang.System.arraycopy;
 import static java.nio.ByteBuffer.wrap;
 
 public final class ByteArrayByteReader implements ByteReader
@@ -105,26 +105,6 @@ public final class ByteArrayByteReader implements ByteReader
 		final ByteBuffer slice = wrap(byteArray, position, length).slice();
 		position += length;
 		return slice;
-	}
-
-	private int read(@NotNull final byte[] buffer, final int offset, final int length) throws EOFException
-	{
-		if (position >= count)
-		{
-			throw new EOFException("Not enough bytes for read");
-		}
-
-		final int available = available();
-		final int bytesRead = length > available ? available : length;
-
-		if (bytesRead <= 0)
-		{
-			return 0;
-		}
-
-		arraycopy(byteArray, position, buffer, offset, bytesRead);
-		position += bytesRead;
-		return bytesRead;
 	}
 
 	private int available()
