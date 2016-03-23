@@ -28,6 +28,9 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
 
+import static java.lang.String.format;
+import static java.util.Locale.ENGLISH;
+
 public final class AnnotationValue
 {
 	@NotNull public static final AnnotationValue[] EmptyAnnotationValues = {};
@@ -40,5 +43,12 @@ public final class AnnotationValue
 	{
 		this.typeIndexFieldDescriptor = typeIndexFieldDescriptor;
 		this.fieldValues = fieldValues;
+	}
+
+	@Override
+	@NotNull
+	public String toString()
+	{
+		return format(ENGLISH, "%1$s(%2$s, %3$s)", getClass().getSimpleName(), typeIndexFieldDescriptor, fieldValues);
 	}
 }

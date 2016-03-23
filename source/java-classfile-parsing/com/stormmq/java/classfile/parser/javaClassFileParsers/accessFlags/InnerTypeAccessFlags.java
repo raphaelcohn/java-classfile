@@ -26,7 +26,9 @@ import com.stormmq.java.classfile.domain.TypeKind;
 import com.stormmq.java.classfile.parser.javaClassFileParsers.exceptions.InvalidJavaClassFileException;
 import com.stormmq.java.parsing.utilities.Completeness;
 import com.stormmq.java.parsing.utilities.Visibility;
+import com.stormmq.java.parsing.utilities.names.typeNames.referenceTypeNames.KnownReferenceTypeName;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import static com.stormmq.java.classfile.parser.javaClassFileParsers.accessFlags.AccessFlags.hasFlagSet;
 import static com.stormmq.java.parsing.utilities.Completeness.*;
@@ -45,7 +47,7 @@ public final class InnerTypeAccessFlags
 	private static final char ACC_ANNOTATION = 0x2000;
 	private static final char ACC_ENUM = 0x4000;
 
-	public static final int InnerTypeAccessFlagsValidityMask = ~(ACC_PUBLIC | ACC_PRIVATE | ACC_PROTECTED | ACC_STATIC | ACC_FINAL | ACC_INTERFACE | ACC_ABSTRACT | ACC_SYNTHETIC | ACC_ANNOTATION | ACC_ENUM);
+	@SuppressWarnings("OverlyComplexBooleanExpression") public static final int InnerTypeAccessFlagsValidityMask = ~(ACC_PUBLIC | ACC_PRIVATE | ACC_PROTECTED | ACC_STATIC | ACC_FINAL | ACC_INTERFACE | ACC_ABSTRACT | ACC_SYNTHETIC | ACC_ANNOTATION | ACC_ENUM);
 
 	public static boolean isInnerTypeSynthetic(final char accessFlags)
 	{
@@ -72,18 +74,18 @@ public final class InnerTypeAccessFlags
 			}
 			return TypeKind.Interface;
 		}
-		else
+
+		if (isAnnotation)
 		{
-			if (isAnnotation)
-			{
-				throw new InvalidJavaClassFileException("Inner type access flags can not be an annotation if they distinguish a class or enum");
-			}
-			if (isAbstract && isFinal)
-			{
-				throw new InvalidJavaClassFileException("Inner type access flags can not be both abstract and final if they distinguish a class or enum");
-			}
-			return isEnum ? TypeKind.Enum : TypeKind.Class;
+			throw new InvalidJavaClassFileException("Inner type access flags can not be an annotation if they distinguish a class or enum");
 		}
+
+		if (isAbstract && isFinal)
+		{
+			throw new InvalidJavaClassFileException("Inner type access flags can not be both abstract and final if they distinguish a class or enum");
+		}
+
+		return isEnum ? TypeKind.Enum : TypeKind.Class;
 	}
 
 	@NotNull

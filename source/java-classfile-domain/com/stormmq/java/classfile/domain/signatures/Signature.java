@@ -49,16 +49,16 @@ http://attrib4j.sourceforge.net/apidocs/attrib4j/bcel/DescriptorUtil.html
 https://stackoverflow.com/questions/12327162/how-to-format-internal-java-names#12327675
 	*/
 
-	@NotNull @NonNls private final String fieldSignature;
+	@NotNull @NonNls private final String value;
 
-	public Signature(@NonNls @NotNull final String fieldSignature)
+	public Signature(@NonNls @NotNull final String value)
 	{
-		this.fieldSignature = fieldSignature;
+		this.value = value;
 	}
 
 	public Signature validate(@NotNull final KnownReferenceTypeName thisClassTypeName, @Nullable final KnownReferenceTypeName superClassTypeName, @NotNull final Set<KnownReferenceTypeName> interfaces)
 	{
-		return null;
+		return this;
 	}
 
 	@NotNull
@@ -71,5 +71,12 @@ https://stackoverflow.com/questions/12327162/how-to-format-internal-java-names#1
 	public Signature validate(@NotNull final FieldDescriptor fieldDescriptor)
 	{
 		return this;
+	}
+
+	@Override
+	@NotNull
+	public String toString()
+	{
+		return value;
 	}
 }

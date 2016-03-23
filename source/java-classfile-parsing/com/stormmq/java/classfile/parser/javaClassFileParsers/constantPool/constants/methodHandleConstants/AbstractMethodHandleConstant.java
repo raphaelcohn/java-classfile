@@ -31,15 +31,21 @@ import com.stormmq.java.classfile.parser.javaClassFileParsers.constantPool.const
 import com.stormmq.java.classfile.parser.javaClassFileParsers.exceptions.InvalidJavaClassFileException;
 import org.jetbrains.annotations.NotNull;
 
-public abstract class AbstractMethodHandleConstant extends AbstractSingleWidthConstant implements Constant, MethodHandle
+public abstract class AbstractMethodHandleConstant extends AbstractSingleWidthConstant implements MethodHandle
 {
-	@NotNull private final ConstantPool constantPool;
+	@SuppressWarnings("FieldNotUsedInToString") @NotNull private final ConstantPool constantPool;
 	@NotNull protected final ConstantPoolIndex referenceIndex;
 
 	protected AbstractMethodHandleConstant(@NotNull final ConstantPool constantPool, @NotNull final ConstantPoolIndex referenceIndex)
 	{
 		this.constantPool = constantPool;
 		this.referenceIndex = referenceIndex;
+	}
+
+	@Override
+	public String toString()
+	{
+		return "MethodHandle(" + referenceIndex + ')';
 	}
 
 	@Override

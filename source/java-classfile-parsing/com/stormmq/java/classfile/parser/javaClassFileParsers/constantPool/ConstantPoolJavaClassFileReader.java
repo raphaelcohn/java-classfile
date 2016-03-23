@@ -558,7 +558,7 @@ public final class ConstantPoolJavaClassFileReader implements JavaClassFileReade
 	}
 
 	@Nullable
-	public String readMethodParameterName(@NonNls @NotNull final String what) throws InvalidJavaClassFileException
+	public String readNullableModifiedUtf8String(@NonNls @NotNull final String what) throws InvalidJavaClassFileException
 	{
 		return readPotentiallyNullReference(what, retrieveModifiedUtf8String);
 	}

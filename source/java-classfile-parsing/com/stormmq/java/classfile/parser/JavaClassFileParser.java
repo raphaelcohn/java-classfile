@@ -23,6 +23,7 @@
 package com.stormmq.java.classfile.parser;
 
 import com.stormmq.java.classfile.domain.information.TypeInformation;
+import com.stormmq.java.classfile.parser.byteReaders.ByteReader;
 import com.stormmq.java.classfile.parser.javaClassFileParsers.exceptions.InvalidJavaClassFileException;
 import com.stormmq.java.classfile.parser.javaClassFileParsers.exceptions.JavaClassFileContainsDataTooLongToReadException;
 import com.stormmq.java.classfile.parser.javaClassFileParsers.VersionedClassFileParserChooser;
@@ -34,6 +35,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.function.Function;
 
 import static com.stormmq.java.classfile.domain.JavaClassFileVersion.values;
+import static com.stormmq.java.classfile.parser.javaClassFileParsers.VersionedClassFileParserChooser.Modern;
 import static java.lang.Integer.toHexString;
 import static java.lang.String.format;
 import static java.util.Locale.ENGLISH;
@@ -42,6 +44,12 @@ public final class JavaClassFileParser
 {
 	private static final int JavaClassFileMagicNumber = 0xCAFEBABE;
 	@NotNull private static final String JavaClassFileMagicNumberHexString = toHexString(JavaClassFileMagicNumber);
+
+	@NotNull
+	public static TypeInformation parseJavaClassFile(@NotNull final ByteReader byteReader) throws InvalidJavaClassFileException, JavaClassFileContainsDataTooLongToReadException
+	{
+		return parseJavaClassFile(new SimpleJavaClassFileReader(byteReader), Modern);
+	}
 
 	@NotNull
 	public static TypeInformation parseJavaClassFile(@NotNull final JavaClassFileReader javaClassFileReader, @NotNull final VersionedClassFileParserChooser versionedClassFileParserChooser) throws InvalidJavaClassFileException, JavaClassFileContainsDataTooLongToReadException

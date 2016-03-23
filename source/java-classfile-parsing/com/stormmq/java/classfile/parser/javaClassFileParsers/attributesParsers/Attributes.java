@@ -104,7 +104,7 @@ public final class Attributes
 	}
 
 	@Nullable
-	public com.stormmq.java.classfile.domain.attributes.code.Code code() throws InvalidJavaClassFileException
+	public com.stormmq.java.classfile.domain.attributes.code.Code code()
 	{
 		return getAttributeValueNullable(Code, null);
 	}
@@ -236,37 +236,37 @@ public final class Attributes
 	}
 
 	@NotNull
-	public AnnotationValue[] runtimeInvisibleAnnotations() throws InvalidJavaClassFileException
+	public AnnotationValue[] runtimeInvisibleAnnotations()
 	{
 		return getAttributeValueNotNull(RuntimeInvisibleAnnotations, EmptyAnnotationValues);
 	}
 
 	@NotNull
-	public AnnotationValue[][] runtimeInvisibleParameterAnnotations(final boolean isAnnotation, final int methodDescriptorParameterCount) throws InvalidJavaClassFileException
+	public AnnotationValue[][] runtimeInvisibleParameterAnnotations(final boolean isAnnotation, final int methodParameterCount) throws InvalidJavaClassFileException
 	{
-		return parameterLike(isAnnotation, methodDescriptorParameterCount, RuntimeInvisibleParameterAnnotations, EmptyParameterAnnotations);
+		return parameterLike(isAnnotation, methodParameterCount, RuntimeInvisibleParameterAnnotations, EmptyParameterAnnotations);
 	}
 
 	@NotNull
-	public TypeAnnotation[] runtimeInvisibleTypeAnnotations() throws InvalidJavaClassFileException
+	public TypeAnnotation[] runtimeInvisibleTypeAnnotations()
 	{
 		return getAttributeValueNotNull(RuntimeInvisibleTypeAnnotations, EmptyTypeAnnotations);
 	}
 
 	@NotNull
-	public AnnotationValue[] runtimeVisibleAnnotations() throws InvalidJavaClassFileException
+	public AnnotationValue[] runtimeVisibleAnnotations()
 	{
 		return getAttributeValueNotNull(RuntimeVisibleAnnotations, EmptyAnnotationValues);
 	}
 
 	@NotNull
-	public AnnotationValue[][] runtimeVisibleParameterAnnotations(final boolean isAnnotation, final int methodDescriptorParameterCount) throws InvalidJavaClassFileException
+	public AnnotationValue[][] runtimeVisibleParameterAnnotations(final boolean isAnnotation, final int methodParameterCount) throws InvalidJavaClassFileException
 	{
-		return parameterLike(isAnnotation, methodDescriptorParameterCount, RuntimeVisibleParameterAnnotations, EmptyParameterAnnotations);
+		return parameterLike(isAnnotation, methodParameterCount, RuntimeVisibleParameterAnnotations, EmptyParameterAnnotations);
 	}
 
 	@NotNull
-	public TypeAnnotation[] runtimeVisibleTypeAnnotations() throws InvalidJavaClassFileException
+	public TypeAnnotation[] runtimeVisibleTypeAnnotations()
 	{
 		return getAttributeValueNotNull(RuntimeVisibleTypeAnnotations, EmptyTypeAnnotations);
 	}
@@ -305,24 +305,24 @@ public final class Attributes
 	}
 
 	@Nullable
-	public String sourceDebugExtension() throws InvalidJavaClassFileException
+	public String sourceDebugExtension()
 	{
 		return getAttributeValueNullable(SourceDebugExtension, null);
 	}
 
 	@Nullable
-	public String sourceFile() throws InvalidJavaClassFileException
+	public String sourceFile()
 	{
 		return getAttributeValueNullable(SourceFile, null);
 	}
 
-	public com.stormmq.java.classfile.domain.signatures.Signature getSignature() throws InvalidJavaClassFileException
+	public com.stormmq.java.classfile.domain.signatures.Signature getSignature()
 	{
 		return getAttributeValueNullable(Signature, null);
 	}
 
 	@NotNull
-	public StackMapFrame[] stackMapFrames() throws InvalidJavaClassFileException
+	public StackMapFrame[] stackMapFrames()
 	{
 		return getAttributeValueNotNull(StackMapTable, ImplicitStackMap);
 	}
@@ -344,7 +344,7 @@ public final class Attributes
 	}
 
 	@NotNull
-	private <T> T[] parameterLike(final boolean isAnnotation, final int methodDescriptorParameterCount, @NotNull final String attributeName, @NotNull final T[] empty) throws InvalidJavaClassFileException
+	private <T> T[] parameterLike(final boolean isAnnotation, final int methodParameterCount, @NotNull final String attributeName, @NotNull final T[] empty) throws InvalidJavaClassFileException
 	{
 		final T[] values = getAttributeValueNotNull(attributeName, empty);
 		final int length = values.length;
@@ -359,7 +359,7 @@ public final class Attributes
 		{
 			if (length != 0)
 			{
-				if (length != methodDescriptorParameterCount)
+				if (length != methodParameterCount)
 				{
 					throw new InvalidJavaClassFileException(attributeName + " length must match method descriptor parameter count");
 				}

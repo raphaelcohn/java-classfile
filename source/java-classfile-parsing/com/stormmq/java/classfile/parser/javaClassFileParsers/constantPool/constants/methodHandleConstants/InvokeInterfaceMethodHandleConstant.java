@@ -22,13 +22,17 @@
 
 package com.stormmq.java.classfile.parser.javaClassFileParsers.constantPool.constants.methodHandleConstants;
 
-import com.stormmq.java.classfile.parser.javaClassFileParsers.exceptions.InvalidJavaClassFileException;
+import com.stormmq.java.classfile.domain.names.MethodName;
 import com.stormmq.java.classfile.parser.javaClassFileParsers.constantPool.ConstantPool;
 import com.stormmq.java.classfile.parser.javaClassFileParsers.constantPool.ConstantPoolIndex;
 import com.stormmq.java.classfile.parser.javaClassFileParsers.constantPool.constants.Constant;
 import com.stormmq.java.classfile.parser.javaClassFileParsers.constantPool.constants.referenceIndexConstants.doubles.InterfaceMethodReferenceIndexConstant;
+import com.stormmq.java.classfile.parser.javaClassFileParsers.exceptions.InvalidJavaClassFileException;
+import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 
+import static com.stormmq.java.classfile.domain.names.MethodName.InstanceInitializer;
+import static com.stormmq.java.classfile.domain.names.MethodName.StaticInstanceInitializer;
 import static java.lang.String.format;
 import static java.util.Locale.ENGLISH;
 
@@ -43,7 +47,7 @@ public final class InvokeInterfaceMethodHandleConstant extends AbstractInvokeMet
 	protected void validate(@NotNull final Constant constant, @NotNull final ConstantPoolIndex referenceIndex) throws InvalidJavaClassFileException
 	{
 		validateInterfaceReference(constant);
-		validateMethodReferenceIsNotAnInstanceOrStaticInitializer(constant);
+		validateInterfaceReferenceIsNotAnInstanceOrStaticInitializer(constant);
 	}
 
 	private void validateInterfaceReference(@NotNull final Constant constant) throws InvalidJavaClassFileException
@@ -53,5 +57,23 @@ public final class InvokeInterfaceMethodHandleConstant extends AbstractInvokeMet
 			return;
 		}
 		throw new InvalidJavaClassFileException(format(ENGLISH, "The reference at constant pool index '%1$s' is not a CONSTANT_Interfaceref_info but is instead a '%2$s'", referenceIndex, constant.getClass().getSimpleName()));
+	}
+
+	private void validateInterfaceReferenceIsNotAnInstanceOrStaticInitializer(@NotNull final Constant constant) throws InvalidJavaClassFileException
+	{
+		final InterfaceMethodReferenceIndexConstant interfaceMethodReferenceIndexConstant = (InterfaceMethodReferenceIndexConstant) constant;
+		interfaceMethodReferenceIndexConstant.validateReferenceIndices();
+
+		@NonNls final MethodName methodName = interfaceMethodReferenceIndexConstant.methodName();
+
+		if (methodName.equals(InstanceInitializer))
+		{
+			throw new InvalidJavaClassFileException(format(ENGLISH, "A method handle that is not of kind InvokeInterface may not reference '%1$s' an instance initializer of '<init>'", referenceIndex));
+		}
+
+		if (methodName.equals(StaticInstanceInitializer))
+		{
+			throw new InvalidJavaClassFileException(format(ENGLISH, "A method handle that is not of kind InvokeInterface may not reference '%1$s' a static initializer of '<clinit>'", referenceIndex));
+		}
 	}
 }

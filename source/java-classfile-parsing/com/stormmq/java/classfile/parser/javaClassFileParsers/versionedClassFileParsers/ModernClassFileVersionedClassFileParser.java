@@ -56,8 +56,10 @@ import org.jetbrains.annotations.Nullable;
 import java.util.*;
 
 import static com.stormmq.java.classfile.domain.TypeKind.Annotation;
+import static com.stormmq.java.classfile.domain.TypeKind.Enum;
 import static com.stormmq.java.classfile.domain.TypeKind.Interface;
 import static com.stormmq.java.classfile.domain.attributes.AttributeLocation.*;
+import static com.stormmq.java.classfile.domain.names.MethodName.InstanceInitializer;
 import static com.stormmq.java.classfile.domain.names.MethodName.StaticInstanceInitializer;
 import static com.stormmq.java.classfile.parser.javaClassFileParsers.accessFlags.FieldAccessFlags.*;
 import static com.stormmq.java.classfile.parser.javaClassFileParsers.accessFlags.MethodAccessFlags.*;
@@ -136,9 +138,10 @@ public final class ModernClassFileVersionedClassFileParser implements VersionedC
 		final Set<KnownReferenceTypeName> interfaces = typeInterfacesParser.parseInterfaces(thisClassTypeName, superClassTypeName);
 
 		final boolean isAnnotation = typeKind == Annotation;
+		final boolean isEnum = typeKind == Enum;
 		final boolean isInterfaceOrAnnotation = typeKind == Interface || isAnnotation;
 		final Map<FieldUniqueness, FieldInformation> fields = parseFields(constantPoolJavaClassFileReader, isInterfaceOrAnnotation, thisClassTypeName);
-		final Map<MethodUniqueness, MethodInformation> methods = parseMethods(constantPoolJavaClassFileReader, isInterfaceOrAnnotation, thisClassTypeName, isAnnotation);
+		final Map<MethodUniqueness, MethodInformation> methods = parseMethods(constantPoolJavaClassFileReader, isInterfaceOrAnnotation, thisClassTypeName, isAnnotation, isEnum);
 		final Attributes attributes = typeAttributesParser.parseAttributes(constantPoolJavaClassFileReader);
 
 		final boolean isSyntheticAttribute = attributes.isSynthetic();
@@ -233,7 +236,7 @@ public final class ModernClassFileVersionedClassFileParser implements VersionedC
 	}
 
 	@NotNull
-	private Map<MethodUniqueness, MethodInformation> parseMethods(@NotNull final ConstantPoolJavaClassFileReader constantPoolJavaClassFileReader, final boolean isInterfaceOrAnnotation, @NotNull final KnownReferenceTypeName thisClassTypeName, final boolean isAnnotation) throws InvalidJavaClassFileException, JavaClassFileContainsDataTooLongToReadException
+	private Map<MethodUniqueness, MethodInformation> parseMethods(@NotNull final ConstantPoolJavaClassFileReader constantPoolJavaClassFileReader, final boolean isInterfaceOrAnnotation, @NotNull final KnownReferenceTypeName thisClassTypeName, final boolean isAnnotation, final boolean isEnum) throws InvalidJavaClassFileException, JavaClassFileContainsDataTooLongToReadException
 	{
 		return constantPoolJavaClassFileReader.parseTableAsMapWith16BitLength(new InvalidExceptionBiIntConsumer<Map<MethodUniqueness, MethodInformation>>()
 		{
@@ -284,13 +287,17 @@ public final class ModernClassFileVersionedClassFileParser implements VersionedC
 				@Nullable final Signature signature = attributes.signature(methodDescriptor);
 				final AnnotationValue[] visibleAnnotations = attributes.runtimeVisibleAnnotations();
 				final AnnotationValue[] invisibleAnnotations = attributes.runtimeInvisibleAnnotations();
-				final AnnotationValue[][] visibleParameterAnnotations = attributes.runtimeVisibleParameterAnnotations(isAnnotation, methodDescriptor.parameterCount());
-				final AnnotationValue[][] invisibleParameterAnnotations = attributes.runtimeInvisibleParameterAnnotations(isAnnotation, methodDescriptor.parameterCount());
+
+				// Weirdness for Enum constructors
+				final int methodParameterCount = methodDescriptor.parameterCount() - (isEnum && methodName.equals(InstanceInitializer) ? 2 : 0);
+
+				final AnnotationValue[][] visibleParameterAnnotations = attributes.runtimeVisibleParameterAnnotations(isAnnotation, methodParameterCount);
+				final AnnotationValue[][] invisibleParameterAnnotations = attributes.runtimeInvisibleParameterAnnotations(isAnnotation, methodParameterCount);
 				final TypeAnnotation[] visibleTypeAnnotations = attributes.runtimeVisibleTypeAnnotations();
 				final TypeAnnotation[] invisibleTypeAnnotations = attributes.runtimeInvisibleTypeAnnotations();
 
 				final Set<KnownReferenceTypeName> exceptions = attributes.exceptions(isAnnotation);
-				final MethodParameter[] methodParameters = attributes.methodParameters(isAnnotation, methodDescriptor.parameterCount());
+				final MethodParameter[] methodParameters = attributes.methodParameters(isAnnotation, methodParameterCount);
 				@Nullable final Object annotationDefault = attributes.annotationDefault(isAnnotation);
 				final UnknownAttributes unknownAttributes = attributes.unknownAttributes();
 

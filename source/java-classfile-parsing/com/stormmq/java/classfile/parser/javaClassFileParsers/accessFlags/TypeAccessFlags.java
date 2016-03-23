@@ -112,11 +112,7 @@ public final class TypeAccessFlags
 
 		if (javaClassFileVersion.isJava8OrLater())
 		{
-			// The flag is effectively no longer defined from Java 8 (it is ignored)
-			if (isSuper)
-			{
-				throw new InvalidJavaClassFileException("In Java class files from Java 8 onwards, ACC_SUPER should never be set");
-			}
+			// The flag is effectively no longer defined from Java 8 (it is ignored, although it appears that is set by the javac compiler)
 			return false;
 		}
 

@@ -29,6 +29,7 @@ import com.stormmq.java.parsing.utilities.Completeness;
 import com.stormmq.java.parsing.utilities.Visibility;
 import org.jetbrains.annotations.NotNull;
 
+import static com.stormmq.java.classfile.domain.names.MethodName.StaticInstanceInitializer;
 import static com.stormmq.java.classfile.parser.javaClassFileParsers.accessFlags.AccessFlags.hasFlagSet;
 import static com.stormmq.java.parsing.utilities.Completeness.*;
 import static com.stormmq.java.parsing.utilities.Visibility.*;
@@ -53,6 +54,12 @@ public final class MethodAccessFlags
 	@NotNull
 	public static Visibility validateAccessFlags(final char accessFlags, final boolean isInterfaceOrAnnotation, @NotNull final JavaClassFileVersion javaClassFileVersion, @NotNull final MethodName methodName) throws InvalidJavaClassFileException
 	{
+		// Class and interface initialization methods are called implicitly by the Java Virtual Machine. The value of their access_flags item is ignored except for the setting of the ACC_STRICT flag.
+		if (methodName.equals(StaticInstanceInitializer))
+		{
+			return Private;
+		}
+
 		final boolean isPublic = hasFlagSet(accessFlags, ACC_PUBLIC);
 		final boolean isProtected = hasFlagSet(accessFlags, ACC_PROTECTED);
 		final boolean isPrivate = hasFlagSet(accessFlags, ACC_PRIVATE);
@@ -190,13 +197,6 @@ public final class MethodAccessFlags
 				throw new InvalidJavaClassFileException("Instance initializers can not be abstract");
 			}
 		}
-
-		// Class and interface initialization methods are called implicitly by the Java Virtual Machine. The value of their access_flags item is ignored except for the setting of the ACC_STRICT flag.
-		/*
-		if (methodName.equals(StaticInitializerMethodName))
-		{
-		}
-		*/
 
 		return visibility;
 	}

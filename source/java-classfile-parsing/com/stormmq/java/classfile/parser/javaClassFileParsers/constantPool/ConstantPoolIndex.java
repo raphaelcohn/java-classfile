@@ -106,12 +106,7 @@ public final class ConstantPoolIndex
 
 		final ConstantPoolIndex that = (ConstantPoolIndex) o;
 
-		if (constantPoolIndexUnsigned16BitValue != that.constantPoolIndexUnsigned16BitValue)
-		{
-			return false;
-		}
-
-		return true;
+		return constantPoolIndexUnsigned16BitValue == that.constantPoolIndexUnsigned16BitValue;
 	}
 
 	@Override

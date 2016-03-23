@@ -22,9 +22,14 @@
 
 package com.stormmq.java.classfile.domain.attributes.type;
 
-import com.stormmq.java.classfile.domain.attributes.code.constants.BootstrapMethodArgument;
 import com.stormmq.java.classfile.domain.MethodHandle;
+import com.stormmq.java.classfile.domain.attributes.code.constants.BootstrapMethodArgument;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Arrays;
+
+import static java.lang.String.format;
+import static java.util.Locale.ENGLISH;
 
 public final class BootstrapMethod
 {
@@ -37,5 +42,12 @@ public final class BootstrapMethod
 	{
 		this.methodHandle = methodHandle;
 		this.bootstrapMethodArguments = bootstrapMethodArguments;
+	}
+
+	@Override
+	@NotNull
+	public String toString()
+	{
+		return format(ENGLISH, "%1$s(%2$s, %3$s)", getClass().getSimpleName(), methodHandle, Arrays.toString(bootstrapMethodArguments));
 	}
 }

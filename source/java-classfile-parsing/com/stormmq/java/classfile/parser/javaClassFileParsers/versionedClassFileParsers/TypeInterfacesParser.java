@@ -78,10 +78,10 @@ public final class TypeInterfacesParser
 	{
 		final KnownReferenceTypeName thisClassTypeName = javaClassFileReader.readKnownReferenceTypeName("this class reference");
 
-		@Nullable final TypeKind typeKind = MismatchedThisClassTypeNames.get(thisClassTypeName);
+		@Nullable final TypeKind typeKind = MismatchedThisClassTypeNames.getOrDefault(thisClassTypeName, this.typeKind);
 		if (this.typeKind != typeKind)
 		{
-			throw new InvalidJavaClassFileException(aOrAn(this.typeKind.name()) + "'s this class can not be " + thisClassTypeName);
+			throw new InvalidJavaClassFileException(aOrAn(this.typeKind.name()) + ' ' + this.typeKind.name() + "'s this class can not be " + thisClassTypeName);
 		}
 
 		return thisClassTypeName;
@@ -139,7 +139,7 @@ public final class TypeInterfacesParser
 			interfaces = javaClassFileReader.parseTableAsSetWith16BitLength(new InvalidExceptionBiIntConsumer<Set<KnownReferenceTypeName>>()
 			{
 				@Override
-				public void accept(@NotNull final Set<KnownReferenceTypeName> objects, final int index) throws InvalidJavaClassFileException, JavaClassFileContainsDataTooLongToReadException
+				public void accept(@NotNull final Set<KnownReferenceTypeName> objects, final int index) throws InvalidJavaClassFileException
 				{
 					final KnownReferenceTypeName interfaceTypeName = javaClassFileReader.readKnownReferenceTypeName("implemented interface");
 
@@ -154,12 +154,10 @@ public final class TypeInterfacesParser
 					{
 						throw new InvalidJavaClassFileException(format(ENGLISH, "'%1$s' can not implement interfaces", thisClassTypeName));
 					}
-					else
+
+					if (interfaceTypeName.equals(thisClassTypeName))
 					{
-						if (interfaceTypeName.equals(thisClassTypeName))
-						{
-							throw new InvalidJavaClassFileException(format(ENGLISH, "Interface name '%1$s' is superClass", interfaceTypeName));
-						}
+						throw new InvalidJavaClassFileException(format(ENGLISH, "Interface name '%1$s' is superClass", interfaceTypeName));
 					}
 
 					if (typeKind == Annotation)
@@ -191,9 +189,9 @@ public final class TypeInterfacesParser
 				throw new InvalidJavaClassFileException(format(ENGLISH, "Annotation '%1$s' should implement one interface (implements none)", thisClassTypeName));
 			}
 
-			if (!interfaces.contains(KnownReferenceTypeName.JavaLangAnnotationAnnotation))
+			if (!interfaces.contains(JavaLangAnnotationAnnotation))
 			{
-				throw new InvalidJavaClassFileException(format(ENGLISH, "Annotation '%1$s' should implement the interface '%2$s'", thisClassTypeName, KnownReferenceTypeName.JavaLangAnnotationAnnotation));
+				throw new InvalidJavaClassFileException(format(ENGLISH, "Annotation '%1$s' should implement the interface '%2$s'", thisClassTypeName, JavaLangAnnotationAnnotation));
 			}
 
 			return AnnotationKnownReferenceTypeNamesSet;
@@ -217,7 +215,7 @@ public final class TypeInterfacesParser
 	{
 		if (superClassTypeName.equals(thisClassTypeName))
 		{
-			throw new InvalidJavaClassFileException(aOrAn(typeKind.name()) + "'s super type must not be itself");
+			throw new InvalidJavaClassFileException(aOrAn(typeKind.name()) + ' ' + typeKind.name() + "'s super type must not be itself");
 		}
 	}
 
@@ -225,7 +223,7 @@ public final class TypeInterfacesParser
 	{
 		if (!superClassTypeName.equals(validSuperClassTypeName))
 		{
-			throw new InvalidJavaClassFileException(aOrAn(typeKind.name()) + "'s super type must be " + validSuperClassTypeName);
+			throw new InvalidJavaClassFileException(aOrAn(typeKind.name()) + ' ' + typeKind.name() + "'s super type must be " + validSuperClassTypeName);
 		}
 	}
 

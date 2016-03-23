@@ -35,15 +35,17 @@ public final class InnerTypeInformation
 
 	@NotNull private final KnownReferenceTypeName innerTypeName;
 	@Nullable private final KnownReferenceTypeName outerTypeName;
+	@Nullable private final String innerSimpleName;
 	private final boolean isInnerTypeSynthetic;
 	private final TypeKind innerTypeKind;
 	private final Visibility innerTypeVisibility;
 	private final Completeness innerTypeCompleteness;
 
-	public InnerTypeInformation(@NotNull final KnownReferenceTypeName innerTypeName, @Nullable final KnownReferenceTypeName outerTypeName, final boolean isInnerTypeSynthetic, final TypeKind innerTypeKind, final Visibility innerTypeVisibility, final Completeness innerTypeCompleteness)
+	public InnerTypeInformation(@NotNull final KnownReferenceTypeName innerTypeName, @Nullable final KnownReferenceTypeName outerTypeName, @Nullable final String innerSimpleName, final boolean isInnerTypeSynthetic, final TypeKind innerTypeKind, final Visibility innerTypeVisibility, final Completeness innerTypeCompleteness)
 	{
 		this.innerTypeName = innerTypeName;
 		this.outerTypeName = outerTypeName;
+		this.innerSimpleName = innerSimpleName;
 		this.isInnerTypeSynthetic = isInnerTypeSynthetic;
 		this.innerTypeKind = innerTypeKind;
 		this.innerTypeVisibility = innerTypeVisibility;

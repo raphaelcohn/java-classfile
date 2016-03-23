@@ -67,6 +67,7 @@ import static com.stormmq.java.classfile.domain.attributes.code.stackMapFrames.v
 import static com.stormmq.java.classfile.domain.attributes.code.stackMapFrames.verificationTypes.VerificationType.*;
 import static com.stormmq.java.classfile.parser.javaClassFileParsers.accessFlags.InnerTypeAccessFlags.*;
 import static com.stormmq.java.classfile.parser.javaClassFileParsers.accessFlags.ParameterAccessFlags.*;
+import static com.stormmq.java.classfile.parser.javaClassFileParsers.attributesParsers.Attributes.*;
 import static com.stormmq.java.classfile.parser.javaClassFileParsers.constantPool.FieldSignatureParser.parseFieldSignature;
 import static java.lang.String.format;
 import static java.util.Locale.ENGLISH;
@@ -99,9 +100,9 @@ public final class AttributeParserMappings
 
 		final TargetType[] targetTypesForLocation = allValidTargetTypesForLocationIndexedByTargetTypeTag(attributeLocation);
 
-		mapping(Attributes.AnnotationDefault, Java5, OnlyMethod, (attributeLengthUnsigned32BitInteger, javaClassFileReader) -> javaClassFileReader.parseAnnotationElementValue());
+		mapping(AnnotationDefault, Java5, OnlyMethod, (attributeLengthUnsigned32BitInteger, javaClassFileReader) -> javaClassFileReader.parseAnnotationElementValue());
 
-		tableArrayMapping(Attributes.BootstrapMethods, Java7, OnlyType, BootstrapMethod[]::new, (javaClassFileReader) ->
+		tableArrayMapping(BootstrapMethods, Java7, OnlyType, BootstrapMethod[]::new, (javaClassFileReader) ->
 		{
 			final MethodHandle methodHandle = javaClassFileReader.readMethodHandle("method handle reference");
 			final BootstrapMethodArgument[] bootstrapMethodArguments = javaClassFileReader.parseTableAsArrayWith16BitLength(BootstrapMethodArgument[]::new, EmptyBootstrapMethodArgumentConstants, () -> javaClassFileReader.readBootstrapMethodArgument("bootstrap method argument reference"));
@@ -144,7 +145,7 @@ public final class AttributeParserMappings
 			return new Code(javaClassFileReader.constantPool(), maximumStack, maximumLocals, codeLength, code, exceptionCode, programCounterToLineNumberEntryMap, localVariables, stackMapFrames, unknownAttributes, visibleTypeAnnotations, invisibleTypeAnnotations, javaClassFileVersion.isJava7OrLater());
 		});
 
-		mapping(Attributes.ConstantValue, Java1_0_2, OnlyField, (attributeLength, javaClassFileReader) ->
+		mapping(ConstantValue, Java1_0_2, OnlyField, (attributeLength, javaClassFileReader) ->
 		{
 			validateAttributeLength(attributeLength, "ConstantValue attribute must have a length of exactly 2", 2L);
 			return javaClassFileReader.readFieldConstant("field constant value");
@@ -152,7 +153,7 @@ public final class AttributeParserMappings
 
 		mapping(Attributes.Deprecated, Java1_1, AllButCode, (attributeLengthUnsigned32BitInteger, javaClassFileReader) -> parseFixedAttribute(attributeLengthUnsigned32BitInteger, Attributes.Deprecated));
 
-		mapping(Attributes.EnclosingMethod, Java5, OnlyType, (attributeLength, javaClassFileReader) ->
+		mapping(EnclosingMethod, Java5, OnlyType, (attributeLength, javaClassFileReader) ->
 		{
 			//noinspection MagicNumber
 			validateAttributeLength(attributeLength, "EnclosingMethod attribute must have a length of exactly", 4L);
@@ -168,31 +169,31 @@ public final class AttributeParserMappings
 			return new InsideEnclosingMethod(enclosingTypeName, nameAndTypeReferenceIndexConstant.methodName(), nameAndTypeReferenceIndexConstant.methodDescriptor());
 		});
 
-		// 		javaClassFileReader.readKnownReferenceTypeName("method's exception")
-		tableSetMapping(Attributes.Exceptions, Java1_0_2, OnlyMethod, new TableSetParser<KnownReferenceTypeName>()
+		tableSetMapping(Exceptions, Java1_0_2, OnlyMethod, new TableSetParser<KnownReferenceTypeName>()
 		{
 			@Override
-			public void parse(@NotNull final ConstantPoolJavaClassFileReader javaClassFileReader, @NotNull final Set<KnownReferenceTypeName> set) throws InvalidJavaClassFileException, JavaClassFileContainsDataTooLongToReadException
+			public void parse(@NotNull final ConstantPoolJavaClassFileReader javaClassFileReader, @NotNull final Set<KnownReferenceTypeName> set) throws InvalidJavaClassFileException
 			{
 				set.add(javaClassFileReader.readKnownReferenceTypeName("method's exception"));
 			}
 		});
 
-		tableArrayMapping(Attributes.InnerClasses, Java1_1, OnlyType, InnerTypeInformation[]::new, (javaClassFileReader) ->
+		tableArrayMapping(InnerClasses, Java1_1, OnlyType, InnerTypeInformation[]::new, (javaClassFileReader) ->
 		{
 			final KnownReferenceTypeName innerTypeName = javaClassFileReader.readKnownReferenceTypeName("inner class");
 			@Nullable final KnownReferenceTypeName outerTypeName = javaClassFileReader.readNullableKnownReferenceTypeName("potentially null internal type name");
-
+			@Nullable final String innerSimpleName = javaClassFileReader.readNullableModifiedUtf8String("potentially null inner simple name");
 			final char innerTypeAccessFlags = javaClassFileReader.readAccessFlags(InnerTypeAccessFlagsValidityMask);
+
 			final boolean isInnerTypeSynthetic = isInnerTypeSynthetic(innerTypeAccessFlags);
 			final TypeKind innerTypeKind = innerTypeKind(innerTypeAccessFlags);
 			final Visibility innerTypeVisibility = innerTypeVisibility(innerTypeAccessFlags);
 			final Completeness innerTypeCompleteness = innerTypeCompleteness(innerTypeAccessFlags);
 
-			return new InnerTypeInformation(innerTypeName, outerTypeName, isInnerTypeSynthetic, innerTypeKind, innerTypeVisibility, innerTypeCompleteness);
+			return new InnerTypeInformation(innerTypeName, outerTypeName, innerSimpleName, isInnerTypeSynthetic, innerTypeKind, innerTypeVisibility, innerTypeCompleteness);
 		});
 
-		tableArrayMapping(Attributes.LineNumberTable, Java1_0_2, OnlyCode, LineNumberEntry[]::new, (javaClassFileReader) ->
+		tableArrayMapping(LineNumberTable, Java1_0_2, OnlyCode, LineNumberEntry[]::new, (javaClassFileReader) ->
 		{
 			final char startProgramCounter = javaClassFileReader.readBigEndianUnsigned16BitInteger("line number start program counter");
 			final char lineNumber = javaClassFileReader.readBigEndianUnsigned16BitInteger("line number");
@@ -200,7 +201,7 @@ public final class AttributeParserMappings
 			return new LineNumberEntry(startProgramCounter, lineNumber);
 		});
 
-		tableArrayMapping(Attributes.LocalVariableTable, Java1_0_2, OnlyCode, LocalVariableEntry[]::new, (javaClassFileReader) ->
+		tableArrayMapping(LocalVariableTable, Java1_0_2, OnlyCode, LocalVariableEntry[]::new, (javaClassFileReader) ->
 		{
 			final char startProgramCount = javaClassFileReader.readBigEndianUnsigned16BitInteger("local variable start program counter");
 			final char localVariableLength = javaClassFileReader.readBigEndianUnsigned16BitInteger("local variable length");
@@ -211,7 +212,7 @@ public final class AttributeParserMappings
 			return new LocalVariableEntry(startProgramCount, localVariableLength, localVariableName, localVariableDescriptor, null, localVariableIndex);
 		});
 
-		tableArrayMapping(Attributes.LocalVariableTypeTable, Java5, OnlyCode, LocalVariableEntry[]::new, (javaClassFileReader) ->
+		tableArrayMapping(LocalVariableTypeTable, Java5, OnlyCode, LocalVariableEntry[]::new, (javaClassFileReader) ->
 		{
 			final char startProgramCount = javaClassFileReader.readBigEndianUnsigned16BitInteger("local variable type start program counter");
 			final char localVariableLength = javaClassFileReader.readBigEndianUnsigned16BitInteger("local variable type length");
@@ -222,9 +223,9 @@ public final class AttributeParserMappings
 			return new LocalVariableEntry(startProgramCount, localVariableLength, localVariableName, null, signature, localVariableIndex);
 		});
 
-		tableArrayMapping(Attributes.MethodParameters, Java8, OnlyMethod, MethodParameter[]::new, (javaClassFileReader) ->
+		tableArrayMapping(MethodParameters, Java8, OnlyMethod, MethodParameter[]::new, (javaClassFileReader) ->
 		{
-			@Nullable final String parameterName = javaClassFileReader.readMethodParameterName("method parameter name");
+			@Nullable final String parameterName = javaClassFileReader.readNullableModifiedUtf8String("method parameter name");
 			final char accessFlags = javaClassFileReader.readAccessFlags(ParameterAccessFlagsValidityMask);
 			final boolean isFinal = isParameterFinal(accessFlags);
 			final boolean isSynthetic = isParameterSynthetic(accessFlags);
@@ -233,27 +234,27 @@ public final class AttributeParserMappings
 			return new MethodParameter(parameterName, isFinal, isSynthetic, isMandatory);
 		});
 
-		mapping(Attributes.RuntimeVisibleAnnotations, Java5, AllButCode, (attributeLengthUnsigned32BitInteger, javaClassFileReader) -> javaClassFileReader.parseAnnotations());
+		mapping(RuntimeVisibleAnnotations, Java5, AllButCode, (attributeLengthUnsigned32BitInteger, javaClassFileReader) -> javaClassFileReader.parseAnnotations());
 
-		mapping(Attributes.RuntimeVisibleParameterAnnotations, Java5, OnlyMethod, (attributeLengthUnsigned32BitInteger, javaClassFileReader) -> javaClassFileReader.parseParameterAnnotations());
+		mapping(RuntimeVisibleParameterAnnotations, Java5, OnlyMethod, (attributeLengthUnsigned32BitInteger, javaClassFileReader) -> javaClassFileReader.parseParameterAnnotations());
 
-		mapping(Attributes.RuntimeVisibleTypeAnnotations, Java8, All, (attributeLengthUnsigned32BitInteger, javaClassFileReader) -> javaClassFileReader.parseTypeAnnotations(targetTypesForLocation));
+		mapping(RuntimeVisibleTypeAnnotations, Java8, All, (attributeLengthUnsigned32BitInteger, javaClassFileReader) -> javaClassFileReader.parseTypeAnnotations(targetTypesForLocation));
 
-		mapping(Attributes.RuntimeInvisibleAnnotations, Java5, AllButCode, (attributeLengthUnsigned32BitInteger, javaClassFileReader) -> javaClassFileReader.parseAnnotations());
+		mapping(RuntimeInvisibleAnnotations, Java5, AllButCode, (attributeLengthUnsigned32BitInteger, javaClassFileReader) -> javaClassFileReader.parseAnnotations());
 
-		mapping(Attributes.RuntimeInvisibleParameterAnnotations, Java5, OnlyMethod, (attributeLengthUnsigned32BitInteger, javaClassFileReader) -> javaClassFileReader.parseParameterAnnotations());
+		mapping(RuntimeInvisibleParameterAnnotations, Java5, OnlyMethod, (attributeLengthUnsigned32BitInteger, javaClassFileReader) -> javaClassFileReader.parseParameterAnnotations());
 
-		mapping(Attributes.RuntimeInvisibleTypeAnnotations, Java8, All, (attributeLengthUnsigned32BitInteger, javaClassFileReader) -> javaClassFileReader.parseTypeAnnotations(targetTypesForLocation));
+		mapping(RuntimeInvisibleTypeAnnotations, Java8, All, (attributeLengthUnsigned32BitInteger, javaClassFileReader) -> javaClassFileReader.parseTypeAnnotations(targetTypesForLocation));
 
-		mapping(Attributes.Signature, Java5, AllButCode, (attributeLengthUnsigned32BitInteger, javaClassFileReader) -> parseFieldSignature(stringAttributeValue(attributeLengthUnsigned32BitInteger, javaClassFileReader)));
+		mapping(Signature, Java5, AllButCode, (attributeLengthUnsigned32BitInteger, javaClassFileReader) -> parseFieldSignature(stringAttributeValue(attributeLengthUnsigned32BitInteger, javaClassFileReader)));
 
-		tableArrayMapping(Attributes.StackMapTable, Java6, OnlyCode, StackMapFrame[]::new, new StackMapFrameTableArrayParser());
+		tableArrayMapping(StackMapTable, Java6, OnlyCode, StackMapFrame[]::new, new StackMapFrameTableArrayParser());
 
-		mapping(Attributes.SourceDebugExtension, Java5, OnlyType, (attributeLengthUnsigned32BitInteger, javaClassFileReader) -> javaClassFileReader.readModifiedUtf8String("debug extension", attributeLengthUnsigned32BitInteger));
+		mapping(SourceDebugExtension, Java5, OnlyType, (attributeLengthUnsigned32BitInteger, javaClassFileReader) -> javaClassFileReader.readModifiedUtf8String("debug extension", attributeLengthUnsigned32BitInteger));
 
-		mapping(Attributes.SourceFile, Java1_0_2, OnlyType, AttributeParserMappings::stringAttributeValue);
+		mapping(SourceFile, Java1_0_2, OnlyType, AttributeParserMappings::stringAttributeValue);
 
-		mapping(Attributes.Synthetic, Java1_1, AllButCode, (attributeLengthUnsigned32BitInteger, javaClassFileReader) -> parseFixedAttribute(attributeLengthUnsigned32BitInteger, Attributes.Synthetic));
+		mapping(Synthetic, Java1_1, AllButCode, (attributeLengthUnsigned32BitInteger, javaClassFileReader) -> parseFixedAttribute(attributeLengthUnsigned32BitInteger, Synthetic));
 	}
 
 	@NotNull
