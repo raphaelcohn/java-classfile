@@ -96,7 +96,7 @@ public final class TypeReferenceIndexConstant extends AbstractSingleReferenceInd
 		{
 			try
 			{
-				validateIsJavaIdentifier(identifier, false);
+				validateIsJavaIdentifier(identifier, false, true);
 			}
 			catch (final InvalidJavaIdentifierException e)
 			{

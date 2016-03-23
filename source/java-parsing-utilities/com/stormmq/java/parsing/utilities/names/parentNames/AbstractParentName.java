@@ -23,7 +23,6 @@
 package com.stormmq.java.parsing.utilities.names.parentNames;
 
 import com.stormmq.java.parsing.utilities.InvalidJavaIdentifierException;
-import com.stormmq.java.parsing.utilities.StringConstants;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -44,7 +43,7 @@ public abstract class AbstractParentName implements ParentName
 			{
 				try
 				{
-					validateIsJavaIdentifier(piece, false);
+					validateIsJavaIdentifier(piece, false, true);
 				}
 				catch (final InvalidJavaIdentifierException e)
 				{

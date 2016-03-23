@@ -26,14 +26,15 @@ import com.stormmq.string.InvalidUtf16StringException;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.Set;
 
 import static com.stormmq.java.parsing.utilities.StringConstants.*;
 import static com.stormmq.string.StringUtilities.iterateOverStringCodePoints;
-import static java.lang.Character.*;
+import static java.lang.Character.isJavaIdentifierPart;
+import static java.lang.Character.isJavaIdentifierStart;
 import static java.lang.String.format;
 import static java.util.Locale.ENGLISH;
-import static java.util.Objects.requireNonNull;
 
 public final class ReservedIdentifiers
 {
@@ -137,11 +138,21 @@ public final class ReservedIdentifiers
 	}
 
 	@NotNull @NonNls
-	public static String validateIsJavaIdentifier(@NotNull @NonNls final String javaIdentifier, final boolean canBeInitializerMethodName) throws InvalidJavaIdentifierException
+	public static String validateIsJavaIdentifier(@NotNull @NonNls final String javaIdentifier, final boolean canBeInitializerMethodName, final boolean permitPackageInfoEtAl) throws InvalidJavaIdentifierException
 	{
+		if (canBeInitializerMethodName && permitPackageInfoEtAl)
+		{
+			throw new IllegalArgumentException("canBeInitializerMethodName and permitPackageInfoEtAl can not both be true");
+		}
+
 		validateIsNotEmpty(javaIdentifier, javaIdentifierDescription);
 
 		if (isValidInitializerMethodName(javaIdentifier, canBeInitializerMethodName, javaIdentifierDescription))
+		{
+			return javaIdentifier;
+		}
+
+		if (permitPackageInfoEtAl && javaIdentifier.equals("package-info"))
 		{
 			return javaIdentifier;
 		}
@@ -156,7 +167,7 @@ public final class ReservedIdentifiers
 				{
 					if (!isJavaIdentifierStart(codePoint))
 					{
-						throw new InvalidJavaIdentifierException(format(ENGLISH, "%1$s '%2$s' starts with an illegal code point '0x%3$s' at index '%4$s'", javaIdentifierDescription, javaIdentifier, Integer.toHexString(codePoint), index));
+						throw new InvalidJavaIdentifierException(format(ENGLISH, "%1$s '%2$s' starts with an illegal code point '0x%3$s' at index '%4$s'", javaIdentifierDescription, javaIdentifier, Integer.toHexString(codePoint), 0));
 					}
 				}
 				else

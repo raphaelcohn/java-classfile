@@ -35,7 +35,8 @@ import org.jetbrains.annotations.NotNull;
 import java.util.function.Function;
 
 import static com.stormmq.java.classfile.domain.JavaClassFileVersion.values;
-import static com.stormmq.java.classfile.parser.javaClassFileParsers.VersionedClassFileParserChooser.Modern;
+import static com.stormmq.java.classfile.parser.javaClassFileParsers.VersionedClassFileParserChooser.Lax;
+import static com.stormmq.java.classfile.parser.javaClassFileParsers.VersionedClassFileParserChooser.Strict;
 import static java.lang.Integer.toHexString;
 import static java.lang.String.format;
 import static java.util.Locale.ENGLISH;
@@ -46,9 +47,9 @@ public final class JavaClassFileParser
 	@NotNull private static final String JavaClassFileMagicNumberHexString = toHexString(JavaClassFileMagicNumber);
 
 	@NotNull
-	public static TypeInformation parseJavaClassFile(@NotNull final ByteReader byteReader) throws InvalidJavaClassFileException, JavaClassFileContainsDataTooLongToReadException
+	public static TypeInformation parseJavaClassFile(@NotNull final ByteReader byteReader, final boolean permitConstantsInInstanceFields) throws InvalidJavaClassFileException, JavaClassFileContainsDataTooLongToReadException
 	{
-		return parseJavaClassFile(new SimpleJavaClassFileReader(byteReader), Modern);
+		return parseJavaClassFile(new SimpleJavaClassFileReader(byteReader), permitConstantsInInstanceFields ? Lax : Strict);
 	}
 
 	@NotNull

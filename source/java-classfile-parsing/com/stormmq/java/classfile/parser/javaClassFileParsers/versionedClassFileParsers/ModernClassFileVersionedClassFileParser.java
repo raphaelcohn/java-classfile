@@ -102,15 +102,18 @@ public final class ModernClassFileVersionedClassFileParser implements VersionedC
 
 	@NotNull private final JavaClassFileReader javaClassFileReader;
 	@NotNull private final JavaClassFileVersion javaClassFileVersion;
+	private final boolean permitConstantsInInstanceFields;
+
 	@NotNull private final AttributesParser typeAttributesParser;
 	@NotNull private final AttributesParser methodAttributesParser;
 	@NotNull private final AttributesParser fieldAttributesParser;
 	@NotNull private final ConstantParser[] constantParsers;
 
-	public ModernClassFileVersionedClassFileParser(@NotNull final JavaClassFileReader javaClassFileReader, @NotNull final JavaClassFileVersion javaClassFileVersion)
+	public ModernClassFileVersionedClassFileParser(@NotNull final JavaClassFileReader javaClassFileReader, @NotNull final JavaClassFileVersion javaClassFileVersion, final boolean permitConstantsInInstanceFields)
 	{
 		this.javaClassFileReader = javaClassFileReader;
 		this.javaClassFileVersion = javaClassFileVersion;
+		this.permitConstantsInInstanceFields = permitConstantsInInstanceFields;
 
 		typeAttributesParser = TypeAttributesParsers.get(javaClassFileVersion);
 		methodAttributesParser = MethodAttributesParsers.get(javaClassFileVersion);
@@ -229,7 +232,7 @@ public final class ModernClassFileVersionedClassFileParser implements VersionedC
 			@NotNull final AnnotationValue[] invisibleAnnotations = attributes.runtimeInvisibleAnnotations();
 			@NotNull final TypeAnnotation[] visibleTypeAnnotations = attributes.runtimeVisibleTypeAnnotations();
 			@NotNull final TypeAnnotation[] invisibleTypeAnnotations = attributes.runtimeInvisibleTypeAnnotations();
-			@Nullable final Object constantValue = attributes.constantValue(!isStatic);
+			@Nullable final Object constantValue = attributes.constantValue(!isStatic, permitConstantsInInstanceFields);
 
 			fields.put(fieldUniqueness, new FieldInformation(fieldUniqueness, isSynthetic, fieldVisibility, fieldFinality, isTransient, isFinal, isStatic, isDeprecated, isSyntheticAttribute, signature, constantValue, visibleAnnotations, invisibleAnnotations, visibleTypeAnnotations, invisibleTypeAnnotations));
 		});

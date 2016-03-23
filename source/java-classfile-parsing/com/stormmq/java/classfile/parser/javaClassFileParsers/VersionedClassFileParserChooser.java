@@ -35,7 +35,8 @@ import static com.stormmq.java.classfile.domain.JavaClassFileVersion.Java8;
 @FunctionalInterface
 public interface VersionedClassFileParserChooser
 {
-	@NotNull VersionedClassFileParserChooser Modern = javaClassFilesMajorVersionNumber -> javaClassFileReader -> new ModernClassFileVersionedClassFileParser(javaClassFileReader, Java8);
+	@NotNull VersionedClassFileParserChooser Strict = javaClassFilesMajorVersionNumber -> javaClassFileReader -> new ModernClassFileVersionedClassFileParser(javaClassFileReader, Java8, false);
+	@NotNull VersionedClassFileParserChooser Lax = javaClassFilesMajorVersionNumber -> javaClassFileReader -> new ModernClassFileVersionedClassFileParser(javaClassFileReader, Java8, true);
 
 	@NotNull
 	Function<JavaClassFileReader, VersionedClassFileParser> choose(@NotNull final JavaClassFileVersion javaClassFileVersion);

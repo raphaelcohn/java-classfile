@@ -110,11 +110,14 @@ public final class Attributes
 	}
 
 	@Nullable
-	public Object constantValue(final boolean isInstanceField) throws InvalidJavaClassFileException
+	public Object constantValue(final boolean isInstance, final boolean permitConstantsInInstanceFields) throws InvalidJavaClassFileException
 	{
-		if (isInstanceField && hasAttribute(ConstantValue))
+		if (isInstance)
 		{
-			throw new InvalidJavaClassFileException("Instance fields should not contain constants");
+			if (hasAttribute(ConstantValue) && !permitConstantsInInstanceFields)
+			{
+				throw new InvalidJavaClassFileException("Instance fields should not contain constants");
+			}
 		}
 		return getAttributeValueNullable(ConstantValue, null);
 	}

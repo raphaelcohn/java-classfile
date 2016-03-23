@@ -229,7 +229,7 @@ public final class MethodDescriptorParser
 		final String javaIdentifier = rawTypeDescriptor.substring(previousIndex, index);
 		try
 		{
-			validateIsJavaIdentifier(javaIdentifier, false);
+			validateIsJavaIdentifier(javaIdentifier, false, false);
 		}
 		catch (final InvalidJavaIdentifierException e)
 		{
