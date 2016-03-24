@@ -57,6 +57,14 @@ public abstract class AbstractVersionedInvokeMethodHandleConstant extends Abstra
 				throw new InvalidJavaClassFileException(format(ENGLISH, "The reference at constant pool index '%1$s' is not a CONSTANT_Methodref_info or CONSTANT_Interfaceref_info but is instead a '%2$s'", this.referenceIndex, constant.getClass().getSimpleName()));
 			}
 		}
-		validateMethodReferenceIsNotAnInstanceOrStaticInitializer(constant);
+
+		if (constant instanceof ClassMethodReferenceIndexConstant)
+		{
+			validateMethodReferenceIsNotAnInstanceOrStaticInitializer(constant);
+		}
+		else
+		{
+			validateInterfaceReferenceIsNotAnInstanceOrStaticInitializer(constant);
+		}
 	}
 }

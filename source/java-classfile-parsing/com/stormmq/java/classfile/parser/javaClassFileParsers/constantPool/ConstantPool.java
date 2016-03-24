@@ -24,7 +24,8 @@ package com.stormmq.java.classfile.parser.javaClassFileParsers.constantPool;
 
 import com.stormmq.java.classfile.domain.*;
 import com.stormmq.java.classfile.domain.attributes.code.constants.*;
-import com.stormmq.java.classfile.parser.javaClassFileParsers.constantPool.constants.*;
+import com.stormmq.java.classfile.parser.javaClassFileParsers.constantPool.constants.Constant;
+import com.stormmq.java.classfile.parser.javaClassFileParsers.constantPool.constants.FieldConstant;
 import com.stormmq.java.classfile.parser.javaClassFileParsers.constantPool.constants.miscellaneous.ModifiedUtf8StringConstant;
 import com.stormmq.java.classfile.parser.javaClassFileParsers.constantPool.constants.miscellaneous.PhantomConstant;
 import com.stormmq.java.classfile.parser.javaClassFileParsers.constantPool.constants.numbers.*;
@@ -184,7 +185,7 @@ public final class ConstantPool implements RuntimeConstantPool
 		final Constant constant = retrieve(referenceIndex);
 		if (!(constant instanceof BootstrapMethodArgument))
 		{
-			throw new InvalidJavaClassFileException("bootstrap method argument reference is not a boostrap method argument");
+			throw new InvalidJavaClassFileException("bootstrap method argument reference is not a bootstrap method argument");
 		}
 		return (BootstrapMethodArgument) constant;
 	}
@@ -245,6 +246,12 @@ public final class ConstantPool implements RuntimeConstantPool
 	public String retrieveModifiedUtf8String(@NotNull final ConstantPoolIndex referenceIndex) throws InvalidJavaClassFileException
 	{
 		return validateReferenceIndexIsModifiedUtf8String(referenceIndex).value();
+	}
+
+	@NotNull
+	public String retrievePotentiallyInvalidModifiedUtf8String(@NotNull final ConstantPoolIndex referenceIndex) throws InvalidJavaClassFileException
+	{
+		return validateReferenceIndexIsModifiedUtf8String(referenceIndex).potentiallyInvalidValue();
 	}
 
 	@NotNull

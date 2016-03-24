@@ -126,4 +126,20 @@ public final class InternalTypeName
 		}
 		return (KnownReferenceTypeName) typeName;
 	}
+
+	@NotNull
+	public KnownReferenceTypeName toKnownReferenceTypeName() throws InvalidInternalTypeNameException
+	{
+		if (typeName instanceof KnownReferenceTypeName)
+		{
+			return (KnownReferenceTypeName) typeName;
+		}
+		throw new InvalidInternalTypeNameException("typeName is not a KnownReferenceTypeName");
+	}
+
+	@NotNull
+	public TypeName typeName()
+	{
+		return typeName;
+	}
 }

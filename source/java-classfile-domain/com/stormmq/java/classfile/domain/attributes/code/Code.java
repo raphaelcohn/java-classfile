@@ -42,7 +42,6 @@ import java.util.Set;
 
 import static com.stormmq.java.classfile.domain.attributes.code.opcodeParsers.OpcodeParser.chooseOpcodeParsers;
 import static java.lang.String.format;
-import static java.util.Collections.emptyMap;
 import static java.util.Collections.emptySet;
 import static java.util.Locale.ENGLISH;
 
@@ -92,7 +91,7 @@ public final class Code
 		this.opcode186IsPermittedBecauseThisIsForJava7OrLater = opcode186IsPermittedBecauseThisIsForJava7OrLater;
 	}
 
-	public void parseCode(final boolean isStrictFloatingPoint) throws InvalidOpcodeException, UnderflowInvalidOperandStackException, MismatchedVariableInvalidOperandStackException, MismatchedTypeInvalidOperandStackException, NotEnoughBytesInvalidOperandStackException, OverflowInvalidOperandStackException
+	public void parseCode(final boolean isStrictFloatingPoint) throws InvalidOpcodeException, UnderflowInvalidOperandStackException, MismatchedTypeInvalidOperandStackException, NotEnoughBytesInvalidOperandStackException, OverflowInvalidOperandStackException
 	{
 		final OperandStack operandStack = new TrackingOperandStack(maximumDepthOfTheOperandStackOfTheMethod);
 
@@ -116,7 +115,7 @@ public final class Code
 			}
 
 			final Set<Character> lineNumbers = programCounterToLineNumberEntryMap.getOrDefault(programCounter, NoLineNumbers);
-			final Map<Character, LocalVariableAtProgramCounter> localVariablesAtProgramCounter = localVariables.atProgramCounter(programCounter, codeLength, length);
+			final Set<LocalVariableAtProgramCounter> localVariablesAtProgramCounter = localVariables.getForProgramCounter(programCounter, length);
 
 			opcodeParser.parse(operandStack, codeReader, lineNumbers, localVariablesAtProgramCounter, runtimeConstantPool);
 			programCounter = (char) futureProgramCounter;

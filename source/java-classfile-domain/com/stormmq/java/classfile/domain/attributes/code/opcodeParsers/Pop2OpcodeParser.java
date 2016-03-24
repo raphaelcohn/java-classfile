@@ -30,7 +30,6 @@ import com.stormmq.java.classfile.domain.attributes.code.operandStack.OperandSta
 import com.stormmq.java.classfile.domain.attributes.code.operandStackItems.OperandStackItem;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Map;
 import java.util.Set;
 
 public final class Pop2OpcodeParser extends AbstractOneOpcodeParser
@@ -42,7 +41,7 @@ public final class Pop2OpcodeParser extends AbstractOneOpcodeParser
 	}
 
 	@Override
-	public void parse(@NotNull final OperandStack operandStack, @NotNull final CodeReader codeReader, @NotNull final Set<Character> lineNumbers, @NotNull final Map<Character, LocalVariableAtProgramCounter> localVariablesAtProgramCounter, @NotNull final RuntimeConstantPool runtimeConstantPool) throws InvalidOpcodeException, UnderflowInvalidOperandStackException, MismatchedTypeInvalidOperandStackException, OverflowInvalidOperandStackException, NotEnoughBytesInvalidOperandStackException
+	public void parse(@NotNull final OperandStack operandStack, @NotNull final CodeReader codeReader, @NotNull final Set<Character> lineNumbers, @NotNull final Set<LocalVariableAtProgramCounter> localVariablesAtProgramCounter, @NotNull final RuntimeConstantPool runtimeConstantPool) throws InvalidOpcodeException, UnderflowInvalidOperandStackException, MismatchedTypeInvalidOperandStackException, OverflowInvalidOperandStackException, NotEnoughBytesInvalidOperandStackException
 	{
 		final OperandStackItem popped = operandStack.pop();
 		if (popped.isCategory1())

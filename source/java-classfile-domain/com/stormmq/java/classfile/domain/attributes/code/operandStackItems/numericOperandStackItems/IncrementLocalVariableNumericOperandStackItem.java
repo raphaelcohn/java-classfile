@@ -22,7 +22,7 @@
 
 package com.stormmq.java.classfile.domain.attributes.code.operandStackItems.numericOperandStackItems;
 
-import com.stormmq.java.classfile.domain.attributes.code.localVariables.LocalVariableInformation;
+import com.stormmq.java.classfile.domain.attributes.code.localVariables.LocalVariableAtProgramCounter;
 import com.stormmq.java.classfile.domain.attributes.code.operandStackItems.DoNothingOperandStackItem;
 import org.jetbrains.annotations.Nullable;
 
@@ -32,13 +32,13 @@ public final class IncrementLocalVariableNumericOperandStackItem extends Abstrac
 {
 	private final char localVariableIndex;
 	private final int increment;
-	@Nullable private final LocalVariableInformation localVariableInformation;
+	@Nullable private final LocalVariableAtProgramCounter LocalVariableAtProgramCounter;
 
-	public IncrementLocalVariableNumericOperandStackItem(final char localVariableIndex, final int increment, @Nullable final LocalVariableInformation localVariableInformation)
+	public IncrementLocalVariableNumericOperandStackItem(final char localVariableIndex, final int increment, @Nullable final LocalVariableAtProgramCounter LocalVariableAtProgramCounter)
 	{
 		super(_int);
 		this.localVariableIndex = localVariableIndex;
 		this.increment = increment;
-		this.localVariableInformation = localVariableInformation;
+		this.LocalVariableAtProgramCounter = LocalVariableAtProgramCounter;
 	}
 }

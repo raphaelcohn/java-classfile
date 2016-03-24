@@ -22,68 +22,58 @@
 
 package com.stormmq.java.classfile.domain.attributes.code.localVariables;
 
-import com.stormmq.java.classfile.domain.attributes.code.invalidOperandStackExceptions.MismatchedVariableInvalidOperandStackException;
+import com.stormmq.java.classfile.domain.descriptors.FieldDescriptor;
+import com.stormmq.java.classfile.domain.names.FieldName;
+import com.stormmq.java.classfile.domain.signatures.Signature;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Map.Entry;
+import java.util.List;
+import java.util.Set;
 
-import static java.lang.String.format;
-import static java.util.Collections.emptyMap;
-import static java.util.Locale.ENGLISH;
+import static java.util.Collections.emptySet;
 
 public final class LocalVariables
 {
-	@NotNull private static final Map<Character, LocalVariableAtProgramCounter> EmptyLocalVariablesAtProgramCounter = emptyMap();
+	@NotNull private static final Set<LocalVariableAtProgramCounter> EmptyLocalVariablesAtProgramCounter = emptySet();
 
-	@NotNull private final LocalVariableInformation[] localVariableInformationByLocalVariableIndex;
-	@NotNull private final Map<Character, Map<Character, Character>> localVariableLengthsByProgramCounter;
+	public final long codeLength;
+	public final char maximumLocals;
+	@NotNull private final List<DescriptorLocalVariable> descriptorLocalVariables;
+	@NotNull private final List<SignatureLocalVariable> signatureLocalVariables;
 
-	public LocalVariables(@NotNull final LocalVariableInformation[] localVariableInformationByLocalVariableIndex, @NotNull final Map<Character, Map<Character, Character>> localVariableLengthsByProgramCounter)
+	public LocalVariables(final long codeLength, final char maximumLocals, @NotNull final List<DescriptorLocalVariable> descriptorLocalVariables, @NotNull final List<SignatureLocalVariable> signatureLocalVariables)
 	{
-		this.localVariableInformationByLocalVariableIndex = localVariableInformationByLocalVariableIndex;
-		this.localVariableLengthsByProgramCounter = localVariableLengthsByProgramCounter;
+		this.codeLength = codeLength;
+		this.maximumLocals = maximumLocals;
+		this.descriptorLocalVariables = descriptorLocalVariables;
+		this.signatureLocalVariables = signatureLocalVariables;
 	}
 
 	@NotNull
-	public Map<Character, LocalVariableAtProgramCounter> atProgramCounter(final char programCounter, final long codeLength, final char opcodeLength) throws MismatchedVariableInvalidOperandStackException
+	public Set<LocalVariableAtProgramCounter> getForProgramCounter(final char programCounter, final char opcodeLength)
 	{
-		final long remainingCodeLength = codeLength - programCounter;
-		@Nullable final Map<Character, Character> localVariableLengths = localVariableLengthsByProgramCounter.get(programCounter);
-		if (localVariableLengths == null)
+		for (final DescriptorLocalVariable descriptorLocalVariable : descriptorLocalVariables)
 		{
-			return EmptyLocalVariablesAtProgramCounter;
+			if (descriptorLocalVariable.startProgramCounter == programCounter)
+			{
+				final FieldName descriptorLocalVariableName = descriptorLocalVariable.localVariableName;
+				final char descriptorLength = descriptorLocalVariable.length;
+				final char descriptorLocalVariableIndex = descriptorLocalVariable.localVariableIndex;
+				final FieldDescriptor localVariableDescriptor = descriptorLocalVariable.localVariableDescriptor;
+			}
 		}
 
-		final int size = localVariableLengths.size();
-		final Map<Character, LocalVariableAtProgramCounter> uniqueLocalVariables = new HashMap<>(size);
-		for (final Entry<Character, Character> entry : localVariableLengths.entrySet())
+		for (final SignatureLocalVariable signatureLocalVariable : signatureLocalVariables)
 		{
-			final char localVariableIndex = entry.getKey();
-			final char length = entry.getValue();
-			if (length > remainingCodeLength)
+			if (signatureLocalVariable.startProgramCounter == programCounter)
 			{
-				throw new MismatchedVariableInvalidOperandStackException(format(ENGLISH, "The local variable at index '%1$s' has a length '%2$s' which exceeds the remaining code length '%3$s' at program counter '%4$s'", localVariableIndex, length, remainingCodeLength, programCounter));
+				final FieldName descriptorLocalVariableName = signatureLocalVariable.localVariableName;
+				final char descriptorLength = signatureLocalVariable.length;
+				final char descriptorLocalVariableIndex = signatureLocalVariable.localVariableIndex;
+				final Signature localVariableSignature = signatureLocalVariable.localVariableSignature;
 			}
-
-			// Not sure this check is justified - can length cover multiple opcodes?
-			if (length != opcodeLength)
-			{
-				throw new MismatchedVariableInvalidOperandStackException(format(ENGLISH, "The local variable at index '%1$s' has a length '%2$s' which differs from the opcode length '%3$s' at program counter '%4$s'", localVariableIndex, length, opcodeLength, programCounter));
-			}
-
-			for(char offset = 1; offset < length; offset++)
-			{
-				if (localVariableLengthsByProgramCounter.containsKey((char) (programCounter + offset)))
-				{
-					throw new MismatchedVariableInvalidOperandStackException(format(ENGLISH, "The local variable at index '%1$s' has a length '%2$s' which at offset '%3$s' from program counter '%4$s' contains a local variable", localVariableIndex, length, offset, programCounter));
-				}
-			}
-
-			uniqueLocalVariables.put(localVariableIndex, new LocalVariableAtProgramCounter(localVariableInformationByLocalVariableIndex[localVariableIndex], length));
 		}
-		return uniqueLocalVariables;
+
+		return EmptyLocalVariablesAtProgramCounter;
 	}
 }

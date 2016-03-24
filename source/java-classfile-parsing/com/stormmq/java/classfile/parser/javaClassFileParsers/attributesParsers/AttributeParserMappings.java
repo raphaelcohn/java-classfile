@@ -39,6 +39,8 @@ import com.stormmq.java.classfile.domain.attributes.type.enclosingMethods.Outsid
 import com.stormmq.java.classfile.domain.descriptors.FieldDescriptor;
 import com.stormmq.java.classfile.domain.names.FieldName;
 import com.stormmq.java.classfile.domain.signatures.Signature;
+import com.stormmq.java.classfile.domain.attributes.code.localVariables.DescriptorLocalVariable;
+import com.stormmq.java.classfile.domain.attributes.code.localVariables.SignatureLocalVariable;
 import com.stormmq.java.classfile.parser.javaClassFileParsers.constantPool.ConstantPoolJavaClassFileReader;
 import com.stormmq.java.classfile.parser.javaClassFileParsers.constantPool.constants.referenceIndexConstants.NameAndTypeReferenceIndexConstant;
 import com.stormmq.java.classfile.parser.javaClassFileParsers.exceptions.InvalidJavaClassFileException;
@@ -201,7 +203,7 @@ public final class AttributeParserMappings
 			return new LineNumberEntry(startProgramCounter, lineNumber);
 		});
 
-		tableArrayMapping(LocalVariableTable, Java1_0_2, OnlyCode, LocalVariableEntry[]::new, (javaClassFileReader) ->
+		tableArrayMapping(LocalVariableTable, Java1_0_2, OnlyCode, DescriptorLocalVariable[]::new, (javaClassFileReader) ->
 		{
 			final char startProgramCount = javaClassFileReader.readBigEndianUnsigned16BitInteger("local variable start program counter");
 			final char localVariableLength = javaClassFileReader.readBigEndianUnsigned16BitInteger("local variable length");
@@ -209,10 +211,10 @@ public final class AttributeParserMappings
 			@NotNull final FieldDescriptor localVariableDescriptor = javaClassFileReader.readFieldDescriptor("local variable descriptor");
 			final char localVariableIndex = javaClassFileReader.readBigEndianUnsigned16BitInteger("local variable index");
 
-			return new LocalVariableEntry(startProgramCount, localVariableLength, localVariableName, localVariableDescriptor, null, localVariableIndex);
+			return new DescriptorLocalVariable(startProgramCount, localVariableLength, localVariableName, localVariableDescriptor, localVariableIndex);
 		});
 
-		tableArrayMapping(LocalVariableTypeTable, Java5, OnlyCode, LocalVariableEntry[]::new, (javaClassFileReader) ->
+		tableArrayMapping(LocalVariableTypeTable, Java5, OnlyCode, SignatureLocalVariable[]::new, (javaClassFileReader) ->
 		{
 			final char startProgramCount = javaClassFileReader.readBigEndianUnsigned16BitInteger("local variable type start program counter");
 			final char localVariableLength = javaClassFileReader.readBigEndianUnsigned16BitInteger("local variable type length");
@@ -220,7 +222,7 @@ public final class AttributeParserMappings
 			@NotNull final Signature signature = parseFieldSignature(javaClassFileReader.readModifiedUtf8String("local variable type signature"));
 			final char localVariableIndex = javaClassFileReader.readBigEndianUnsigned16BitInteger("local variable type index");
 
-			return new LocalVariableEntry(startProgramCount, localVariableLength, localVariableName, null, signature, localVariableIndex);
+			return new SignatureLocalVariable(startProgramCount, localVariableLength, localVariableName, signature, localVariableIndex);
 		});
 
 		tableArrayMapping(MethodParameters, Java8, OnlyMethod, MethodParameter[]::new, (javaClassFileReader) ->

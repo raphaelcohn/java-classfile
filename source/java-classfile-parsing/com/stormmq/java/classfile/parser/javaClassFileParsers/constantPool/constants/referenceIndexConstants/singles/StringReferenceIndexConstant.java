@@ -51,19 +51,13 @@ public final class StringReferenceIndexConstant extends AbstractSingleReferenceI
 	@Override
 	public String value()
 	{
-		return valuePossiblyEmptyOrWithInvalidUtf16SurrogateSequences();
-	}
-
-	@NotNull
-	private String valuePossiblyEmptyOrWithInvalidUtf16SurrogateSequences()
-	{
-		return referencedValue();
+		return potentiallyInvalidValue();
 	}
 
 	@NotNull
 	@Override
-	public <T> T visit(@NotNull final SingleWidthConstantForLoadUser<T> singleWidthConstantForLoadUser) throws InvalidConstantException
+	public <T> T visit(@NotNull final SingleWidthConstantForLoadUser<T> singleWidthConstantForLoadUser)
 	{
-		return singleWidthConstantForLoadUser.useString(value());
+		return singleWidthConstantForLoadUser.usePotentiallyInvalidString(potentiallyInvalidValue());
 	}
 }

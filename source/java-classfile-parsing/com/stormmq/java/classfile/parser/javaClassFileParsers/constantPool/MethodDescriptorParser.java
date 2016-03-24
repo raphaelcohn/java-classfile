@@ -47,6 +47,12 @@ public final class MethodDescriptorParser
 	private static final int MaximumLengthOfMethodParametersIncludingReturnType = 255;
 
 	@NotNull
+	public static InternalTypeName processSimpleTypeDescriptor(final int length, @NonNls @NotNull final String rawTypeDescriptor) throws InvalidJavaClassFileException
+	{
+		return processTypeDescriptor(0, length, rawTypeDescriptor, false).internalTypeName;
+	}
+
+	@NotNull
 	public static MethodDescriptor parseMethodDescriptor(@NonNls @NotNull final String rawMethodDescriptor, final boolean returnTypeMustBeVoid) throws InvalidJavaClassFileException
 	{
 		final int length = rawMethodDescriptor.length();
@@ -72,12 +78,6 @@ public final class MethodDescriptorParser
 			throw new InvalidJavaClassFileException("Return type of method is required to be void");
 		}
 		return new MethodDescriptor(returnDescriptor, parameterDescriptors);
-	}
-
-	@NotNull
-	public static InternalTypeName processSimpleTypeDescriptor(final int length, @NotNull @NonNls final String rawTypeDescriptor) throws InvalidJavaClassFileException
-	{
-		return processTypeDescriptor(0, length, rawTypeDescriptor, false).internalTypeName;
 	}
 
 	@NotNull
@@ -209,11 +209,11 @@ public final class MethodDescriptorParser
 			switch (character)
 			{
 				case EndOfTypeDescriptorCharacter:
-					extractElement(rawTypeDescriptor, index, startIndex, internalTypeName);
+					extractElement(rawTypeDescriptor, index, startIndex, internalTypeName, true);
 					return new ParsedTypeDescriptorResult(knownReferenceTypeName(internalTypeName.toString()), index, arrayDimensions, 1);
 
 				case InternalTypeNameSeparator:
-					extractElement(rawTypeDescriptor, index, startIndex, internalTypeName);
+					extractElement(rawTypeDescriptor, index, startIndex, internalTypeName, false);
 					internalTypeName.append(ExternalTypeNameSeparator);
 					startIndex = index + 1;
 					break;
@@ -224,12 +224,12 @@ public final class MethodDescriptorParser
 		throw new InvalidJavaClassFileException("Class-like type methodDescriptor does not end with ';'");
 	}
 
-	private static void extractElement(@NonNls @NotNull final String rawTypeDescriptor, final int index, final int previousIndex, @NotNull final StringBuilder internalTypeName) throws InvalidJavaClassFileException
+	private static void extractElement(@NonNls @NotNull final String rawTypeDescriptor, final int index, final int previousIndex, @NotNull final StringBuilder internalTypeName, final boolean isFinalElement) throws InvalidJavaClassFileException
 	{
 		final String javaIdentifier = rawTypeDescriptor.substring(previousIndex, index);
 		try
 		{
-			validateIsJavaIdentifier(javaIdentifier, false, false);
+			validateIsJavaIdentifier(javaIdentifier, false, isFinalElement);
 		}
 		catch (final InvalidJavaIdentifierException e)
 		{

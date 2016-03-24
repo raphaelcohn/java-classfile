@@ -58,22 +58,4 @@ public final class InvokeInterfaceMethodHandleConstant extends AbstractInvokeMet
 		}
 		throw new InvalidJavaClassFileException(format(ENGLISH, "The reference at constant pool index '%1$s' is not a CONSTANT_Interfaceref_info but is instead a '%2$s'", referenceIndex, constant.getClass().getSimpleName()));
 	}
-
-	private void validateInterfaceReferenceIsNotAnInstanceOrStaticInitializer(@NotNull final Constant constant) throws InvalidJavaClassFileException
-	{
-		final InterfaceMethodReferenceIndexConstant interfaceMethodReferenceIndexConstant = (InterfaceMethodReferenceIndexConstant) constant;
-		interfaceMethodReferenceIndexConstant.validateReferenceIndices();
-
-		@NonNls final MethodName methodName = interfaceMethodReferenceIndexConstant.methodName();
-
-		if (methodName.equals(InstanceInitializer))
-		{
-			throw new InvalidJavaClassFileException(format(ENGLISH, "A method handle that is not of kind InvokeInterface may not reference '%1$s' an instance initializer of '<init>'", referenceIndex));
-		}
-
-		if (methodName.equals(StaticInstanceInitializer))
-		{
-			throw new InvalidJavaClassFileException(format(ENGLISH, "A method handle that is not of kind InvokeInterface may not reference '%1$s' a static initializer of '<clinit>'", referenceIndex));
-		}
-	}
 }

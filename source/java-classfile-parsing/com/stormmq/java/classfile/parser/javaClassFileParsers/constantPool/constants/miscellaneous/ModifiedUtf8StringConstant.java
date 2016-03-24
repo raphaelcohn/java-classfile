@@ -32,25 +32,18 @@ import static com.stormmq.string.StringUtilities.iterateOverStringCodePoints;
 
 public final class ModifiedUtf8StringConstant extends AbstractSingleWidthConstant
 {
-	@NotNull private static final CodePointUser<RuntimeException> DoNothing = (index, codePoint) ->
-	{
-	};
-	@NotNull private final String value;
+	@NotNull private static final CodePointUser<RuntimeException> DoNothing = (index, codePoint) -> {};
+	@NotNull private final String potentiallyInvalidValue;
 
-	public ModifiedUtf8StringConstant(@NotNull final String value) throws InvalidUtf16StringException
+	public ModifiedUtf8StringConstant(@NotNull final String potentiallyInvalidValue)
 	{
-		validateOnConstruction(value);
-		this.value = value;
-	}
-
-	private static void validateOnConstruction(@NotNull final String value) throws InvalidUtf16StringException
-	{
-		iterateOverStringCodePoints(value, DoNothing);
+		this.potentiallyInvalidValue = potentiallyInvalidValue;
 	}
 
 	@Override
-	public void validateReferenceIndices() throws InvalidJavaClassFileException
+	public void validateReferenceIndices()
 	{
+		// Note: We do not validate on construction or here because one user of Modified UTF-8 strings (for String constants in static field initializers and the operand stack) is permitted to have invalidly encoded Modified UTF-8 strings (strictly speaking, they are allowed to contain invalid surrogate pair sequences)
 	}
 
 	@Override
@@ -66,8 +59,28 @@ public final class ModifiedUtf8StringConstant extends AbstractSingleWidthConstan
 	}
 
 	@NotNull
-	public String value()
+	public String value() throws InvalidJavaClassFileException
 	{
-		return value;
+		return validateOnUse();
+	}
+
+	@NotNull
+	public String potentiallyInvalidValue()
+	{
+		return potentiallyInvalidValue;
+	}
+
+	@NotNull
+	private String validateOnUse() throws InvalidJavaClassFileException
+	{
+		try
+		{
+			iterateOverStringCodePoints(potentiallyInvalidValue, DoNothing);
+		}
+		catch (final InvalidUtf16StringException e)
+		{
+			throw new InvalidJavaClassFileException("Invalid Modified UTF-8 String because " + e.getMessage(), e);
+		}
+		return potentiallyInvalidValue;
 	}
 }

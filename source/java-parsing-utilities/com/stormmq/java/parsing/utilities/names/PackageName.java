@@ -66,7 +66,7 @@ public final class PackageName extends AbstractParentName
 
 	private PackageName(@NonNls @NotNull final String fullyQualifiedNameUsingDotsAndDollarSigns)
 	{
-		super(fullyQualifiedNameUsingDotsAndDollarSigns);
+		super(fullyQualifiedNameUsingDotsAndDollarSigns, false);
 	}
 
 	@NotNull

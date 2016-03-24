@@ -138,11 +138,11 @@ public final class ReservedIdentifiers
 	}
 
 	@NotNull @NonNls
-	public static String validateIsJavaIdentifier(@NotNull @NonNls final String javaIdentifier, final boolean canBeInitializerMethodName, final boolean permitPackageInfoEtAl) throws InvalidJavaIdentifierException
+	public static String validateIsJavaIdentifier(@NotNull @NonNls final String javaIdentifier, final boolean canBeInitializerMethodName, final boolean isClassLikeIdentifier) throws InvalidJavaIdentifierException
 	{
-		if (canBeInitializerMethodName && permitPackageInfoEtAl)
+		if (canBeInitializerMethodName && isClassLikeIdentifier)
 		{
-			throw new IllegalArgumentException("canBeInitializerMethodName and permitPackageInfoEtAl can not both be true");
+			throw new IllegalArgumentException("canBeInitializerMethodName and isClassLikeIdentifier can not both be true");
 		}
 
 		validateIsNotEmpty(javaIdentifier, javaIdentifierDescription);
@@ -152,12 +152,15 @@ public final class ReservedIdentifiers
 			return javaIdentifier;
 		}
 
-		if (permitPackageInfoEtAl && javaIdentifier.equals("package-info"))
+		if (isClassLikeIdentifier && javaIdentifier.equals("package-info"))
 		{
 			return javaIdentifier;
 		}
 
-		validateIsNotAReservedIdentifier(javaIdentifier, javaIdentifierDescription);
+		if (isClassLikeIdentifier)
+		{
+			validateIsNotAReservedIdentifier(javaIdentifier, javaIdentifierDescription);
+		}
 
 		try
 		{

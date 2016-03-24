@@ -34,16 +34,21 @@ public abstract class AbstractParentName implements ParentName
 {
 	@NotNull protected final String fullyQualifiedNameUsingDotsAndDollarSigns;
 
-	protected AbstractParentName(@NotNull final String fullyQualifiedNameUsingDotsAndDollarSigns)
+	protected AbstractParentName(@NotNull final String fullyQualifiedNameUsingDotsAndDollarSigns, final boolean isClassLikeName)
 	{
 		if (!fullyQualifiedNameUsingDotsAndDollarSigns.isEmpty())
 		{
 			final String[] pieces = fullyQualifiedNameUsingDotsAndDollarSigns.split("\\.");
-			for (final String piece : pieces)
+			final int length = pieces.length;
+			final int lastIndex = length - 1;
+			for (int index = 0; index < length; index++)
 			{
+				final String piece = pieces[index];
+
+				final boolean isClassLikeIdentifier = index == lastIndex && isClassLikeName;
 				try
 				{
-					validateIsJavaIdentifier(piece, false, true);
+					validateIsJavaIdentifier(piece, false, isClassLikeIdentifier);
 				}
 				catch (final InvalidJavaIdentifierException e)
 				{

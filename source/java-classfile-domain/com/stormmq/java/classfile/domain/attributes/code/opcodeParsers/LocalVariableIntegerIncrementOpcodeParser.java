@@ -26,14 +26,14 @@ import com.stormmq.java.classfile.domain.attributes.code.codeReaders.CodeReader;
 import com.stormmq.java.classfile.domain.attributes.code.constants.RuntimeConstantPool;
 import com.stormmq.java.classfile.domain.attributes.code.invalidOperandStackExceptions.NotEnoughBytesInvalidOperandStackException;
 import com.stormmq.java.classfile.domain.attributes.code.localVariables.LocalVariableAtProgramCounter;
-import com.stormmq.java.classfile.domain.attributes.code.localVariables.LocalVariableInformation;
 import com.stormmq.java.classfile.domain.attributes.code.operandStack.OperandStack;
 import com.stormmq.java.classfile.domain.attributes.code.operandStackItems.numericOperandStackItems.IncrementLocalVariableNumericOperandStackItem;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Map;
 import java.util.Set;
+
+import static com.stormmq.java.classfile.domain.attributes.code.localVariables.LocalVariableAtProgramCounter.forInformationOnlyUntilWeWorkOutHowToProperlyInterpretThisData;
 
 public final class LocalVariableIntegerIncrementOpcodeParser extends AbstractThreeOpcodeParser
 {
@@ -44,15 +44,14 @@ public final class LocalVariableIntegerIncrementOpcodeParser extends AbstractThr
 	}
 
 	@Override
-	public void parse(@NotNull final OperandStack operandStack, @NotNull final CodeReader codeReader, @NotNull final Set<Character> lineNumbers, @NotNull final Map<Character, LocalVariableAtProgramCounter> localVariablesAtProgramCounter, @NotNull final RuntimeConstantPool runtimeConstantPool) throws InvalidOpcodeException, NotEnoughBytesInvalidOperandStackException
+	public void parse(@NotNull final OperandStack operandStack, @NotNull final CodeReader codeReader, @NotNull final Set<Character> lineNumbers, @NotNull final Set<LocalVariableAtProgramCounter> localVariablesAtProgramCounter, @NotNull final RuntimeConstantPool runtimeConstantPool) throws NotEnoughBytesInvalidOperandStackException
 	{
 		final short index = codeReader.readUnsigned8BitInteger();
 		final byte increment = codeReader.readSignedBBitInteger();
-		final char indexAsChar = (char) index;
-		@Nullable final LocalVariableAtProgramCounter localVariableAtProgramCounter = localVariablesAtProgramCounter.get(indexAsChar);
-		@Nullable final LocalVariableInformation localVariableInformation = localVariableAtProgramCounter == null ? null : localVariableAtProgramCounter.localVariableInformation;
+		final char localVariableIndex = (char) index;
+		@Nullable final LocalVariableAtProgramCounter localVariableAtProgramCounter = forInformationOnlyUntilWeWorkOutHowToProperlyInterpretThisData(localVariablesAtProgramCounter, localVariableIndex);
 
-		final IncrementLocalVariableNumericOperandStackItem incrementLocalVariableNumericOperandStackItem = new IncrementLocalVariableNumericOperandStackItem(indexAsChar, increment, localVariableInformation);
+		final IncrementLocalVariableNumericOperandStackItem incrementLocalVariableNumericOperandStackItem = new IncrementLocalVariableNumericOperandStackItem(localVariableIndex, increment, localVariableAtProgramCounter);
 
 		operandStack.unchanged(incrementLocalVariableNumericOperandStackItem);
 	}

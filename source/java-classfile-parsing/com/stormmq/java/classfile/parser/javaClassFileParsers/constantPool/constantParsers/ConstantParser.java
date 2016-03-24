@@ -23,18 +23,16 @@
 package com.stormmq.java.classfile.parser.javaClassFileParsers.constantPool.constantParsers;
 
 import com.stormmq.java.classfile.domain.JavaClassFileVersion;
-import com.stormmq.java.classfile.parser.javaClassFileParsers.constantPool.ConstantPool;
-import com.stormmq.java.classfile.parser.javaClassFileParsers.constantPool.ConstantPoolIndex;
+import com.stormmq.java.classfile.parser.javaClassFileParsers.constantPool.*;
+import com.stormmq.java.classfile.parser.javaClassFileParsers.constantPool.constants.Constant;
 import com.stormmq.java.classfile.parser.javaClassFileParsers.constantPool.constants.methodHandleConstants.*;
-import com.stormmq.java.classfile.parser.javaClassFileParsers.constantPool.constants.miscellaneous.*;
+import com.stormmq.java.classfile.parser.javaClassFileParsers.constantPool.constants.miscellaneous.InvokeDynamicIndexConstant;
+import com.stormmq.java.classfile.parser.javaClassFileParsers.constantPool.constants.miscellaneous.ModifiedUtf8StringConstant;
 import com.stormmq.java.classfile.parser.javaClassFileParsers.constantPool.constants.numbers.*;
 import com.stormmq.java.classfile.parser.javaClassFileParsers.constantPool.constants.referenceIndexConstants.NameAndTypeReferenceIndexConstant;
-import com.stormmq.java.classfile.parser.javaClassFileParsers.exceptions.InvalidJavaClassFileException;
-import com.stormmq.java.classfile.parser.javaClassFileParsers.constantPool.constants.Constant;
-import com.stormmq.java.classfile.parser.javaClassFileParsers.constantPool.ConstantPoolJavaClassFileReader;
 import com.stormmq.java.classfile.parser.javaClassFileParsers.constantPool.constants.referenceIndexConstants.doubles.*;
 import com.stormmq.java.classfile.parser.javaClassFileParsers.constantPool.constants.referenceIndexConstants.singles.*;
-import com.stormmq.string.InvalidUtf16StringException;
+import com.stormmq.java.classfile.parser.javaClassFileParsers.exceptions.InvalidJavaClassFileException;
 import org.jetbrains.annotations.NotNull;
 
 import static java.lang.String.format;
@@ -60,17 +58,7 @@ public interface ConstantParser
 			constantParsers[index] = new UnsupportedConstantParser((short) index);
 		}
 
-		constantParsers[1]  = (constantPoolIndex, javaClassFileReader, constantPool) ->
-		{
-			try
-			{
-				return new ModifiedUtf8StringConstant(javaClassFileReader.readModifiedUtf8StringWithPrefixedBigEndianUnsigned16BitLength("Modified UTF-8 constant"));
-			}
-			catch (final InvalidUtf16StringException e)
-			{
-				throw new InvalidJavaClassFileException("Invalid Modified UTF-8 String", e);
-			}
-		};
+		constantParsers[1]  = (constantPoolIndex, javaClassFileReader, constantPool) -> new ModifiedUtf8StringConstant(javaClassFileReader.readModifiedUtf8StringWithPrefixedBigEndianUnsigned16BitLength("Modified UTF-8 constant"));
 		constantParsers[3]  = (constantPoolIndex, javaClassFileReader, constantPool) -> new IntegerConstant(javaClassFileReader.readBigEndianSigned32BitInteger("Signed 32-bit integer constant"));
 		constantParsers[4]  = (constantPoolIndex, javaClassFileReader, constantPool) -> new FloatConstant(javaClassFileReader.readBigEndianFloat("IEEE 754 32-bit floating point constant"));
 		constantParsers[5]  = (constantPoolIndex, javaClassFileReader, constantPool) -> new LongConstant(javaClassFileReader.readBigEndianSigned64BitInteger("Signed 64-bit integer constant"));

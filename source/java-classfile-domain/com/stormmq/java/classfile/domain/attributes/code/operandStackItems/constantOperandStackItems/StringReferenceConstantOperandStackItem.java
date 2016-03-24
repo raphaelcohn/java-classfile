@@ -28,10 +28,10 @@ import org.jetbrains.annotations.NotNull;
 
 public final class StringReferenceConstantOperandStackItem extends AbstractOperandStackItem implements ConstantOperandStackItem, ReferenceOperandStackItem
 {
-	@NotNull private final String value;
+	@NotNull private final String potentiallyInvalidValue;
 
-	public StringReferenceConstantOperandStackItem(@NotNull final String value)
+	public StringReferenceConstantOperandStackItem(@NotNull final String potentiallyInvalidValue)
 	{
-		this.value = value;
+		this.potentiallyInvalidValue = potentiallyInvalidValue;
 	}
 }

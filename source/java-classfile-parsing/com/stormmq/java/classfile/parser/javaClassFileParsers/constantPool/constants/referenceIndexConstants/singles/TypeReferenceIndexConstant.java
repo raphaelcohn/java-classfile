@@ -31,7 +31,7 @@ import com.stormmq.java.parsing.utilities.InvalidJavaIdentifierException;
 import com.stormmq.java.parsing.utilities.names.typeNames.referenceTypeNames.KnownReferenceTypeName;
 import org.jetbrains.annotations.NotNull;
 
-import static com.stormmq.java.classfile.parser.javaClassFileParsers.constantPool.MethodDescriptorParser.processSimpleTypeDescriptor;
+import static com.stormmq.java.classfile.parser.javaClassFileParsers.constantPool.ClassLikeTypeDescriptorParser.processClassLikeDescriptor;
 import static com.stormmq.java.parsing.utilities.ReservedIdentifiers.validateIsJavaIdentifier;
 import static com.stormmq.java.parsing.utilities.StringConstants.*;
 import static com.stormmq.java.parsing.utilities.names.typeNames.referenceTypeNames.KnownReferenceTypeName.knownReferenceTypeName;
@@ -58,7 +58,7 @@ public final class TypeReferenceIndexConstant extends AbstractSingleReferenceInd
 	@NotNull
 	public InternalTypeName internalTypeName() throws InvalidJavaClassFileException
 	{
-		return createInternalTypeNameFromTypeDescriptor(referencedValue());
+		return createInternalTypeNameFromTypeDescriptor(validValue());
 	}
 
 	@NotNull
@@ -74,7 +74,7 @@ public final class TypeReferenceIndexConstant extends AbstractSingleReferenceInd
 		// eg [Ljava/lang/String;
 		if (rawInternalTypeName.charAt(0) == ArrayTypeCodeCharacter)
 		{
-			return processSimpleTypeDescriptor(length, rawInternalTypeName);
+			return processClassLikeDescriptor(length, rawInternalTypeName);
 		}
 
 		// eg java/lang/String
@@ -82,21 +82,25 @@ public final class TypeReferenceIndexConstant extends AbstractSingleReferenceInd
 	}
 
 	@NotNull
-	private static KnownReferenceTypeName toKnownReferenceTypeName(@NotNull final String internalTypeName) throws InvalidJavaClassFileException
+	public static KnownReferenceTypeName toKnownReferenceTypeName(@NotNull final String internalTypeName) throws InvalidJavaClassFileException
 	{
 		final String[] identifiers = internalTypeName.split(InternalTypeNameSeparatorString);
-		if (identifiers.length == 0)
+		final int length = identifiers.length;
+		if (length == 0)
 		{
 			throw new InvalidJavaClassFileException("No values");
 		}
 
 		@NotNull final StringBuilder stringBuilder = new StringBuilder(internalTypeName.length());
 		boolean afterFirst = false;
-		for (final String identifier : identifiers)
+		final int lastIndex = length - 1;
+		for (int index = 0; index < length; index++)
 		{
+			final String identifier = identifiers[index];
+			final boolean isClassLikeIdentifier = index == lastIndex;
 			try
 			{
-				validateIsJavaIdentifier(identifier, false, true);
+				validateIsJavaIdentifier(identifier, false, isClassLikeIdentifier);
 			}
 			catch (final InvalidJavaIdentifierException e)
 			{

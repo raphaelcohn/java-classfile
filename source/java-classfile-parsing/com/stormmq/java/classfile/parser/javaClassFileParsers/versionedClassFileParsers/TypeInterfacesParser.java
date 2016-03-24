@@ -120,7 +120,8 @@ public final class TypeInterfacesParser
 				break;
 
 			case Enum:
-				validateSuperClass(superClassTypeName, JavaLangEnum, typeKind);
+				// Not true if this is an Enum Constant, eg com.some.name$1
+				// validateSuperClass(superClassTypeName, JavaLangEnum, typeKind);
 				break;
 
 			default:

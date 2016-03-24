@@ -20,63 +20,26 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-package com.stormmq.java.classfile.parser.javaClassFileParsers.attributesParsers;
+package com.stormmq.java.classfile.parser.javaClassFileParsers.exceptions;
 
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
+import static java.lang.Integer.toHexString;
 import static java.lang.String.format;
 import static java.util.Locale.ENGLISH;
 
-public final class VariableKey
+public final class NotAJavaClassFileException extends Exception
 {
-	private final char startProgramCounter;
-	private final char localVariableIndex;
+	public static final int JavaClassFileMagicNumber = 0xCAFEBABE;
+	@NotNull public static final String JavaClassFileMagicNumberHexString = toHexString(JavaClassFileMagicNumber);
 
-	public VariableKey(final char startProgramCounter, final char localVariableIndex)
+	public NotAJavaClassFileException(final int magicNumber)
 	{
-		this.startProgramCounter = startProgramCounter;
-		this.localVariableIndex = localVariableIndex;
+		super(format(ENGLISH, "Java class file magic number should be '0x%1$s' but was '0x%2$s", JavaClassFileMagicNumberHexString, toHexString(magicNumber)));
 	}
 
-	@Override
-	public boolean equals(@Nullable final Object o)
+	public NotAJavaClassFileException(@NotNull final InvalidJavaClassFileException notEnoughBytes)
 	{
-		if (this == o)
-		{
-			return true;
-		}
-		if (o == null || getClass() != o.getClass())
-		{
-			return false;
-		}
-
-		final VariableKey that = (VariableKey) o;
-
-		if (startProgramCounter != that.startProgramCounter)
-		{
-			return false;
-		}
-		if (localVariableIndex != that.localVariableIndex)
-		{
-			return false;
-		}
-
-		return true;
-	}
-
-	@Override
-	public int hashCode()
-	{
-		int result = startProgramCounter;
-		result = 31 * result + localVariableIndex;
-		return result;
-	}
-
-	@Override
-	@NotNull
-	public String toString()
-	{
-		return format(ENGLISH, "%1$s(%2$s, %3$s)", getClass().getSimpleName(), (int) startProgramCounter, (int) localVariableIndex);
+		super("Not enough bytes", notEnoughBytes);
 	}
 }

@@ -31,7 +31,6 @@ import com.stormmq.java.classfile.domain.attributes.code.operandStackItems.numer
 import com.stormmq.java.classfile.domain.attributes.code.operandStackItems.numericOperandStackItems.NumericOperandStackItem;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Map;
 import java.util.Set;
 
 import static com.stormmq.java.classfile.domain.attributes.code.typing.ComputationalCategory._int;
@@ -39,7 +38,7 @@ import static com.stormmq.java.classfile.domain.attributes.code.typing.Computati
 public final class LongComparisonToIntegerOpcodeParser extends AbstractOneOpcodeParser
 {
 	@Override
-	public void parse(@NotNull final OperandStack operandStack, @NotNull final CodeReader codeReader, @NotNull final Set<Character> lineNumbers, @NotNull final Map<Character, LocalVariableAtProgramCounter> localVariablesAtProgramCounter, @NotNull final RuntimeConstantPool runtimeConstantPool) throws InvalidOpcodeException, UnderflowInvalidOperandStackException, MismatchedTypeInvalidOperandStackException, OverflowInvalidOperandStackException, NotEnoughBytesInvalidOperandStackException
+	public void parse(@NotNull final OperandStack operandStack, @NotNull final CodeReader codeReader, @NotNull final Set<Character> lineNumbers, @NotNull final Set<LocalVariableAtProgramCounter> localVariablesAtProgramCounter, @NotNull final RuntimeConstantPool runtimeConstantPool) throws InvalidOpcodeException, UnderflowInvalidOperandStackException, MismatchedTypeInvalidOperandStackException, OverflowInvalidOperandStackException, NotEnoughBytesInvalidOperandStackException
 	{
 		final NumericOperandStackItem<Long> value2 = operandStack.popNumeric(_int);
 		final NumericOperandStackItem<Long> value1 = operandStack.popNumeric(_int);

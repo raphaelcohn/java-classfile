@@ -33,7 +33,6 @@ import com.stormmq.java.classfile.domain.attributes.code.operandStackItems.numer
 import com.stormmq.java.classfile.domain.attributes.code.typing.ComputationalCategory;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Map;
 import java.util.Set;
 
 public class UnaryOperationOpcodeParser extends AbstractOneOpcodeParser
@@ -59,7 +58,7 @@ public class UnaryOperationOpcodeParser extends AbstractOneOpcodeParser
 	}
 
 	@Override
-	public void parse(@NotNull final OperandStack operandStack, @NotNull final CodeReader codeReader, @NotNull final Set<Character> lineNumbers, @NotNull final Map<Character, LocalVariableAtProgramCounter> localVariablesAtProgramCounter, @NotNull final RuntimeConstantPool runtimeConstantPool) throws InvalidOpcodeException, UnderflowInvalidOperandStackException, MismatchedTypeInvalidOperandStackException
+	public void parse(@NotNull final OperandStack operandStack, @NotNull final CodeReader codeReader, @NotNull final Set<Character> lineNumbers, @NotNull final Set<LocalVariableAtProgramCounter> localVariablesAtProgramCounter, @NotNull final RuntimeConstantPool runtimeConstantPool) throws InvalidOpcodeException, UnderflowInvalidOperandStackException, MismatchedTypeInvalidOperandStackException
 	{
 		final NumericOperandStackItem<Integer> value = operandStack.popNumeric(computationalCategory);
 		final NumericOperandStackItem<Integer> result = value.unaryOperation(unaryOperation);

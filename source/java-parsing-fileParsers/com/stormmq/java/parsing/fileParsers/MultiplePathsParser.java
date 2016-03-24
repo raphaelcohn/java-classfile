@@ -5,10 +5,10 @@ import org.jetbrains.annotations.NotNull;
 import java.io.IOException;
 import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
-import java.util.Enumeration;
 import java.util.zip.*;
 
-import static com.stormmq.path.FileAndFolderHelper.*;
+import static com.stormmq.path.FileAndFolderHelper.relativeToRootPath;
+import static com.stormmq.path.FileAndFolderHelper.walkTreeFollowingSymlinks;
 import static com.stormmq.path.IsFileTypeFilter.*;
 import static com.stormmq.path.IsSubFolderFilter.IsSubFolder;
 import static java.lang.String.format;
@@ -76,13 +76,12 @@ public final class MultiplePathsParser
 	{
 		try(final ZipFile zipFile = new ZipFile(zipFilePath.toFile()))
 		{
-			final Enumeration<? extends ZipEntry> entries = zipFile.entries();
-			while(entries.hasMoreElements())
+			if (zipFile.size() == 0)
 			{
-				final ZipEntry zipEntry = entries.nextElement();
-
-				processZipEntry(zipFile, zipEntry);
+				return;
 			}
+
+			zipFile.stream().filter((zipEntry) -> !zipEntry.isDirectory()).forEach(zipEntry -> processZipEntry(zipFile, zipEntry));
 		}
 		catch (final ZipException e)
 		{
@@ -110,11 +109,6 @@ public final class MultiplePathsParser
 
 	private void processZipEntry(@NotNull final ZipFile zipFile, @NotNull final ZipEntry zipEntry)
 	{
-		if (zipEntry.isDirectory())
-		{
-			return;
-		}
-
 		final String name = zipEntry.getName();
 
 		if (isJavaFile(name))

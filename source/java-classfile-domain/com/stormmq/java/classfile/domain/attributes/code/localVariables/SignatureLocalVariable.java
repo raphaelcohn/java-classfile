@@ -22,36 +22,17 @@
 
 package com.stormmq.java.classfile.domain.attributes.code.localVariables;
 
+import com.stormmq.java.classfile.domain.names.FieldName;
+import com.stormmq.java.classfile.domain.signatures.Signature;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Set;
-
-public interface LocalVariableAtProgramCounter
+public final class SignatureLocalVariable extends AbstractLocalVariable
 {
-	@NotNull
-	static LocalVariableAtProgramCounter forInformationOnlyUntilWeWorkOutHowToProperlyInterpretThisData(@NotNull final Set<LocalVariableAtProgramCounter> localVariablesAtProgramCounter, final char localVariableIndex)
+	@NotNull public final Signature localVariableSignature;
+
+	public SignatureLocalVariable(final char startProgramCounter, final char length, @NotNull final FieldName localVariableName, @NotNull final Signature localVariableSignature, final char localVariableIndex)
 	{
-		final class ForInformationOnlyUntilWeWorkOutHowToProperlyInterpretThisData implements LocalVariableAtProgramCounter
-		{
-			@NotNull private final Set<LocalVariableAtProgramCounter> localVariablesAtProgramCounter;
-			private final char localVariableIndex;
-
-			private ForInformationOnlyUntilWeWorkOutHowToProperlyInterpretThisData(@NotNull final Set<LocalVariableAtProgramCounter> localVariablesAtProgramCounter, final char localVariableIndex)
-			{
-				this.localVariablesAtProgramCounter = localVariablesAtProgramCounter;
-				this.localVariableIndex = localVariableIndex;
-			}
-
-			@Override
-			public String toString()
-			{
-				return "ForInformationOnlyUntilWeWorkOutHowToProperlyInterpretThisData{" +
-				"localVariablesAtProgramCounter=" + localVariablesAtProgramCounter +
-				", localVariableIndex=" + localVariableIndex +
-				'}';
-			}
-		}
-
-		return new ForInformationOnlyUntilWeWorkOutHowToProperlyInterpretThisData(localVariablesAtProgramCounter, localVariableIndex);
+		super(startProgramCounter, length, localVariableName, localVariableIndex);
+		this.localVariableSignature = localVariableSignature;
 	}
 }

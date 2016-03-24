@@ -26,7 +26,7 @@ import com.stormmq.java.classfile.domain.attributes.UnknownAttributeData;
 import com.stormmq.java.classfile.domain.attributes.UnknownAttributes;
 import com.stormmq.java.classfile.domain.attributes.annotations.AnnotationValue;
 import com.stormmq.java.classfile.domain.attributes.annotations.TypeAnnotation;
-import com.stormmq.java.classfile.domain.attributes.code.*;
+import com.stormmq.java.classfile.domain.attributes.code.LineNumberEntry;
 import com.stormmq.java.classfile.domain.attributes.code.localVariables.*;
 import com.stormmq.java.classfile.domain.attributes.code.stackMapFrames.StackMapFrame;
 import com.stormmq.java.classfile.domain.attributes.method.MethodParameter;
@@ -47,8 +47,7 @@ import static com.stormmq.java.classfile.domain.attributes.code.stackMapFrames.S
 import static com.stormmq.java.classfile.domain.attributes.method.MethodParameter.EmptyMethodParameters;
 import static com.stormmq.java.classfile.domain.attributes.type.BootstrapMethod.EmptyBootstrapMethods;
 import static com.stormmq.java.classfile.parser.javaClassFileParsers.attributesParsers.ArrayMerge.arrayMerge;
-import static java.util.Collections.emptyMap;
-import static java.util.Collections.emptySet;
+import static java.util.Collections.*;
 
 public final class Attributes
 {
@@ -137,7 +136,7 @@ public final class Attributes
 	public Set<KnownReferenceTypeName> exceptions(final boolean isAnnotation) throws InvalidJavaClassFileException
 	{
 		final Set<KnownReferenceTypeName> exceptions = getAttributeValueNotNull(Exceptions, EmptyExceptions);
-		if (isAnnotation)
+		if (isAnnotation && !exceptions.isEmpty())
 		{
 			throw new InvalidJavaClassFileException("An annotation can not have exceptions");
 		}
@@ -173,63 +172,54 @@ public final class Attributes
 	@NotNull
 	public LocalVariables localVariableWithSignatures(final long codeLength, final char maximumLocals) throws InvalidJavaClassFileException
 	{
-		final LocalVariableInformation[] localVariableInformationByLocalVariableIndex = new LocalVariableInformation[maximumLocals];
-		final Map<Character, Map<Character, Character>> localVariableLengthsByProgramCounter = new HashMap<>(maximumLocals * 10);
+		final List<DescriptorLocalVariable> descriptorLocalVariables = variablesByVariableIndex(maximumLocals, codeLength, LocalVariableTable);
+		final List<SignatureLocalVariable> signatureLocalVariables = variablesByVariableIndex(maximumLocals, codeLength, LocalVariableTypeTable);
 
-		variablesByVariableIndex(codeLength, maximumLocals, LocalVariableTable, localVariableInformationByLocalVariableIndex, localVariableLengthsByProgramCounter);
-		variablesByVariableIndex(codeLength, maximumLocals, LocalVariableTypeTable, localVariableInformationByLocalVariableIndex, localVariableLengthsByProgramCounter);
-
-		return new LocalVariables(localVariableInformationByLocalVariableIndex, localVariableLengthsByProgramCounter);
+		return new LocalVariables(codeLength, maximumLocals, descriptorLocalVariables, signatureLocalVariables);
 	}
 
-	@SuppressWarnings("ForLoopReplaceableByForEach")
-	private void variablesByVariableIndex(final long codeLength, final char maximumLocals, @NotNull final String attributeName, @NotNull final LocalVariableInformation[] localVariableInformationByLocalVariableIndex, @NotNull final Map<Character, Map<Character, Character>> localVariableLengthsByProgramCounter) throws InvalidJavaClassFileException
+	@NotNull
+	private <V extends AbstractLocalVariable> List<V> variablesByVariableIndex(final char maximumLocals, final long codeLength, @NotNull final String attributeName) throws InvalidJavaClassFileException
 	{
-		@SuppressWarnings("unchecked") @Nullable final List<LocalVariableEntry[]> variables = (List<LocalVariableEntry[]>) attributes.get(attributeName);
-		if (variables == null)
+		@SuppressWarnings("unchecked") @Nullable final List<V[]> variableTables = (List<V[]>) attributes.get(attributeName);
+		if (variableTables == null)
 		{
-			return;
+			return emptyList();
 		}
 
-		if (variables.size() > maximumLocals)
+		if (variableTables.size() > maximumLocals)
 		{
+			if (variableTables.size() == 1)
+			{
+				if (variableTables.get(0).length == 0)
+				{
+					return emptyList();
+				}
+			}
 			throw new InvalidJavaClassFileException("There may be no more than one " + attributeName + " attribute per local variable in the attributes table of a Code attribute.");
 		}
 
-		final Map<VariableKey, LocalVariableEntry> encountered = new HashMap<>(maximumLocals * 10);
-		for (final LocalVariableEntry[] variable : variables)
+		final List<V> variables = new ArrayList<>(maximumLocals);
+
+		for (final V[] variableTable : variableTables)
 		{
-			for (final LocalVariableEntry variableEntry : variable)
+			for (final V localVariable : variableTable)
 			{
-				variableEntry.validateNotAfterEndOfCode(codeLength);
-				variableEntry.validateDoesNotHaveALocalVariableIndexWhichIsTooLarge(maximumLocals);
-
-				final char startProgramCounter = variableEntry.startProgramCounter();
-				final char localVariableIndex = variableEntry.localVariableIndex();
-				final VariableKey variableKey = new VariableKey(startProgramCounter, localVariableIndex);
-				@Nullable final LocalVariableEntry existing = encountered.putIfAbsent(variableKey, variableEntry);
-				if (existing != null)
+				try
 				{
-					throw new InvalidJavaClassFileException("Already encountered " + variableKey);
+					localVariable.validateNotAfterEndOfCode(codeLength);
+					localVariable.validateDoesNotHaveALocalVariableIndexWhichIsTooLarge(maximumLocals);
+				}
+				catch (final MismatchedLocalVariableLengthException e)
+				{
+					throw new InvalidJavaClassFileException("Invalid local variable", e);
 				}
 
-				final Map<Character, Character> localVariableLengths = localVariableLengthsByProgramCounter.getOrDefault(startProgramCounter, new HashMap<>(1));
-				@Nullable final Character length = localVariableLengths.get(localVariableIndex);
-				if (length == null)
-				{
-					localVariableLengths.put(localVariableIndex, variableEntry.length());
-				}
-				else
-				{
-					variableEntry.validateLengthMatches(length);
-				}
-				localVariableLengthsByProgramCounter.putIfAbsent(startProgramCounter, localVariableLengths);
-
-				@Nullable final LocalVariableInformation localVariableInformation = localVariableInformationByLocalVariableIndex[localVariableIndex];
-				final LocalVariableInformation replacement = localVariableInformation == null ? variableEntry.toLocalVariableInformation() : variableEntry.validateIsCompatibleWith(localVariableInformation);
-				localVariableInformationByLocalVariableIndex[localVariableIndex] = replacement;
+				variables.add(localVariable);
 			}
 		}
+
+		return variables;
 	}
 
 	@NotNull

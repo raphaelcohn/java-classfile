@@ -23,17 +23,15 @@
 package com.stormmq.java.parsing.utilities.names.typeNames.referenceTypeNames;
 
 import com.stormmq.java.parsing.utilities.names.parentNames.AbstractParentName;
-import com.stormmq.string.StringUtilities;
 import org.jetbrains.annotations.*;
 
 import java.io.*;
-import java.util.*;
+import java.util.Objects;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
-import static com.stormmq.java.parsing.utilities.StringConstants.ExternalTypeNameSeparator;
-import static com.stormmq.java.parsing.utilities.StringConstants.ExternalTypeNameSeparatorString;
-import static com.stormmq.java.parsing.utilities.StringConstants.InternalTypeNameSeparator;
+import static com.stormmq.java.parsing.utilities.StringConstants.*;
 import static com.stormmq.string.StringUtilities.maximumUtf16ToUtf8EncodingSize;
 import static java.util.Collections.singleton;
 
@@ -143,7 +141,7 @@ public final class KnownReferenceTypeName extends AbstractParentName implements 
 
 	public KnownReferenceTypeName(@NotNull final String fullyQualifiedNameUsingDotsAndDollarSigns)
 	{
-		super(fullyQualifiedNameUsingDotsAndDollarSigns);
+		super(fullyQualifiedNameUsingDotsAndDollarSigns, true);
 	}
 
 	@Override

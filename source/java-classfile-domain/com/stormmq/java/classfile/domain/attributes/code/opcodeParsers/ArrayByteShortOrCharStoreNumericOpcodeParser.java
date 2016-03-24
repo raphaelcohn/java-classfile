@@ -33,7 +33,6 @@ import com.stormmq.java.classfile.domain.attributes.code.operandStackItems.refer
 import com.stormmq.java.classfile.domain.attributes.code.typing.ByteCharOrShort;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Map;
 import java.util.Set;
 
 import static com.stormmq.java.classfile.domain.attributes.code.typing.ComputationalCategory._int;
@@ -48,7 +47,7 @@ public final class ArrayByteShortOrCharStoreNumericOpcodeParser extends Abstract
 	}
 
 	@Override
-	public void parse(@NotNull final OperandStack operandStack, @NotNull final CodeReader codeReader, @NotNull final Set<Character> lineNumbers, @NotNull final Map<Character, LocalVariableAtProgramCounter> localVariablesAtProgramCounter, @NotNull final RuntimeConstantPool runtimeConstantPool) throws InvalidOpcodeException, UnderflowInvalidOperandStackException, MismatchedTypeInvalidOperandStackException, OverflowInvalidOperandStackException, NotEnoughBytesInvalidOperandStackException
+	public void parse(@NotNull final OperandStack operandStack, @NotNull final CodeReader codeReader, @NotNull final Set<Character> lineNumbers, @NotNull final Set<LocalVariableAtProgramCounter> localVariablesAtProgramCounter, @NotNull final RuntimeConstantPool runtimeConstantPool) throws InvalidOpcodeException, UnderflowInvalidOperandStackException, MismatchedTypeInvalidOperandStackException, OverflowInvalidOperandStackException, NotEnoughBytesInvalidOperandStackException
 	{
 		final NumericOperandStackItem<Integer> index = operandStack.popNumeric(_int);
 		final ReferenceOperandStackItem arrayReference = operandStack.popReference();

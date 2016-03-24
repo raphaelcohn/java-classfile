@@ -27,6 +27,7 @@ import com.stormmq.java.classfile.parser.javaClassFileParsers.constantPool.Const
 import com.stormmq.java.classfile.parser.javaClassFileParsers.constantPool.ConstantPoolIndex;
 import com.stormmq.java.classfile.parser.javaClassFileParsers.constantPool.constants.Constant;
 import com.stormmq.java.classfile.parser.javaClassFileParsers.constantPool.constants.referenceIndexConstants.doubles.ClassMethodReferenceIndexConstant;
+import com.stormmq.java.classfile.parser.javaClassFileParsers.constantPool.constants.referenceIndexConstants.doubles.InterfaceMethodReferenceIndexConstant;
 import com.stormmq.java.classfile.parser.javaClassFileParsers.exceptions.InvalidJavaClassFileException;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
@@ -58,6 +59,24 @@ public abstract class AbstractInvokeMethodHandleConstant extends AbstractMethodH
 		classMethodReferenceIndexConstant.validateReferenceIndices();
 
 		@NonNls final MethodName methodName = classMethodReferenceIndexConstant.methodName();
+
+		if (methodName.equals(InstanceInitializer))
+		{
+			throw new InvalidJavaClassFileException(format(ENGLISH, "A method handle that is not of kind InvokeInterface may not reference '%1$s' an instance initializer of '<init>'", referenceIndex));
+		}
+
+		if (methodName.equals(StaticInstanceInitializer))
+		{
+			throw new InvalidJavaClassFileException(format(ENGLISH, "A method handle that is not of kind InvokeInterface may not reference '%1$s' a static initializer of '<clinit>'", referenceIndex));
+		}
+	}
+
+	protected final void validateInterfaceReferenceIsNotAnInstanceOrStaticInitializer(@NotNull final Constant constant) throws InvalidJavaClassFileException
+	{
+		final InterfaceMethodReferenceIndexConstant interfaceMethodReferenceIndexConstant = (InterfaceMethodReferenceIndexConstant) constant;
+		interfaceMethodReferenceIndexConstant.validateReferenceIndices();
+
+		@NonNls final MethodName methodName = interfaceMethodReferenceIndexConstant.methodName();
 
 		if (methodName.equals(InstanceInitializer))
 		{

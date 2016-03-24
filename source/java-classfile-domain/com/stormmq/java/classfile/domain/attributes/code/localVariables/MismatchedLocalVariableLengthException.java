@@ -22,36 +22,13 @@
 
 package com.stormmq.java.classfile.domain.attributes.code.localVariables;
 
+import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Set;
-
-public interface LocalVariableAtProgramCounter
+public final class MismatchedLocalVariableLengthException extends Exception
 {
-	@NotNull
-	static LocalVariableAtProgramCounter forInformationOnlyUntilWeWorkOutHowToProperlyInterpretThisData(@NotNull final Set<LocalVariableAtProgramCounter> localVariablesAtProgramCounter, final char localVariableIndex)
+	public MismatchedLocalVariableLengthException(@NonNls @NotNull final String message)
 	{
-		final class ForInformationOnlyUntilWeWorkOutHowToProperlyInterpretThisData implements LocalVariableAtProgramCounter
-		{
-			@NotNull private final Set<LocalVariableAtProgramCounter> localVariablesAtProgramCounter;
-			private final char localVariableIndex;
-
-			private ForInformationOnlyUntilWeWorkOutHowToProperlyInterpretThisData(@NotNull final Set<LocalVariableAtProgramCounter> localVariablesAtProgramCounter, final char localVariableIndex)
-			{
-				this.localVariablesAtProgramCounter = localVariablesAtProgramCounter;
-				this.localVariableIndex = localVariableIndex;
-			}
-
-			@Override
-			public String toString()
-			{
-				return "ForInformationOnlyUntilWeWorkOutHowToProperlyInterpretThisData{" +
-				"localVariablesAtProgramCounter=" + localVariablesAtProgramCounter +
-				", localVariableIndex=" + localVariableIndex +
-				'}';
-			}
-		}
-
-		return new ForInformationOnlyUntilWeWorkOutHowToProperlyInterpretThisData(localVariablesAtProgramCounter, localVariableIndex);
+		super(message);
 	}
 }

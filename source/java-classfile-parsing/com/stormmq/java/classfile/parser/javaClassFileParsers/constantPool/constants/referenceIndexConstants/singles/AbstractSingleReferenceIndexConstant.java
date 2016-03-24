@@ -85,7 +85,7 @@ public abstract class AbstractSingleReferenceIndexConstant extends AbstractSingl
 	}
 
 	@NotNull
-	protected final String referencedValue()
+	protected final String validValue()
 	{
 		try
 		{
@@ -93,7 +93,20 @@ public abstract class AbstractSingleReferenceIndexConstant extends AbstractSingl
 		}
 		catch (final InvalidJavaClassFileException e)
 		{
-			throw new IllegalStateException("Make sure validateReferenceIndices was called first", e);
+			throw new IllegalStateException("Make sure validateReferenceIndices was called first before validValue", e);
+		}
+	}
+
+	@NotNull
+	protected final String potentiallyInvalidValue()
+	{
+		try
+		{
+			return constantPool.retrievePotentiallyInvalidModifiedUtf8String(modifiedUtf8StringIndex);
+		}
+		catch (final InvalidJavaClassFileException e)
+		{
+			throw new IllegalStateException("Make sure validateReferenceIndices was called first before potentiallyInvalidValue", e);
 		}
 	}
 }

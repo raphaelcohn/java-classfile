@@ -31,8 +31,9 @@ import com.stormmq.java.classfile.domain.attributes.code.operandStackItems.refer
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Map;
 import java.util.Set;
+
+import static com.stormmq.java.classfile.domain.attributes.code.localVariables.LocalVariableAtProgramCounter.forInformationOnlyUntilWeWorkOutHowToProperlyInterpretThisData;
 
 public final class NarrowLoadReferenceVariableOpcodeParser extends AbstractTwoOpcodeParser
 {
@@ -43,10 +44,10 @@ public final class NarrowLoadReferenceVariableOpcodeParser extends AbstractTwoOp
 	}
 
 	@Override
-	public void parse(@NotNull final OperandStack operandStack, @NotNull final CodeReader codeReader, @NotNull final Set<Character> lineNumbers, @NotNull final Map<Character, LocalVariableAtProgramCounter> localVariablesAtProgramCounter, @NotNull final RuntimeConstantPool runtimeConstantPool) throws InvalidOpcodeException, UnderflowInvalidOperandStackException, MismatchedTypeInvalidOperandStackException, OverflowInvalidOperandStackException, NotEnoughBytesInvalidOperandStackException
+	public void parse(@NotNull final OperandStack operandStack, @NotNull final CodeReader codeReader, @NotNull final Set<Character> lineNumbers, @NotNull final Set<LocalVariableAtProgramCounter> localVariablesAtProgramCounter, @NotNull final RuntimeConstantPool runtimeConstantPool) throws OverflowInvalidOperandStackException, NotEnoughBytesInvalidOperandStackException
 	{
 		final char localVariableIndex = (char) codeReader.readUnsigned8BitInteger();
-		@Nullable final LocalVariableAtProgramCounter localVariableAtProgramCounter = localVariablesAtProgramCounter.get(localVariableIndex);
+		@Nullable final LocalVariableAtProgramCounter localVariableAtProgramCounter = forInformationOnlyUntilWeWorkOutHowToProperlyInterpretThisData(localVariablesAtProgramCounter, localVariableIndex);
 		operandStack.push(new LoadReferenceLocalVariableOperandStackItem(localVariableIndex, localVariableAtProgramCounter));
 
 	}

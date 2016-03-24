@@ -22,12 +22,11 @@
 
 package com.stormmq.java.classfile.parser.javaClassFileParsers.constantPool;
 
-import com.stormmq.java.classfile.domain.attributes.code.constants.BootstrapMethodArgument;
-import com.stormmq.java.classfile.domain.MethodHandle;
 import com.stormmq.java.classfile.domain.*;
 import com.stormmq.java.classfile.domain.attributes.annotations.*;
 import com.stormmq.java.classfile.domain.attributes.annotations.targetInformations.*;
 import com.stormmq.java.classfile.domain.attributes.annotations.typePathElements.TypePathElement;
+import com.stormmq.java.classfile.domain.attributes.code.constants.BootstrapMethodArgument;
 import com.stormmq.java.classfile.domain.attributes.code.constants.RuntimeConstantPool;
 import com.stormmq.java.classfile.domain.descriptors.FieldDescriptor;
 import com.stormmq.java.classfile.domain.descriptors.MethodDescriptor;
@@ -43,10 +42,10 @@ import org.jetbrains.annotations.*;
 
 import java.nio.ByteBuffer;
 import java.util.*;
-import java.util.function.*;
+import java.util.function.IntFunction;
 
-import static com.stormmq.java.classfile.domain.attributes.annotations.AnnotationValue.EmptyParameterAnnotations;
 import static com.stormmq.java.classfile.domain.attributes.annotations.AnnotationValue.EmptyAnnotationValues;
+import static com.stormmq.java.classfile.domain.attributes.annotations.AnnotationValue.EmptyParameterAnnotations;
 import static com.stormmq.java.classfile.domain.attributes.annotations.TargetInfoItem.*;
 import static com.stormmq.java.classfile.domain.attributes.annotations.TypeAnnotation.EmptyTypeAnnotations;
 import static com.stormmq.java.classfile.domain.attributes.annotations.targetInformations.CatchTargetInformation.catches;
@@ -60,8 +59,9 @@ import static com.stormmq.java.classfile.domain.attributes.annotations.targetInf
 import static com.stormmq.java.classfile.domain.attributes.annotations.targetInformations.TypeParameterTargetInformation.typeParameter;
 import static com.stormmq.java.classfile.domain.attributes.annotations.typePathElements.AnnotationIsOnATypeArgumentOfAParameterizedTypeTypePathElement.annotationIsOnATypeArgumentOfAParameterizedType;
 import static com.stormmq.java.classfile.domain.attributes.annotations.typePathElements.TypePathElement.*;
-import static com.stormmq.java.classfile.parser.javaClassFileParsers.constantPool.FieldDescriptorParser.parseFieldDescriptor;
+import static com.stormmq.java.classfile.parser.javaClassFileParsers.constantPool.ClassLikeTypeDescriptorParser.processClassLikeDescriptor;
 import static com.stormmq.java.classfile.parser.javaClassFileParsers.constantPool.ConstantPoolIndex.referenceIndexToConstantPoolIndex;
+import static com.stormmq.java.classfile.parser.javaClassFileParsers.constantPool.FieldDescriptorParser.parseFieldDescriptor;
 import static com.stormmq.java.classfile.parser.javaClassFileParsers.constantPool.MethodDescriptorParser.parseMethodDescriptor;
 import static com.stormmq.java.classfile.parser.javaClassFileParsers.constantPool.constants.referenceIndexConstants.NameAndTypeReferenceIndexConstant.parseFieldName;
 import static com.stormmq.java.classfile.parser.javaClassFileParsers.constantPool.constants.referenceIndexConstants.NameAndTypeReferenceIndexConstant.parseMethodName;
@@ -381,12 +381,24 @@ public final class ConstantPoolJavaClassFileReader implements JavaClassFileReade
 				return readModifiedUtf8String("annotation default string");
 
 			case 'e':
-				final KnownReferenceTypeName enumTypeName = readKnownReferenceTypeName("annotation default enum internal type name");
+				final String rawInternalTypeNameForConstant = readModifiedUtf8String("annotation default enum internal type name");
+				final InternalTypeName internalTypeNameForConstant = processClassLikeDescriptor(rawInternalTypeNameForConstant);
+				final KnownReferenceTypeName enumTypeName;
+				try
+				{
+					enumTypeName = internalTypeNameForConstant.toKnownReferenceTypeName();
+				}
+				catch (final InvalidInternalTypeNameException e)
+				{
+					throw new InvalidJavaClassFileException("Invalid Enum constant's class", e);
+				}
 				final FieldName enumConstantName = readFieldName("annotation default enum simple annotation default name");
 				return new EnumConstantAnnotationDefaultValue(enumTypeName, enumConstantName);
 
 			case 'c':
-				return readInternalTypeName("annotation default class");
+				final String rawInternalTypeNameForClass = readModifiedUtf8String("annotation default class");
+				final InternalTypeName internalTypeNameForClass = processClassLikeDescriptor(rawInternalTypeNameForClass);
+				return internalTypeNameForClass.typeName();
 
 			case '@':
 				return parseAnnotationValue();

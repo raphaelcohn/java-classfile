@@ -22,21 +22,28 @@
 
 package com.stormmq.java.classfile.parser.javaClassFileParsers.constantPool;
 
+import com.stormmq.java.classfile.domain.InternalTypeName;
 import com.stormmq.java.classfile.parser.javaClassFileParsers.exceptions.InvalidJavaClassFileException;
-import com.stormmq.java.classfile.domain.descriptors.FieldDescriptor;
-import org.jetbrains.annotations.*;
+import org.jetbrains.annotations.NonNls;
+import org.jetbrains.annotations.NotNull;
 
-import static com.stormmq.java.classfile.parser.javaClassFileParsers.constantPool.ClassLikeTypeDescriptorParser.processClassLikeDescriptor;
+import static com.stormmq.java.classfile.parser.javaClassFileParsers.constantPool.MethodDescriptorParser.processSimpleTypeDescriptor;
 
-public final class FieldDescriptorParser
+public final class ClassLikeTypeDescriptorParser
 {
 	@NotNull
-	public static FieldDescriptor parseFieldDescriptor(@NonNls @NotNull final String rawFieldDescriptor) throws InvalidJavaClassFileException
+	public static InternalTypeName processClassLikeDescriptor(@NotNull @NonNls final String rawTypeDescriptor) throws InvalidJavaClassFileException
 	{
-		return new FieldDescriptor(processClassLikeDescriptor(rawFieldDescriptor));
+		return processSimpleTypeDescriptor(rawTypeDescriptor.length(), rawTypeDescriptor);
 	}
 
-	private FieldDescriptorParser()
+	@NotNull
+	public static InternalTypeName processClassLikeDescriptor(final int length, @NotNull @NonNls final String rawTypeDescriptor) throws InvalidJavaClassFileException
+	{
+		return processSimpleTypeDescriptor(length, rawTypeDescriptor);
+	}
+
+	private ClassLikeTypeDescriptorParser()
 	{
 	}
 }

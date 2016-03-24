@@ -22,36 +22,37 @@
 
 package com.stormmq.java.classfile.domain.attributes.code.localVariables;
 
+import com.stormmq.java.classfile.domain.names.FieldName;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Set;
-
-public interface LocalVariableAtProgramCounter
+public abstract class AbstractLocalVariable
 {
-	@NotNull
-	static LocalVariableAtProgramCounter forInformationOnlyUntilWeWorkOutHowToProperlyInterpretThisData(@NotNull final Set<LocalVariableAtProgramCounter> localVariablesAtProgramCounter, final char localVariableIndex)
+	public final char startProgramCounter;
+	public final char length;
+	@NotNull public final FieldName localVariableName;
+	public final char localVariableIndex;
+
+	protected AbstractLocalVariable(final char startProgramCounter, final char length, @NotNull final FieldName localVariableName, final char localVariableIndex)
 	{
-		final class ForInformationOnlyUntilWeWorkOutHowToProperlyInterpretThisData implements LocalVariableAtProgramCounter
+		this.startProgramCounter = startProgramCounter;
+		this.length = length;
+		this.localVariableName = localVariableName;
+		this.localVariableIndex = localVariableIndex;
+	}
+
+	public final void validateNotAfterEndOfCode(final long codeLength) throws MismatchedLocalVariableLengthException
+	{
+		if (startProgramCounter >= codeLength)
 		{
-			@NotNull private final Set<LocalVariableAtProgramCounter> localVariablesAtProgramCounter;
-			private final char localVariableIndex;
-
-			private ForInformationOnlyUntilWeWorkOutHowToProperlyInterpretThisData(@NotNull final Set<LocalVariableAtProgramCounter> localVariablesAtProgramCounter, final char localVariableIndex)
-			{
-				this.localVariablesAtProgramCounter = localVariablesAtProgramCounter;
-				this.localVariableIndex = localVariableIndex;
-			}
-
-			@Override
-			public String toString()
-			{
-				return "ForInformationOnlyUntilWeWorkOutHowToProperlyInterpretThisData{" +
-				"localVariablesAtProgramCounter=" + localVariablesAtProgramCounter +
-				", localVariableIndex=" + localVariableIndex +
-				'}';
-			}
+			throw new MismatchedLocalVariableLengthException("Variable entry exceeds code length");
 		}
+	}
 
-		return new ForInformationOnlyUntilWeWorkOutHowToProperlyInterpretThisData(localVariablesAtProgramCounter, localVariableIndex);
+	public final void validateDoesNotHaveALocalVariableIndexWhichIsTooLarge(final char maximumLocals) throws MismatchedLocalVariableLengthException
+	{
+		if (localVariableIndex >= maximumLocals)
+		{
+			throw new MismatchedLocalVariableLengthException("Variable entry exceeds maximum locals");
+		}
 	}
 }

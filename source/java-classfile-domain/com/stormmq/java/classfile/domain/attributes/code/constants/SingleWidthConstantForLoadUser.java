@@ -49,9 +49,9 @@ public interface SingleWidthConstantForLoadUser<T>
 
 		@NotNull
 		@Override
-		public ConstantOperandStackItem useString(@NotNull @NonNls final String value)
+		public ConstantOperandStackItem usePotentiallyInvalidString(@NotNull @NonNls final String potentiallyInvalidValue)
 		{
-			return new StringReferenceConstantOperandStackItem(value);
+			return new StringReferenceConstantOperandStackItem(potentiallyInvalidValue);
 		}
 
 		@NotNull
@@ -83,7 +83,7 @@ public interface SingleWidthConstantForLoadUser<T>
 	T useFloat(final float value);
 
 	@NotNull
-	T useString(@NotNull @NonNls final String value);
+	T usePotentiallyInvalidString(@NotNull @NonNls final String potentiallyInvalidValue);
 
 	@NotNull
 	T useType(@NotNull final InternalTypeName value);

@@ -22,13 +22,12 @@
 
 package com.stormmq.java.classfile.parser;
 
+import com.stormmq.java.classfile.domain.JavaClassFileVersion;
 import com.stormmq.java.classfile.domain.information.TypeInformation;
 import com.stormmq.java.classfile.parser.byteReaders.ByteReader;
-import com.stormmq.java.classfile.parser.javaClassFileParsers.exceptions.InvalidJavaClassFileException;
-import com.stormmq.java.classfile.parser.javaClassFileParsers.exceptions.JavaClassFileContainsDataTooLongToReadException;
 import com.stormmq.java.classfile.parser.javaClassFileParsers.VersionedClassFileParserChooser;
+import com.stormmq.java.classfile.parser.javaClassFileParsers.exceptions.*;
 import com.stormmq.java.classfile.parser.javaClassFileParsers.versionedClassFileParsers.VersionedClassFileParser;
-import com.stormmq.java.classfile.domain.JavaClassFileVersion;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 
@@ -37,28 +36,33 @@ import java.util.function.Function;
 import static com.stormmq.java.classfile.domain.JavaClassFileVersion.values;
 import static com.stormmq.java.classfile.parser.javaClassFileParsers.VersionedClassFileParserChooser.Lax;
 import static com.stormmq.java.classfile.parser.javaClassFileParsers.VersionedClassFileParserChooser.Strict;
-import static java.lang.Integer.toHexString;
+import static com.stormmq.java.classfile.parser.javaClassFileParsers.exceptions.NotAJavaClassFileException.JavaClassFileMagicNumber;
 import static java.lang.String.format;
 import static java.util.Locale.ENGLISH;
 
 public final class JavaClassFileParser
 {
-	private static final int JavaClassFileMagicNumber = 0xCAFEBABE;
-	@NotNull private static final String JavaClassFileMagicNumberHexString = toHexString(JavaClassFileMagicNumber);
-
 	@NotNull
-	public static TypeInformation parseJavaClassFile(@NotNull final ByteReader byteReader, final boolean permitConstantsInInstanceFields) throws InvalidJavaClassFileException, JavaClassFileContainsDataTooLongToReadException
+	public static TypeInformation parseJavaClassFile(@NotNull final ByteReader byteReader, final boolean permitConstantsInInstanceFields) throws InvalidJavaClassFileException, JavaClassFileContainsDataTooLongToReadException, NotAJavaClassFileException
 	{
 		return parseJavaClassFile(new SimpleJavaClassFileReader(byteReader), permitConstantsInInstanceFields ? Lax : Strict);
 	}
 
 	@NotNull
-	public static TypeInformation parseJavaClassFile(@NotNull final JavaClassFileReader javaClassFileReader, @NotNull final VersionedClassFileParserChooser versionedClassFileParserChooser) throws InvalidJavaClassFileException, JavaClassFileContainsDataTooLongToReadException
+	public static TypeInformation parseJavaClassFile(@NotNull final JavaClassFileReader javaClassFileReader, @NotNull final VersionedClassFileParserChooser versionedClassFileParserChooser) throws InvalidJavaClassFileException, JavaClassFileContainsDataTooLongToReadException, NotAJavaClassFileException
 	{
-		final int magicNumber = javaClassFileReader.readBigEndianSigned32BitInteger("class file magic number");
+		final int magicNumber;
+		try
+		{
+			magicNumber = javaClassFileReader.readBigEndianSigned32BitInteger("class file magic number");
+		}
+		catch (final InvalidJavaClassFileException e)
+		{
+			throw new NotAJavaClassFileException(e);
+		}
 		if (magicNumber != JavaClassFileMagicNumber)
 		{
-			throw new InvalidJavaClassFileException(format(ENGLISH, "Java class file magic number should be '0x%1$s' but was '0x%2$s", JavaClassFileMagicNumberHexString, toHexString(magicNumber)));
+			throw new NotAJavaClassFileException(magicNumber);
 		}
 
 		final char minorVersionNumber = javaClassFileReader.readBigEndianUnsigned16BitInteger("minor version number");
@@ -94,10 +98,7 @@ public final class JavaClassFileParser
 			{
 				return javaClassFileVersion;
 			}
-			else
-			{
-				rejectedForPreviousComparisonBecauseOfMinorVersionNumber = true;
-			}
+			rejectedForPreviousComparisonBecauseOfMinorVersionNumber = true;
 		}
 		if (rejectedForPreviousComparisonBecauseOfMinorVersionNumber)
 		{

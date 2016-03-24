@@ -53,7 +53,7 @@ public final class MethodTypeReferenceIndexConstant extends AbstractSingleRefere
 	@NotNull
 	public MethodDescriptor methodDescriptor() throws InvalidJavaClassFileException
 	{
-		return parseMethodDescriptor(referencedValue(), false);
+		return parseMethodDescriptor(validValue(), false);
 	}
 
 	@Override
