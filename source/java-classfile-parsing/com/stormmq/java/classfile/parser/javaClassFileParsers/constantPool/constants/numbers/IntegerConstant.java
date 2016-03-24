@@ -24,8 +24,8 @@ package com.stormmq.java.classfile.parser.javaClassFileParsers.constantPool.cons
 
 import com.stormmq.java.classfile.domain.attributes.code.constants.SingleWidthConstantForLoad;
 import com.stormmq.java.classfile.domain.attributes.code.constants.SingleWidthConstantForLoadUser;
-import com.stormmq.java.classfile.parser.javaClassFileParsers.constantPool.constants.*;
-import com.stormmq.java.classfile.parser.javaClassFileParsers.exceptions.InvalidJavaClassFileException;
+import com.stormmq.java.classfile.parser.javaClassFileParsers.constantPool.constants.AbstractSingleWidthConstant;
+import com.stormmq.java.classfile.parser.javaClassFileParsers.constantPool.constants.FieldConstant;
 import org.jetbrains.annotations.NotNull;
 
 public final class IntegerConstant extends AbstractSingleWidthConstant implements FieldConstant, SingleWidthConstantForLoad
@@ -38,7 +38,7 @@ public final class IntegerConstant extends AbstractSingleWidthConstant implement
 	}
 
 	@Override
-	public void validateReferenceIndices() throws InvalidJavaClassFileException
+	public void validateReferenceIndices()
 	{
 	}
 

@@ -22,9 +22,10 @@
 
 package com.stormmq.java.classfile.parser.javaClassFileParsers.constantPool.constants;
 
+import com.stormmq.java.classfile.domain.attributes.code.constants.BootstrapMethodArgument;
 import org.jetbrains.annotations.NotNull;
 
-public interface FieldConstant extends Constant
+public interface FieldConstant extends Constant, BootstrapMethodArgument
 {
 	@NotNull
 	Object value();
