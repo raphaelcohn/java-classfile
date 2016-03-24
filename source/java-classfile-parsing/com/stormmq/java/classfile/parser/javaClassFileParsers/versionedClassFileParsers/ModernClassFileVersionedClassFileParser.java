@@ -22,8 +22,7 @@
 
 package com.stormmq.java.classfile.parser.javaClassFileParsers.versionedClassFileParsers;
 
-import com.stormmq.java.classfile.domain.JavaClassFileVersion;
-import com.stormmq.java.classfile.domain.TypeKind;
+import com.stormmq.java.classfile.domain.*;
 import com.stormmq.java.classfile.domain.attributes.AttributeLocation;
 import com.stormmq.java.classfile.domain.attributes.UnknownAttributes;
 import com.stormmq.java.classfile.domain.attributes.annotations.AnnotationValue;
@@ -49,15 +48,14 @@ import com.stormmq.java.classfile.parser.javaClassFileParsers.exceptions.Invalid
 import com.stormmq.java.classfile.parser.javaClassFileParsers.exceptions.JavaClassFileContainsDataTooLongToReadException;
 import com.stormmq.java.classfile.parser.javaClassFileParsers.functions.InvalidExceptionBiIntConsumer;
 import com.stormmq.java.parsing.utilities.*;
+import com.stormmq.java.parsing.utilities.names.typeNames.TypeName;
 import com.stormmq.java.parsing.utilities.names.typeNames.referenceTypeNames.KnownReferenceTypeName;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
-import static com.stormmq.java.classfile.domain.TypeKind.Annotation;
-import static com.stormmq.java.classfile.domain.TypeKind.Enum;
-import static com.stormmq.java.classfile.domain.TypeKind.Interface;
+import static com.stormmq.java.classfile.domain.TypeKind.*;
 import static com.stormmq.java.classfile.domain.attributes.AttributeLocation.*;
 import static com.stormmq.java.classfile.domain.names.MethodName.InstanceInitializer;
 import static com.stormmq.java.classfile.domain.names.MethodName.StaticInstanceInitializer;
@@ -144,7 +142,8 @@ public final class ModernClassFileVersionedClassFileParser implements VersionedC
 		final boolean isEnum = typeKind == Enum;
 		final boolean isInterfaceOrAnnotation = typeKind == Interface || isAnnotation;
 		final Map<FieldUniqueness, FieldInformation> fields = parseFields(constantPoolJavaClassFileReader, isInterfaceOrAnnotation, thisClassTypeName);
-		final Map<MethodUniqueness, MethodInformation> methods = parseMethods(constantPoolJavaClassFileReader, isInterfaceOrAnnotation, thisClassTypeName, isAnnotation, isEnum);
+		final boolean isInnerClass = typeKind == Class && isInnerClass(fields, thisClassTypeName);
+		final Map<MethodUniqueness, MethodInformation> methods = parseMethods(constantPoolJavaClassFileReader, isInterfaceOrAnnotation, thisClassTypeName, isAnnotation, isEnum, isInnerClass);
 		final Attributes attributes = typeAttributesParser.parseAttributes(constantPoolJavaClassFileReader);
 
 		final boolean isSyntheticAttribute = attributes.isSynthetic();
@@ -164,6 +163,38 @@ public final class ModernClassFileVersionedClassFileParser implements VersionedC
 		// TODO: The value of the bootstrap_method_attr_index item must be a valid index into the bootstrap_methods array of the bootstrap method table (§4.7.23) of this class file.
 
 		return new TypeInformation(typeKind, typeVisibility, typeCompleteness, isTypeSynthetic, hasLegacySuperFlagSetting, thisClassTypeName, superClassTypeName, interfaces, fields, methods, isSyntheticAttribute, isDeprecated, signature, visibleAnnotations, invisibleAnnotations, visibleTypeAnnotations, invisibleTypeAnnotations, unknownAttributes, sourceFile, enclosingMethod, sourceDebugExtension, bootstrapMethods);
+	}
+
+	private static boolean isInnerClass(@NotNull final Map<FieldUniqueness, FieldInformation> fields, @NotNull final KnownReferenceTypeName thisClassTypeName)
+	{
+		for (final FieldUniqueness fieldUniqueness : fields.keySet())
+		{
+			if (fieldUniqueness.fieldName.equals(new FieldName("this$0")))
+			{
+				final InternalTypeName internalTypeName = fieldUniqueness.fieldDescriptor.internalTypeName;
+				if (!internalTypeName.isArray())
+				{
+					final TypeName typeName = internalTypeName.typeName();
+					if (typeName instanceof KnownReferenceTypeName)
+					{
+						final String value = ((KnownReferenceTypeName) typeName).fullyQualifiedNameUsingDotsAndDollarSigns();
+						final String thisClassValue = thisClassTypeName.fullyQualifiedNameUsingDotsAndDollarSigns();
+						if (thisClassValue.startsWith(value))
+						{
+							final String innerClassName = thisClassValue.substring(value.length());
+							if (!innerClassName.isEmpty() && innerClassName.charAt(0) == '$')
+							{
+								if (innerClassName.substring(1).indexOf('$') == -1)
+								{
+									return true;
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+		return false;
 	}
 
 	@NotNull
@@ -239,7 +270,7 @@ public final class ModernClassFileVersionedClassFileParser implements VersionedC
 	}
 
 	@NotNull
-	private Map<MethodUniqueness, MethodInformation> parseMethods(@NotNull final ConstantPoolJavaClassFileReader constantPoolJavaClassFileReader, final boolean isInterfaceOrAnnotation, @NotNull final KnownReferenceTypeName thisClassTypeName, final boolean isAnnotation, final boolean isEnum) throws InvalidJavaClassFileException, JavaClassFileContainsDataTooLongToReadException
+	private Map<MethodUniqueness, MethodInformation> parseMethods(@NotNull final ConstantPoolJavaClassFileReader constantPoolJavaClassFileReader, final boolean isInterfaceOrAnnotation, @NotNull final KnownReferenceTypeName thisClassTypeName, final boolean isAnnotation, final boolean isEnum, final boolean isInnerClass) throws InvalidJavaClassFileException, JavaClassFileContainsDataTooLongToReadException
 	{
 		return constantPoolJavaClassFileReader.parseTableAsMapWith16BitLength(new InvalidExceptionBiIntConsumer<Map<MethodUniqueness, MethodInformation>>()
 		{
@@ -292,7 +323,20 @@ public final class ModernClassFileVersionedClassFileParser implements VersionedC
 				final AnnotationValue[] invisibleAnnotations = attributes.runtimeInvisibleAnnotations();
 
 				// Weirdness for Enum constructors
-				final int methodParameterCount = methodDescriptor.parameterCount() - (isEnum && methodName.equals(InstanceInitializer) ? 2 : 0);
+				final int correction;
+				if (isEnum && methodName.equals(InstanceInitializer))
+				{
+					correction = 2;
+				}
+				else if (isInnerClass && methodName.equals(InstanceInitializer))
+				{
+					correction = 1;
+				}
+				else
+				{
+					correction = 0;
+				}
+				final int methodParameterCount = methodDescriptor.parameterCount() - correction;
 
 				final AnnotationValue[][] visibleParameterAnnotations = attributes.runtimeVisibleParameterAnnotations(isAnnotation, methodParameterCount);
 				final AnnotationValue[][] invisibleParameterAnnotations = attributes.runtimeInvisibleParameterAnnotations(isAnnotation, methodParameterCount);

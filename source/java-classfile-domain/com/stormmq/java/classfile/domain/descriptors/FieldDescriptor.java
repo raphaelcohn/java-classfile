@@ -31,7 +31,7 @@ import static java.util.Locale.ENGLISH;
 public final class FieldDescriptor
 {
 	@NotNull
-	private final InternalTypeName internalTypeName;
+	public final InternalTypeName internalTypeName;
 
 	public FieldDescriptor(@NotNull final InternalTypeName internalTypeName)
 	{

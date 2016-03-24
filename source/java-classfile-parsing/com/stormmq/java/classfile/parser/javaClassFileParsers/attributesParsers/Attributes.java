@@ -354,6 +354,7 @@ public final class Attributes
 			{
 				if (length != methodParameterCount)
 				{
+					// It's an inner class with a synthetic / whatever first parameter
 					throw new InvalidJavaClassFileException(attributeName + " length must match method descriptor parameter count");
 				}
 			}

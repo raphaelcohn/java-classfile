@@ -47,7 +47,7 @@ public final class TypeAccessFlags
 	private static final char ACC_ANNOTATION = 0x2000; // Declared as an annotation type.
 	private static final char ACC_ENUM = 0x4000; // Declared as an enum type.
 
-	public static final int TypeAccessFlagsValidityMask = ~(ACC_PUBLIC | ACC_FINAL | ACC_SUPER | ACC_INTERFACE | ACC_ABSTRACT | ACC_SYNTHETIC | ACC_ANNOTATION | ACC_ENUM);
+	@SuppressWarnings("OverlyComplexBooleanExpression") public static final int TypeAccessFlagsValidityMask = ~(ACC_PUBLIC | ACC_FINAL | ACC_SUPER | ACC_INTERFACE | ACC_ABSTRACT | ACC_SYNTHETIC | ACC_ANNOTATION | ACC_ENUM);
 
 	public static boolean isTypeSynthetic(final char accessFlags)
 	{

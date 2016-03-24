@@ -31,8 +31,8 @@ import static java.util.Locale.ENGLISH;
 
 public final class FieldUniqueness
 {
-	@NotNull private final FieldName fieldName;
-	@NotNull private final FieldDescriptor fieldDescriptor;
+	@NotNull public final FieldName fieldName;
+	@NotNull public final FieldDescriptor fieldDescriptor;
 
 	public FieldUniqueness(@NotNull final FieldName fieldName, @NotNull @NonNls final FieldDescriptor fieldDescriptor)
 	{
