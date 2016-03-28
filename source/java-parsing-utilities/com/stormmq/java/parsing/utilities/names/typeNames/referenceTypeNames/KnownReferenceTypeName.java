@@ -22,7 +22,6 @@
 
 package com.stormmq.java.parsing.utilities.names.typeNames.referenceTypeNames;
 
-import com.stormmq.java.parsing.utilities.StringConstants;
 import com.stormmq.java.parsing.utilities.names.parentNames.AbstractParentName;
 import org.jetbrains.annotations.*;
 

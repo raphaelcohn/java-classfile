@@ -22,10 +22,6 @@
 
 package com.stormmq.java.classfile.domain.attributes.code.localVariables;
 
-import org.jetbrains.annotations.NotNull;
-
-import java.util.Set;
-
 public interface LocalVariableAtProgramCounter
 {
 }

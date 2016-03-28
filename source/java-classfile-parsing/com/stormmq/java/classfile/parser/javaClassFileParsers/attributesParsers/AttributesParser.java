@@ -36,6 +36,7 @@ import java.util.*;
 import static com.stormmq.java.classfile.parser.javaClassFileParsers.attributesParsers.Attributes.LineNumberTable;
 import static com.stormmq.java.classfile.parser.javaClassFileParsers.attributesParsers.Attributes.LocalVariableTable;
 import static com.stormmq.java.classfile.parser.javaClassFileParsers.attributesParsers.Attributes.LocalVariableTypeTable;
+import static com.stormmq.string.Formatting.format;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyMap;
 
@@ -59,46 +60,42 @@ public final class AttributesParser
 	public Attributes parseAttributes(@NotNull final ConstantPoolJavaClassFileReader javaClassFileReader) throws InvalidJavaClassFileException, JavaClassFileContainsDataTooLongToReadException
 	{
 		final Map<String, List<UnknownAttributeData>> unknownAttributes = new HashMap<>(0);
-		final Map<String, Object> attributes = javaClassFileReader.parseTableAsMapWith16BitLength(new InvalidExceptionBiIntConsumer<Map<String, Object>>()
+		final Map<String, Object> attributes = javaClassFileReader.parseTableAsMapWith16BitLength((table, index) ->
 		{
-			@Override
-			public void accept(@NotNull final Map<String, Object> table, final int index) throws InvalidJavaClassFileException, JavaClassFileContainsDataTooLongToReadException
+			final String attributeName = javaClassFileReader.readModifiedUtf8String("attribute name reference");
+			final long attributeLength = javaClassFileReader.readBigEndianUnsigned32BitInteger("attribute length");
+
+			@NotNull final Object attributeData = attributeParserMappings.parseAttribute(attributeName, attributeLength, javaClassFileReader);
+
+			if (attributeData instanceof UnknownAttributeData)
 			{
-				final String attributeName = javaClassFileReader.readModifiedUtf8String("attribute name reference");
-				final long attributeLength = javaClassFileReader.readBigEndianUnsigned32BitInteger("attribute length");
-
-				@NotNull final Object attributeData = attributeParserMappings.parseAttribute(attributeName, attributeLength, javaClassFileReader);
-
-				if (attributeData instanceof UnknownAttributeData)
+				@Nullable List<UnknownAttributeData> entries = unknownAttributes.get(attributeName);
+				if (entries == null)
 				{
-					@Nullable List<UnknownAttributeData> entries = unknownAttributes.get(attributeName);
-					if (entries == null)
-					{
-						entries = new ArrayList<>(1);
-						unknownAttributes.put(attributeName, entries);
-					}
-					entries.add((UnknownAttributeData) attributeData);
+					entries = new ArrayList<>(1);
+					unknownAttributes.put(attributeName, entries);
+				}
+				entries.add((UnknownAttributeData) attributeData);
+			}
+			else
+			{
+				@Nullable final Object alreadyEncountered = table.get(attributeName);
+				final Object attributeDataToStore;
+				if (AttributesWhichCanOccurMoreThanOnce.contains(attributeName))
+				{
+					@SuppressWarnings("unchecked") final List<Object> canOccurMoreThanOnceList = alreadyEncountered == null ? new ArrayList<>(4) : (List<Object>) alreadyEncountered;
+					canOccurMoreThanOnceList.add(attributeData);
+					attributeDataToStore = canOccurMoreThanOnceList;
 				}
 				else
 				{
-					@Nullable final Object alreadyEncountered = table.get(attributeName);
-					final Object attributeDataToStore;
-					if (AttributesWhichCanOccurMoreThanOnce.contains(attributeName))
+					if (alreadyEncountered != null)
 					{
-						@SuppressWarnings("unchecked") final List<Object> canOccurMoreThanOnceList = alreadyEncountered == null ? new ArrayList<>(4) : (List<Object>) alreadyEncountered;
-						canOccurMoreThanOnceList.add(attributeData);
-						attributeDataToStore = canOccurMoreThanOnceList;
+						throw new InvalidJavaClassFileException(format("The attribute '%1$s' is only allowed to occur once", attributeName));
 					}
-					else
-					{
-						if (alreadyEncountered != null)
-						{
-							throw new InvalidJavaClassFileException(Formatting.format("The attribute '%1$s' is only allowed to occur once", attributeName));
-						}
-						attributeDataToStore = attributeData;
-					}
-					table.put(attributeName, attributeDataToStore);
+					attributeDataToStore = attributeData;
 				}
+				table.put(attributeName, attributeDataToStore);
 			}
 		});
 

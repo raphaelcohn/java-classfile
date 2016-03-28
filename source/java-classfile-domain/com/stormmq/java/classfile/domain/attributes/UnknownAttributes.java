@@ -22,7 +22,6 @@
 
 package com.stormmq.java.classfile.domain.attributes;
 
-import com.stormmq.string.Api;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
