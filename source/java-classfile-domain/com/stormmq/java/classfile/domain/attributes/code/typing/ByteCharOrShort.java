@@ -31,24 +31,4 @@ public enum ByteCharOrShort
 	_char,
 	_short,
 	;
-
-	@NotNull @NonNls private final String actualName;
-
-	ByteCharOrShort()
-	{
-		actualName = actualName();
-	}
-
-	@NotNull
-	private String actualName()
-	{
-		final String name = name();
-
-		if (name.isEmpty())
-		{
-			throw new IllegalStateException("name() should not be empty");
-		}
-
-		return name.charAt(0) == '_' ? name.substring(1) : name;
-	}
 }

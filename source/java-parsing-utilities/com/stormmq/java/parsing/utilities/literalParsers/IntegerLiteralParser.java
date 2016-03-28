@@ -32,7 +32,7 @@ public enum IntegerLiteralParser
 	Long(64, 22, 20, 16, 9L, 2L, 2L, 3L, 3L, 7L, 2L, 0L, 3L, 6L, 8L, 5L, 4L, 7L, 7L, 5L, 8L, 0L, 7L),  // 9223372036854775807L
 	;
 
-	public static final long Mask = 0x00000000FFFFFFFFL;
+	private static final long Mask = 0x00000000FFFFFFFFL;
 	private final int binaryMaximumLength;
 	private final int octalMaximumLength;
 	private final int decimalMaximumLength;
@@ -248,12 +248,12 @@ public enum IntegerLiteralParser
 		return converted;
 	}
 
-	public static boolean isUnderscore(final char character)
+	private static boolean isUnderscore(final char character)
 	{
 		return character == '_';
 	}
 
-	public static boolean isNotUnderscore(final char character)
+	private static boolean isNotUnderscore(final char character)
 	{
 		return character != '_';
 	}

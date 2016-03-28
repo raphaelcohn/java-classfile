@@ -61,6 +61,7 @@ public final class TypeReferenceIndexConstant extends AbstractSingleReferenceInd
 		return createInternalTypeNameFromTypeDescriptor(validValue());
 	}
 
+	@SuppressWarnings("SpellCheckingInspection")
 	@NotNull
 	private static InternalTypeName createInternalTypeNameFromTypeDescriptor(@NotNull final String rawInternalTypeName) throws InvalidJavaClassFileException
 	{
@@ -82,7 +83,7 @@ public final class TypeReferenceIndexConstant extends AbstractSingleReferenceInd
 	}
 
 	@NotNull
-	public static KnownReferenceTypeName toKnownReferenceTypeName(@NotNull final String internalTypeName) throws InvalidJavaClassFileException
+	private static KnownReferenceTypeName toKnownReferenceTypeName(@NotNull final String internalTypeName) throws InvalidJavaClassFileException
 	{
 		final String[] identifiers = internalTypeName.split(InternalTypeNameSeparatorString);
 		final int length = identifiers.length;

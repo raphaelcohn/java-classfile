@@ -50,7 +50,6 @@ public interface JavaClassFileReader
 
 	float readBigEndianFloat(@NotNull @NonNls String what) throws InvalidJavaClassFileException;
 
-	@SuppressWarnings("NumericCastThatLosesPrecision")
 	short readUnsigned8BitInteger(@NotNull @NonNls final String what) throws InvalidJavaClassFileException;
 
 	short readBigEndianSigned16BitInteger(@NotNull @NonNls final String what) throws InvalidJavaClassFileException;

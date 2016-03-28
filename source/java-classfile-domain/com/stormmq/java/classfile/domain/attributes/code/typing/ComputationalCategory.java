@@ -37,7 +37,7 @@ public enum ComputationalCategory
 
 	private final boolean isNumeric;
 	public final boolean isNotNumeric;
-	public final boolean isIntegerNumber;
+	private final boolean isIntegerNumber;
 	public final boolean isNotIntegerNumber;
 	@Nullable private final Class<? extends Number> numberClass;
 	@NotNull public final String actualName;

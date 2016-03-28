@@ -114,22 +114,20 @@ public enum TargetType
 
 	;
 
-	public final short targetTypeTag;
-	@NotNull private final String kindOfTarget;
+	private final short targetTypeTag;
 	@NotNull public final TargetInfoItem targetInfoItem;
-	@NotNull private final AttributeLocation attributeLocation;
-	private final boolean isInExpressions;
+	@NotNull public final AttributeLocation attributeLocation;
+	public final boolean isInExpressions;
 
 	TargetType(final short targetTypeTag, @NotNull @NonNls final String kindOfTarget, @NotNull final TargetInfoItem targetInfoItem, @NotNull final AttributeLocation attributeLocation)
 	{
 		this.targetTypeTag = targetTypeTag;
-		this.kindOfTarget = kindOfTarget;
 		this.targetInfoItem = targetInfoItem;
 		this.attributeLocation = attributeLocation;
 		isInExpressions = attributeLocation == Code;
 	}
 
-	public boolean isValidForAttributeLocation(@NotNull final AttributeLocation attributeLocation)
+	private boolean isValidForAttributeLocation(@NotNull final AttributeLocation attributeLocation)
 	{
 		return this.attributeLocation == attributeLocation;
 	}

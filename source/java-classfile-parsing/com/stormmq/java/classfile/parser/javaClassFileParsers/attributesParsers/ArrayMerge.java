@@ -32,7 +32,7 @@ import static java.lang.System.arraycopy;
 public final class ArrayMerge
 {
 	@NotNull
-	public static <T> T[] arrayMerge(@NotNull final IntFunction<T[]> arrayCreator, @NotNull final List<T[]> arrays)
+	public static <T> T[] arrayMerge(@NotNull final IntFunction<T[]> arrayCreator, @NotNull final Iterable<T[]> arrays)
 	{
 		int totalLength = 0;
 		for (final T[] array : arrays)

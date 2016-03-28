@@ -33,14 +33,15 @@ import java.util.Set;
 
 public final class InvokeDynamicOpcodeParser extends AbstractFourOpcodeParser
 {
-	@SuppressWarnings("ThrowableInstanceNeverThrown") @NotNull public static final InvalidOpcodeException ThirdByteInvalid = new InvalidOpcodeException("The third byte for invokedynamic must always be zero");
-	@SuppressWarnings("ThrowableInstanceNeverThrown") @NotNull public static final InvalidOpcodeException FourthByteInvalid = new InvalidOpcodeException("The fourth byte for invokedynamic must always be zero");
-	@NotNull public static final InvokeDynamicOpcodeParser InvokeDynamicAllowed = new InvokeDynamicOpcodeParser();
+	@SuppressWarnings({"ThrowableInstanceNeverThrown", "SpellCheckingInspection"}) @NotNull private static final InvalidOpcodeException ThirdByteInvalid = new InvalidOpcodeException("The third byte for invokedynamic must always be zero");
+	@SuppressWarnings({"ThrowableInstanceNeverThrown", "SpellCheckingInspection"}) @NotNull private static final InvalidOpcodeException FourthByteInvalid = new InvalidOpcodeException("The fourth byte for invokedynamic must always be zero");
+	@NotNull public static final OpcodeParser InvokeDynamicAllowed = new InvokeDynamicOpcodeParser();
 
 	private InvokeDynamicOpcodeParser()
 	{
 	}
 
+	@SuppressWarnings("SpellCheckingInspection")
 	@Override
 	public void parse(@NotNull final OperandStack operandStack, @NotNull final CodeReader codeReader, @NotNull final Set<Character> lineNumbers, @NotNull final Set<LocalVariableAtProgramCounter> localVariablesAtProgramCounter, @NotNull final RuntimeConstantPool runtimeConstantPool) throws NotEnoughBytesInvalidOperandStackException, InvalidOpcodeException
 	{

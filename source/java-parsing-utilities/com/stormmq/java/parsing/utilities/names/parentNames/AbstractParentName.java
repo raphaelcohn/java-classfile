@@ -60,7 +60,6 @@ public abstract class AbstractParentName implements ParentName
 			{
 				throw new IllegalArgumentException("fullyQualifiedNameUsingDotsAndDollarSigns must not start or end with a '.'");
 			}
-			//noinspection HardcodedFileSeparator
 			if (fullyQualifiedNameUsingDotsAndDollarSigns.contains(InternalTypeNameSeparatorString))
 			{
 				//noinspection HardcodedFileSeparator

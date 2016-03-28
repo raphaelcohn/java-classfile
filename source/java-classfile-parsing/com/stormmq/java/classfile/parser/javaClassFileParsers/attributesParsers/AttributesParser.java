@@ -48,7 +48,7 @@ public final class AttributesParser
 		this.attributeParserMappings = attributeParserMappings;
 	}
 
-	@NotNull private static final Set<String> AttributesWhichCanOccurMoreThanOnce = new HashSet<>(asList(new String[]
+	@NotNull private static final Collection<String> AttributesWhichCanOccurMoreThanOnce = new HashSet<>(asList(new String[]
 	{
 		LineNumberTable,
 		LocalVariableTable,

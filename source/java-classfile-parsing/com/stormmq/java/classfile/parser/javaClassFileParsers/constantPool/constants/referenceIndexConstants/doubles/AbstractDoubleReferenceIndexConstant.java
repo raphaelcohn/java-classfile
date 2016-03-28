@@ -63,7 +63,7 @@ public abstract class AbstractDoubleReferenceIndexConstant extends AbstractSingl
 	}
 
 	@NotNull
-	protected final NameAndTypeReferenceIndexConstant nameAndTypeReferenceIndexConstant() throws InvalidJavaClassFileException
+	private NameAndTypeReferenceIndexConstant nameAndTypeReferenceIndexConstant() throws InvalidJavaClassFileException
 	{
 		return constantPool.retrieveNameAndTypeReference(nameAndTypeDescriptorReferenceIndex);
 	}

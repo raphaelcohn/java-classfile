@@ -167,7 +167,7 @@ public final class ConstantPool implements RuntimeConstantPool
 	}
 
 	@NotNull
-	public FieldConstant validateReferenceIndexIsFieldConstant(@NotNull final ConstantPoolIndex referenceIndex) throws InvalidJavaClassFileException
+	private FieldConstant validateReferenceIndexIsFieldConstant(@NotNull final ConstantPoolIndex referenceIndex) throws InvalidJavaClassFileException
 	{
 		final Constant constant = retrieve(referenceIndex);
 		if (!(constant instanceof FieldConstant))
@@ -189,7 +189,7 @@ public final class ConstantPool implements RuntimeConstantPool
 	}
 
 	@NotNull
-	public IntegerConstant validateReferenceIndexIsInteger(@NotNull final ConstantPoolIndex referenceIndex) throws InvalidJavaClassFileException
+	private IntegerConstant validateReferenceIndexIsInteger(@NotNull final ConstantPoolIndex referenceIndex) throws InvalidJavaClassFileException
 	{
 		final Constant constant = retrieve(referenceIndex);
 		if (!(constant instanceof IntegerConstant))
@@ -200,7 +200,7 @@ public final class ConstantPool implements RuntimeConstantPool
 	}
 
 	@NotNull
-	public FloatConstant validateReferenceIndexIsFloat(@NotNull final ConstantPoolIndex referenceIndex) throws InvalidJavaClassFileException
+	private FloatConstant validateReferenceIndexIsFloat(@NotNull final ConstantPoolIndex referenceIndex) throws InvalidJavaClassFileException
 	{
 		final Constant constant = retrieve(referenceIndex);
 		if (!(constant instanceof FloatConstant))
@@ -211,7 +211,7 @@ public final class ConstantPool implements RuntimeConstantPool
 	}
 
 	@NotNull
-	public LongConstant validateReferenceIndexIsLong(@NotNull final ConstantPoolIndex referenceIndex) throws InvalidJavaClassFileException
+	private LongConstant validateReferenceIndexIsLong(@NotNull final ConstantPoolIndex referenceIndex) throws InvalidJavaClassFileException
 	{
 		final Constant constant = retrieve(referenceIndex);
 		if (!(constant instanceof LongConstant))
@@ -222,7 +222,7 @@ public final class ConstantPool implements RuntimeConstantPool
 	}
 
 	@NotNull
-	public DoubleConstant validateReferenceIndexIsDouble(@NotNull final ConstantPoolIndex referenceIndex) throws InvalidJavaClassFileException
+	private DoubleConstant validateReferenceIndexIsDouble(@NotNull final ConstantPoolIndex referenceIndex) throws InvalidJavaClassFileException
 	{
 		final Constant constant = retrieve(referenceIndex);
 		if (!(constant instanceof DoubleConstant))

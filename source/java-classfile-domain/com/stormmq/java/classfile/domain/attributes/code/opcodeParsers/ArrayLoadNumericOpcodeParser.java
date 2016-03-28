@@ -27,6 +27,7 @@ import com.stormmq.java.classfile.domain.attributes.code.constants.RuntimeConsta
 import com.stormmq.java.classfile.domain.attributes.code.invalidOperandStackExceptions.*;
 import com.stormmq.java.classfile.domain.attributes.code.localVariables.LocalVariableAtProgramCounter;
 import com.stormmq.java.classfile.domain.attributes.code.operandStack.OperandStack;
+import com.stormmq.java.classfile.domain.attributes.code.operandStackItems.OperandStackItem;
 import com.stormmq.java.classfile.domain.attributes.code.operandStackItems.numericOperandStackItems.ArrayLoadNumericOperandStackItem;
 import com.stormmq.java.classfile.domain.attributes.code.operandStackItems.numericOperandStackItems.NumericOperandStackItem;
 import com.stormmq.java.classfile.domain.attributes.code.operandStackItems.referenceOperandStackItems.ReferenceOperandStackItem;
@@ -51,7 +52,7 @@ public final class ArrayLoadNumericOpcodeParser extends AbstractOneOpcodeParser
 	{
 		final NumericOperandStackItem<Integer> index = operandStack.popNumeric(_int);
 		final ReferenceOperandStackItem arrayReference = operandStack.popReference();
-		final NumericOperandStackItem<?> result = new ArrayLoadNumericOperandStackItem<>(computationalCategory, arrayReference, index);
+		final OperandStackItem result = new ArrayLoadNumericOperandStackItem<>(computationalCategory, arrayReference, index);
 		operandStack.pushWithCertainty(result);
 	}
 }

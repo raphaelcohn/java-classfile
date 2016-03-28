@@ -309,7 +309,7 @@ public final class Attributes
 		return getAttributeValueNullable(SourceFile, null);
 	}
 
-	public com.stormmq.java.classfile.domain.signatures.Signature getSignature()
+	private com.stormmq.java.classfile.domain.signatures.Signature getSignature()
 	{
 		return getAttributeValueNullable(Signature, null);
 	}
@@ -362,7 +362,7 @@ public final class Attributes
 		return values;
 	}
 
-	@SuppressWarnings({"MethodCanBeVariableArityMethod", "unchecked"})
+	@SuppressWarnings("unchecked")
 	@NotNull
 	private <V> V[] getArrayMerged(@NotNull final IntFunction<V[]> arrayCreator, @NotNull @NonNls final String attributeName, @NotNull final V[] empty)
 	{

@@ -45,7 +45,7 @@ public final class EfficientByteArrayInputStream extends InputStream
 		this(buffer, 0, buffer.length);
 	}
 	
-	public EfficientByteArrayInputStream(@NotNull final byte[] buffer, final int offset, final int length)
+	private EfficientByteArrayInputStream(@NotNull final byte[] buffer, final int offset, final int length)
 	{
 		this.buffer = buffer;
 		count = min(offset + length, buffer.length);

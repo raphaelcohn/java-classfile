@@ -45,7 +45,7 @@ public final class ByteArrayByteReader implements ByteReader
 		this(byteArray, 0, byteArray.length);
 	}
 
-	public ByteArrayByteReader(@NotNull final byte[] byteArray, final int offset, final int length)
+	private ByteArrayByteReader(@NotNull final byte[] byteArray, final int offset, final int length)
 	{
 		this.byteArray = byteArray;
 		this.offset = offset;

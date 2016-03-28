@@ -45,7 +45,7 @@ public final class MethodTypeReferenceIndexConstant extends AbstractSingleRefere
 	}
 
 	@NotNull
-	public MethodDescriptor methodDescriptor() throws InvalidJavaClassFileException
+	private MethodDescriptor methodDescriptor() throws InvalidJavaClassFileException
 	{
 		return parseMethodDescriptor(validValue(), false);
 	}

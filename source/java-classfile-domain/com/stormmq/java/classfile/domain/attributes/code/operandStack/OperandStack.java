@@ -36,7 +36,6 @@ public interface OperandStack
 
 	int currentStackPointer();
 
-	@SuppressWarnings("AssignmentToNull")
 	@NotNull
 	OperandStackItem pop() throws UnderflowInvalidOperandStackException;
 

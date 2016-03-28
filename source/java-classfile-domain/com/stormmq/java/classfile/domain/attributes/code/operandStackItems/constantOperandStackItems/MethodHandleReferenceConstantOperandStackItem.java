@@ -33,7 +33,6 @@ public final class MethodHandleReferenceConstantOperandStackItem extends Abstrac
 
 	public MethodHandleReferenceConstantOperandStackItem(@NotNull final MethodHandle methodHandle)
 	{
-		// https://stackoverflow.com/questions/30002380/why-are-java8-lambdas-invoked-using-invokedynamic
 		this.methodHandle = methodHandle;
 	}
 }

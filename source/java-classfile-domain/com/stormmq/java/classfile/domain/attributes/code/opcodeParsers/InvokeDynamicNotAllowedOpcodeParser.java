@@ -38,6 +38,7 @@ public final class InvokeDynamicNotAllowedOpcodeParser implements OpcodeParser
 
 	private InvokeDynamicNotAllowedOpcodeParser()
 	{
+		//noinspection SpellCheckingInspection
 		invalidOpcodeException = new InvalidOpcodeException("invokedynamic is not allowed in versions of Java before Java 7");
 	}
 

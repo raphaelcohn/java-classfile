@@ -49,7 +49,6 @@ public class FieldInformation
 	@NotNull private final TypeAnnotation[] visibleTypeAnnotations;
 	@NotNull private final TypeAnnotation[] invisibleTypeAnnotations;
 
-	@SuppressWarnings("MethodCanBeVariableArityMethod")
 	public FieldInformation(@NotNull final FieldUniqueness fieldUniqueness, final boolean isSynthetic, @NotNull final Visibility fieldVisibility, @NotNull final FieldFinality fieldFinality, final boolean isTransient, final boolean isFinal, final boolean isStatic, final boolean isDeprecated, final boolean isSyntheticAttribute, @Nullable final Signature signature, @Nullable final Object constantValue, @NotNull final AnnotationValue[] visibleAnnotations, @NotNull final AnnotationValue[] invisibleAnnotations, @NotNull final TypeAnnotation[] visibleTypeAnnotations, @NotNull final TypeAnnotation[] invisibleTypeAnnotations)
 	{
 		this.fieldUniqueness = fieldUniqueness;

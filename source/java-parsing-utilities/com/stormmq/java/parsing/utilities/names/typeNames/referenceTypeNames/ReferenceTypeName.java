@@ -29,6 +29,7 @@ public interface ReferenceTypeName extends TypeName
 {
 	boolean isJavaLangObject();
 
+	@SuppressWarnings("ClassReferencesSubclass")
 	@NotNull
 	KnownReferenceTypeName resolve();
 

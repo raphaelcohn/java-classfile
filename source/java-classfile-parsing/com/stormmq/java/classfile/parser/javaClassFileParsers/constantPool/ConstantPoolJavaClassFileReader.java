@@ -281,7 +281,6 @@ public final class ConstantPoolJavaClassFileReader implements JavaClassFileReade
 		return parseTableAsArrayWith8BitLength(AnnotationValue[][]::new, EmptyParameterAnnotations, this::parseAnnotations);
 	}
 
-	@SuppressWarnings("rawtypes")
 	@NotNull
 	private Map<MethodName, Object> parseAnnotationElementValuePairs() throws InvalidJavaClassFileException, JavaClassFileContainsDataTooLongToReadException
 	{
@@ -420,7 +419,7 @@ public final class ConstantPoolJavaClassFileReader implements JavaClassFileReade
 	}
 
 	@NotNull
-	public AnnotationValue parseAnnotationValue() throws InvalidJavaClassFileException, JavaClassFileContainsDataTooLongToReadException
+	private AnnotationValue parseAnnotationValue() throws InvalidJavaClassFileException, JavaClassFileContainsDataTooLongToReadException
 	{
 		final FieldDescriptor typeIndexFieldDescriptor = readFieldDescriptor("annotation type index");
 		final Map<MethodName, Object> fieldValues = parseAnnotationElementValuePairs();
@@ -465,7 +464,7 @@ public final class ConstantPoolJavaClassFileReader implements JavaClassFileReade
 	}
 
 	@NotNull
-	public ConstantPoolIndex readReferenceIndex(@NotNull final ConstantPoolIndex ourConstantPoolIndex, @NotNull @NonNls final String what) throws InvalidJavaClassFileException
+	private ConstantPoolIndex readReferenceIndex(@NotNull final ConstantPoolIndex ourConstantPoolIndex, @NotNull @NonNls final String what) throws InvalidJavaClassFileException
 	{
 		final ConstantPoolIndex referenceIndex = readReferenceIndex(what);
 		if (ourConstantPoolIndex.equals(referenceIndex))
@@ -546,23 +545,23 @@ public final class ConstantPoolJavaClassFileReader implements JavaClassFileReade
 		return readReferenceAndResolveConstant(what, retrieveBootstrapMethodArgument);
 	}
 
-	public int readInteger(@NonNls @NotNull final String what) throws InvalidJavaClassFileException
+	private int readInteger(@NonNls @NotNull final String what) throws InvalidJavaClassFileException
 	{
 		return readReferenceAndResolveConstant(what, retrieveInteger);
 	}
 
-	public float readFloat(@NonNls @NotNull final String what) throws InvalidJavaClassFileException
+	private float readFloat(@NonNls @NotNull final String what) throws InvalidJavaClassFileException
 	{
 		return readReferenceAndResolveConstant(what, retrieveFloat);
 	}
 
-	public long readLong(@NonNls @NotNull final String what) throws InvalidJavaClassFileException
+	private long readLong(@NonNls @NotNull final String what) throws InvalidJavaClassFileException
 	{
 		return readReferenceAndResolveConstant(what, retrieveLong);
 	}
 
 	@NotNull
-	public RawDouble readDouble(@NonNls @NotNull final String what) throws InvalidJavaClassFileException
+	private RawDouble readDouble(@NonNls @NotNull final String what) throws InvalidJavaClassFileException
 	{
 		return readReferenceAndResolveConstant(what, retrieveDouble);
 	}
@@ -604,14 +603,14 @@ public final class ConstantPoolJavaClassFileReader implements JavaClassFileReade
 	}
 
 	@NotNull
-	public <V> V readReferenceAndResolveConstant(@NotNull @NonNls final String what, @NotNull final InvalidExceptionFunction<ConstantPoolIndex, V> retrieve) throws InvalidJavaClassFileException
+	private <V> V readReferenceAndResolveConstant(@NotNull @NonNls final String what, @NotNull final InvalidExceptionFunction<ConstantPoolIndex, V> retrieve) throws InvalidJavaClassFileException
 	{
 		final ConstantPoolIndex referenceIndex = readReferenceIndex(what);
 		return retrieve.apply(referenceIndex);
 	}
 
 	@NotNull
-	public ConstantPoolIndex readReferenceIndex(@NotNull @NonNls final String what) throws InvalidJavaClassFileException
+	private ConstantPoolIndex readReferenceIndex(@NotNull @NonNls final String what) throws InvalidJavaClassFileException
 	{
 		final char referenceIndex = readBigEndianUnsigned16BitInteger(what);
 		return parseReference(what, referenceIndex);
@@ -641,7 +640,7 @@ public final class ConstantPoolJavaClassFileReader implements JavaClassFileReade
 	}
 
 	@NotNull
-	public <V> V[] parseTableAsArrayWith8BitLength(@NotNull final IntFunction<V[]> arrayCreator, @NotNull final V[] empty, @NotNull final InvalidExceptionNullaryFunction<V> parse) throws InvalidJavaClassFileException, JavaClassFileContainsDataTooLongToReadException
+	private <V> V[] parseTableAsArrayWith8BitLength(@NotNull final IntFunction<V[]> arrayCreator, @NotNull final V[] empty, @NotNull final InvalidExceptionNullaryFunction<V> parse) throws InvalidJavaClassFileException, JavaClassFileContainsDataTooLongToReadException
 	{
 		return parseTableAsArray(arrayCreator, empty, parse, this::getTableLength8Bit);
 	}

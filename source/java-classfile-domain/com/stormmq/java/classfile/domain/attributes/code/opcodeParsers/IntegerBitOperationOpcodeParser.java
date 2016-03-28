@@ -37,7 +37,7 @@ import java.util.Set;
 
 import static com.stormmq.java.classfile.domain.attributes.code.typing.ComputationalCategory._int;
 
-public class IntegerBitOperationOpcodeParser extends AbstractOneOpcodeParser
+public final class IntegerBitOperationOpcodeParser extends AbstractOneOpcodeParser
 {
 	@NotNull
 	public static OpcodeParser integerBitOperationOpcodeParser(@NotNull final ComputationalCategory computationalCategory, @NotNull final IntegerBitOperation integerBitOperation)
@@ -53,7 +53,7 @@ public class IntegerBitOperationOpcodeParser extends AbstractOneOpcodeParser
 	@NotNull private final ComputationalCategory computationalCategory;
 	@NotNull private final IntegerBitOperation integerBitOperation;
 
-	public IntegerBitOperationOpcodeParser(@NotNull final ComputationalCategory computationalCategory, @NotNull final IntegerBitOperation integerBitOperation)
+	private IntegerBitOperationOpcodeParser(@NotNull final ComputationalCategory computationalCategory, @NotNull final IntegerBitOperation integerBitOperation)
 	{
 		this.computationalCategory = computationalCategory;
 		this.integerBitOperation = integerBitOperation;

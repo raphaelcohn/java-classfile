@@ -103,7 +103,6 @@ public final class SimpleJavaClassFileReader implements JavaClassFileReader
 		return ((byteAt(0) & ByteMask) << 24) + ((byteAt(1) & ByteMask) << 16) + ((byteAt(2) & ByteMask) << 8) + ((byteAt(3) & ByteMask));
 	}
 
-	@SuppressWarnings("MagicNumber")
 	@Override
 	public long readBigEndianUnsigned32BitInteger(@NotNull @NonNls final String what) throws InvalidJavaClassFileException
 	{
@@ -115,7 +114,7 @@ public final class SimpleJavaClassFileReader implements JavaClassFileReader
 	public long readBigEndianSigned64BitInteger(@NotNull @NonNls final String what) throws InvalidJavaClassFileException
 	{
 		readFully(8, what);
-		return (((long) byteAt(0) << 56) + ((long)(byteAt(1) & ByteMask) << 48) + ((long)(byteAt(2) & ByteMask) << 40) + ((long)(byteAt(3) & ByteMask) << 32) + ((long)(byteAt(4) & ByteMask) << 24) + ((byteAt(5) & ByteMask) << 16) + ((byteAt(6) & ByteMask) <<  8) + ((byteAt(7) & ByteMask)));
+		return ((long) byteAt(0) << 56) + ((long) (byteAt(1) & ByteMask) << 48) + ((long) (byteAt(2) & ByteMask) << 40) + ((long) (byteAt(3) & ByteMask) << 32) + ((long) (byteAt(4) & ByteMask) << 24) + ((long) (byteAt(5) & ByteMask) << 16) + ((long) (byteAt(6) & ByteMask) <<  8) + (byteAt(7) & ByteMask);
 	}
 
 	@Override
@@ -146,7 +145,7 @@ public final class SimpleJavaClassFileReader implements JavaClassFileReader
 	}
 
 	@Override
-	@SuppressWarnings({"MagicNumber", "ThrowCaughtLocally", "NumericCastThatLosesPrecision"})
+	@SuppressWarnings({"ThrowCaughtLocally", "NumericCastThatLosesPrecision"})
 	@NotNull
 	public String readModifiedUtf8String(@NotNull @NonNls final String what, final long length) throws JavaClassFileContainsDataTooLongToReadException, InvalidJavaClassFileException
 	{
@@ -198,8 +197,6 @@ public final class SimpleJavaClassFileReader implements JavaClassFileReader
 				case 5:
 				case 6:
 				case 7:
-					/* 0xxxxxxx*/
-
 					count++;
 
 					character = (char) char1;
@@ -207,8 +204,6 @@ public final class SimpleJavaClassFileReader implements JavaClassFileReader
 
 				case 12:
 				case 13:
-					/* 110x xxxx   10xx xxxx*/
-
 					count += 2;
 
 					guardForCompleteSequence(length, count);
@@ -220,8 +215,6 @@ public final class SimpleJavaClassFileReader implements JavaClassFileReader
 					break;
 
 				case 14:
-					/* 1110 xxxx  10xx xxxx  10xx xxxx */
-
 					count += 3;
 
 					guardForCompleteSequence(length, count);
@@ -236,8 +229,6 @@ public final class SimpleJavaClassFileReader implements JavaClassFileReader
 					break;
 
 				default:
-					/* 10xx xxxx,  1111 xxxx */
-
 					throw newMalformedInput();
 			}
 

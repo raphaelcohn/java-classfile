@@ -58,6 +58,7 @@ import static com.stormmq.java.classfile.domain.attributes.code.operandStackItem
 import static com.stormmq.java.classfile.domain.attributes.code.operandStackItems.operations.UnaryOperation.negate;
 import static com.stormmq.java.classfile.domain.attributes.code.typing.ComputationalCategory.*;
 
+@SuppressWarnings("SpellCheckingInspection")
 public interface OpcodeParser
 {
 	char length() throws InvalidOpcodeException;
@@ -544,7 +545,7 @@ public interface OpcodeParser
 		return opcodeParsers;
 	}
 
-	@SuppressWarnings("MethodCanBeVariableArityMethod")
+	@SuppressWarnings({"MethodCanBeVariableArityMethod", "MagicNumber"})
 	static void constants(@NotNull final OpcodeParser[] opcodeParsers)
 	{
 		opcodeParsers[nop] = NoOperation;

@@ -37,10 +37,4 @@ public final class FromSub32BitIntegerNumericOperandStackItem extends AbstractNu
 		this.from = from;
 		this.underlyingByteCharOrShortValue = underlyingByteCharOrShortValue;
 	}
-
-	@Override
-	protected boolean isAlreadyByteCharOrShort()
-	{
-		return false;
-	}
 }

@@ -42,28 +42,28 @@ import java.util.Set;
 
 public final class TypeInformation
 {
-	@NotNull public final TypeKind typeKind;
-	@NotNull public final Visibility visibility;
-	@NotNull public final Completeness completeness;
-	public final boolean isSynthetic;
-	public final boolean hasLegacySuperFlagSetting;
-	@NotNull public final KnownReferenceTypeName thisClassTypeName;
-	@Nullable public final KnownReferenceTypeName superClassTypeName;
-	@NotNull public final Set<KnownReferenceTypeName> interfaces;
-	@NotNull public final Map<FieldUniqueness, FieldInformation> fields;
-	@NotNull public final Map<MethodUniqueness, MethodInformation> methods;
-	public final boolean isSyntheticAttribute;
-	public final boolean isDeprecated;
-	@Nullable public final Signature signature;
-	@NotNull public final AnnotationValue[] visibleAnnotations;
-	@NotNull public final AnnotationValue[] invisibleAnnotations;
-	@NotNull public final TypeAnnotation[] typeAnnotations;
-	@NotNull public final TypeAnnotation[] visibleTypeAnnotations;
-	@NotNull public final UnknownAttributes unknownAttributes;
-	@Nullable public final String sourceFile;
-	@Nullable public final EnclosingMethod enclosingMethod;
-	@Nullable public final String sourceDebugExtension;
-	@NotNull public final BootstrapMethod[] bootstrapMethods;
+	@NotNull private final TypeKind typeKind;
+	@NotNull private final Visibility visibility;
+	@NotNull private final Completeness completeness;
+	private final boolean isSynthetic;
+	private final boolean hasLegacySuperFlagSetting;
+	@NotNull private final KnownReferenceTypeName thisClassTypeName;
+	@Nullable private final KnownReferenceTypeName superClassTypeName;
+	@NotNull private final Set<KnownReferenceTypeName> interfaces;
+	@NotNull private final Map<FieldUniqueness, FieldInformation> fields;
+	@NotNull private final Map<MethodUniqueness, MethodInformation> methods;
+	private final boolean isSyntheticAttribute;
+	private final boolean isDeprecated;
+	@Nullable private final Signature signature;
+	@NotNull private final AnnotationValue[] visibleAnnotations;
+	@NotNull private final AnnotationValue[] invisibleAnnotations;
+	@NotNull private final TypeAnnotation[] typeAnnotations;
+	@NotNull private final TypeAnnotation[] visibleTypeAnnotations;
+	@NotNull private final UnknownAttributes unknownAttributes;
+	@Nullable private final String sourceFile;
+	@Nullable private final EnclosingMethod enclosingMethod;
+	@Nullable private final String sourceDebugExtension;
+	@NotNull private final BootstrapMethod[] bootstrapMethods;
 
 	public TypeInformation(@NotNull final TypeKind typeKind, @NotNull final Visibility visibility, @NotNull final Completeness completeness, final boolean isSynthetic, final boolean hasLegacySuperFlagSetting, @NotNull final KnownReferenceTypeName thisClassTypeName, @Nullable final KnownReferenceTypeName superClassTypeName, @NotNull final Set<KnownReferenceTypeName> interfaces, @NotNull final Map<FieldUniqueness, FieldInformation> fields, @NotNull final Map<MethodUniqueness, MethodInformation> methods, final boolean isSyntheticAttribute, final boolean isDeprecated, @Nullable final Signature signature, @NotNull final AnnotationValue[] visibleAnnotations, @NotNull final AnnotationValue[] invisibleAnnotations, @NotNull final TypeAnnotation[] typeAnnotations, @NotNull final TypeAnnotation[] visibleTypeAnnotations, @NotNull final UnknownAttributes unknownAttributes, @Nullable final String sourceFile, @Nullable final EnclosingMethod enclosingMethod, @Nullable final String sourceDebugExtension, @NotNull final BootstrapMethod[] bootstrapMethods)
 	{

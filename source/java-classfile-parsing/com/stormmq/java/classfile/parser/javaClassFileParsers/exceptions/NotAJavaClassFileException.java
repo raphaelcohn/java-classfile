@@ -30,7 +30,7 @@ import static java.lang.Integer.toHexString;
 public final class NotAJavaClassFileException extends Exception
 {
 	public static final int JavaClassFileMagicNumber = 0xCAFEBABE;
-	@NotNull public static final String JavaClassFileMagicNumberHexString = toHexString(JavaClassFileMagicNumber);
+	@NotNull private static final String JavaClassFileMagicNumberHexString = toHexString(JavaClassFileMagicNumber);
 
 	public NotAJavaClassFileException(final int magicNumber)
 	{

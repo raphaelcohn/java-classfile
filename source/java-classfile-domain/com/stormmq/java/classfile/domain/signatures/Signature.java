@@ -29,6 +29,7 @@ import org.jetbrains.annotations.*;
 
 import java.util.Set;
 
+@SuppressWarnings("SpellCheckingInspection")
 public final class Signature
 {
 	/*

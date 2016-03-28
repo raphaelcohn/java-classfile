@@ -31,6 +31,8 @@ import com.stormmq.java.classfile.domain.attributes.code.typing.ComputationalCat
 import com.stormmq.string.Formatting;
 import org.jetbrains.annotations.NotNull;
 
+import static com.stormmq.string.Formatting.format;
+import static com.stormmq.string.Formatting.formatPrintLineAndFlushWhilstSynchronized;
 import static java.lang.System.out;
 
 public final class ExperimentalOperandStack implements OperandStack
@@ -95,8 +97,7 @@ public final class ExperimentalOperandStack implements OperandStack
 		{
 			throw new UnsupportedOperationException("Fix me");
 		}
-		final String line = Formatting.format("%%%1$s = %%%2$s\n", trackingOperandStack.currentStackPointer(), fromOperandStackPointer);
-		out.println( "%" + Integer.toString(trackingOperandStack.currentStackPointer()));
+		formatPrintLineAndFlushWhilstSynchronized(out, "%%%1$s = %%%2$s%n", trackingOperandStack.currentStackPointer(), fromOperandStackPointer);
 
 		return oldStackPointer;
 	}

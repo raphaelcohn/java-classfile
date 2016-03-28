@@ -50,6 +50,7 @@ public final class InvokeInterfaceMethodHandleConstant extends AbstractInvokeMet
 		{
 			return;
 		}
+		//noinspection SpellCheckingInspection
 		throw new InvalidJavaClassFileException(Formatting.format("The reference at constant pool index '%1$s' is not a CONSTANT_Interfaceref_info but is instead a '%2$s'", referenceIndex, constant.getClass().getSimpleName()));
 	}
 }

@@ -22,6 +22,7 @@
 
 package com.stormmq.java.classfile.domain.attributes.code.typing;
 
+import com.stormmq.java.parsing.utilities.ReservedIdentifiers;
 import org.jetbrains.annotations.NotNull;
 
 public enum LocalVariableSimpleType
@@ -38,11 +39,10 @@ public enum LocalVariableSimpleType
 	_double(ComputationalCategory._double, 2),
 	;
 
-	@NotNull private final String actualName;
 	@NotNull private final ComputationalCategory computationalCategory;
 	private final int category;
 	private final boolean isByteCharOrShort;
-	public final boolean isNotByteCharOrShort;
+	private final boolean isNotByteCharOrShort;
 
 	LocalVariableSimpleType(@NotNull final ComputationalCategory computationalCategory, final int category)
 	{
@@ -58,10 +58,10 @@ public enum LocalVariableSimpleType
 			throw new IllegalStateException("name() should not be empty");
 		}
 
-		actualName = name.charAt(0) == '_' ? name.substring(1) : name;
+		final String actualName = name.charAt(0) == '_' ? name.substring(1) : name;
 		this.computationalCategory = computationalCategory;
 		this.category = category;
-		isByteCharOrShort = actualName.equals("byte") || actualName.equals("char") || actualName.equals("short");
+		isByteCharOrShort = actualName.equals(ReservedIdentifiers._byte) || actualName.equals(ReservedIdentifiers._char) || actualName.equals(ReservedIdentifiers._short);
 		isNotByteCharOrShort = !isByteCharOrShort;
 	}
 }

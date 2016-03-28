@@ -77,7 +77,7 @@ public final class InputStreamByteReader implements ByteReader
 		return value;
 	}
 
-	public void readBytes(@NotNull @NonNls final String what, @NotNull final byte[] buffer, final int length) throws EOFException
+	private void readBytes(@NotNull @NonNls final String what, @NotNull final byte[] buffer, final int length) throws EOFException
 	{
 		int readSoFar = 0;
 		do

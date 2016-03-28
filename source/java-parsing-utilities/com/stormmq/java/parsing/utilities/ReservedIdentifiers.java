@@ -40,9 +40,13 @@ public final class ReservedIdentifiers
 	@NotNull @NonNls public static final String StaticInitializerMethodName = "<clinit>";
 	@NotNull @NonNls public static final String InstanceInitializerMethodName = "<init>";
 	@NotNull @NonNls public static final String DefaultAnnotationMemberName = value;
+	@NotNull @NonNls public static final String _void = "void";
 	@NonNls @NotNull private static final String unqualifiedNameDescription = "unqualifiedName";
 	@NonNls @NotNull private static final String javaIdentifierDescription = "javaIdentifier";
 	@NotNull @NonNls private static final Set<String> ReservedIdentifiers = reservedIdentifiers();
+	@NotNull @NonNls public static final String _byte = "byte";
+	@NotNull @NonNls public static final String _char = "char";
+	@NotNull @NonNls public static final String _short = "short";
 
 	@NotNull
 	private static Set<String> reservedIdentifiers()
@@ -59,13 +63,13 @@ public final class ReservedIdentifiers
 		reservedIdentifiers.add("long");
 		reservedIdentifiers.add("finally");
 		reservedIdentifiers.add(_class);
-		reservedIdentifiers.add("void");
+		reservedIdentifiers.add(_void);
 		reservedIdentifiers.add("static");
 		reservedIdentifiers.add(_interface);
 		reservedIdentifiers.add("final");
-		reservedIdentifiers.add("char");
+		reservedIdentifiers.add(_char);
 		reservedIdentifiers.add("try");
-		reservedIdentifiers.add("short");
+		reservedIdentifiers.add(_short);
 		reservedIdentifiers.add("int");
 		reservedIdentifiers.add("extends");
 		reservedIdentifiers.add("catch");
@@ -78,7 +82,7 @@ public final class ReservedIdentifiers
 		reservedIdentifiers.add("public");
 		reservedIdentifiers.add("import");
 		reservedIdentifiers.add("else");
-		reservedIdentifiers.add("byte");
+		reservedIdentifiers.add(_byte);
 		reservedIdentifiers.add("throw");
 		reservedIdentifiers.add(_protected);
 		reservedIdentifiers.add("implements");

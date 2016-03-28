@@ -45,7 +45,7 @@ public final class TypeInterfacesParser
 	@NotNull private static final Map<KnownReferenceTypeName, TypeKind> MismatchedThisClassTypeNames = initialiseMismatchedThisClassTypeNames();
 
 	@NotNull
-	private static HashMap<KnownReferenceTypeName, TypeKind> initialiseMismatchedThisClassTypeNames()
+	private static Map<KnownReferenceTypeName, TypeKind> initialiseMismatchedThisClassTypeNames()
 	{
 		final HashMap<KnownReferenceTypeName, TypeKind> mismatchedThisClassTypeNames = new HashMap<>(3);
 

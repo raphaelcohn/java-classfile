@@ -30,7 +30,7 @@ public enum TargetInfoItem
 	empty_target,
 	formal_parameter_target,
 	throws_target,
-	localvar_target,
+	@SuppressWarnings("SpellCheckingInspection")localvar_target,
 	catch_target,
 	offset_target,
 	type_argument_target,

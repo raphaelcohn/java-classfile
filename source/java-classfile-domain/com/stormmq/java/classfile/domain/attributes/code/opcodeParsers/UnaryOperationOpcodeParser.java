@@ -35,7 +35,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Set;
 
-public class UnaryOperationOpcodeParser extends AbstractOneOpcodeParser
+public final class UnaryOperationOpcodeParser extends AbstractOneOpcodeParser
 {
 	@NotNull
 	public static OpcodeParser unaryOperationOpcodeParser(@NotNull final ComputationalCategory computationalCategory, @NotNull final UnaryOperation unaryOperation)
@@ -51,7 +51,7 @@ public class UnaryOperationOpcodeParser extends AbstractOneOpcodeParser
 	@NotNull private final ComputationalCategory computationalCategory;
 	@NotNull private final UnaryOperation unaryOperation;
 
-	public UnaryOperationOpcodeParser(@NotNull final ComputationalCategory computationalCategory, @NotNull final UnaryOperation unaryOperation)
+	private UnaryOperationOpcodeParser(@NotNull final ComputationalCategory computationalCategory, @NotNull final UnaryOperation unaryOperation)
 	{
 		this.computationalCategory = computationalCategory;
 		this.unaryOperation = unaryOperation;

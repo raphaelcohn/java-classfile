@@ -48,7 +48,7 @@ public final class JavaClassFileParser
 	}
 
 	@NotNull
-	public static TypeInformation parseJavaClassFile(@NotNull final JavaClassFileReader javaClassFileReader, @NotNull final VersionedClassFileParserChooser versionedClassFileParserChooser) throws InvalidJavaClassFileException, JavaClassFileContainsDataTooLongToReadException, NotAJavaClassFileException
+	private static TypeInformation parseJavaClassFile(@NotNull final JavaClassFileReader javaClassFileReader, @NotNull final VersionedClassFileParserChooser versionedClassFileParserChooser) throws InvalidJavaClassFileException, JavaClassFileContainsDataTooLongToReadException, NotAJavaClassFileException
 	{
 		final int magicNumber;
 		try

@@ -27,6 +27,7 @@ import com.stormmq.java.classfile.domain.attributes.code.constants.RuntimeConsta
 import com.stormmq.java.classfile.domain.attributes.code.invalidOperandStackExceptions.NotEnoughBytesInvalidOperandStackException;
 import com.stormmq.java.classfile.domain.attributes.code.localVariables.LocalVariableAtProgramCounter;
 import com.stormmq.java.classfile.domain.attributes.code.operandStack.OperandStack;
+import com.stormmq.java.classfile.domain.attributes.code.operandStackItems.DoNothingOperandStackItem;
 import com.stormmq.java.classfile.domain.attributes.code.operandStackItems.numericOperandStackItems.IncrementLocalVariableNumericOperandStackItem;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -51,7 +52,7 @@ public final class LocalVariableIntegerIncrementOpcodeParser extends AbstractThr
 		final char localVariableIndex = (char) index;
 		@Nullable final LocalVariableAtProgramCounter localVariableAtProgramCounter = forInformationOnlyUntilWeWorkOutHowToProperlyInterpretThisData(localVariablesAtProgramCounter, localVariableIndex);
 
-		final IncrementLocalVariableNumericOperandStackItem incrementLocalVariableNumericOperandStackItem = new IncrementLocalVariableNumericOperandStackItem(localVariableIndex, increment, localVariableAtProgramCounter);
+		final DoNothingOperandStackItem incrementLocalVariableNumericOperandStackItem = new IncrementLocalVariableNumericOperandStackItem(localVariableIndex, increment, localVariableAtProgramCounter);
 
 		operandStack.unchanged(incrementLocalVariableNumericOperandStackItem);
 	}

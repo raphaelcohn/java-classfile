@@ -33,7 +33,7 @@ import org.jetbrains.annotations.Nullable;
 public abstract class AbstractSingleReferenceIndexConstant extends AbstractSingleWidthConstant
 {
 	@SuppressWarnings("FieldNotUsedInToString") @NotNull private final ConstantPool constantPool;
-	@NotNull protected final ConstantPoolIndex modifiedUtf8StringIndex;
+	@NotNull private final ConstantPoolIndex modifiedUtf8StringIndex;
 
 	protected AbstractSingleReferenceIndexConstant(@NotNull final ConstantPool constantPool, @NotNull final ConstantPoolIndex modifiedUtf8StringIndex)
 	{

@@ -124,7 +124,6 @@ public final class NameAndTypeReferenceIndexConstant extends AbstractSingleWidth
 		return result;
 	}
 
-	@SuppressWarnings("HardcodedFileSeparator")
 	@Override
 	public void validateReferenceIndices() throws InvalidJavaClassFileException
 	{

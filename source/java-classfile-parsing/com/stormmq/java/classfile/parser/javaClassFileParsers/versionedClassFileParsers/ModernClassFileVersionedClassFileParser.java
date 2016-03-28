@@ -48,6 +48,7 @@ import com.stormmq.java.classfile.parser.javaClassFileParsers.exceptions.Invalid
 import com.stormmq.java.classfile.parser.javaClassFileParsers.exceptions.JavaClassFileContainsDataTooLongToReadException;
 import com.stormmq.java.classfile.parser.javaClassFileParsers.functions.InvalidExceptionBiIntConsumer;
 import com.stormmq.java.parsing.utilities.*;
+import com.stormmq.java.parsing.utilities.names.parentNames.ParentName;
 import com.stormmq.java.parsing.utilities.names.typeNames.TypeName;
 import com.stormmq.java.parsing.utilities.names.typeNames.referenceTypeNames.KnownReferenceTypeName;
 import com.stormmq.string.Formatting;
@@ -78,7 +79,7 @@ public final class ModernClassFileVersionedClassFileParser implements VersionedC
 	@NotNull
 	private static Map<JavaClassFileVersion, AttributesParser> initialiseAttributesParsers(@NotNull final AttributeLocation attributeLocation)
 	{
-		final EnumMap<JavaClassFileVersion, AttributesParser> map = new EnumMap<>(JavaClassFileVersion.class);
+		final Map<JavaClassFileVersion, AttributesParser> map = new EnumMap<>(JavaClassFileVersion.class);
 		for (final JavaClassFileVersion javaClassFileVersion : JavaClassFileVersion.values())
 		{
 			map.put(javaClassFileVersion, new AttributesParser(new AttributeParserMappings(javaClassFileVersion, attributeLocation)));
@@ -89,7 +90,7 @@ public final class ModernClassFileVersionedClassFileParser implements VersionedC
 	@NotNull
 	private static Map<JavaClassFileVersion, ConstantParser[]> initialiseConstantParsers()
 	{
-		final EnumMap<JavaClassFileVersion, ConstantParser[]> map = new EnumMap<>(JavaClassFileVersion.class);
+		final Map<JavaClassFileVersion, ConstantParser[]> map = new EnumMap<>(JavaClassFileVersion.class);
 		for (final JavaClassFileVersion javaClassFileVersion : JavaClassFileVersion.values())
 		{
 			map.put(javaClassFileVersion, constantParsers(javaClassFileVersion));
@@ -164,7 +165,7 @@ public final class ModernClassFileVersionedClassFileParser implements VersionedC
 		return new TypeInformation(typeKind, typeVisibility, typeCompleteness, isTypeSynthetic, hasLegacySuperFlagSetting, thisClassTypeName, superClassTypeName, interfaces, fields, methods, isSyntheticAttribute, isDeprecated, signature, visibleAnnotations, invisibleAnnotations, visibleTypeAnnotations, invisibleTypeAnnotations, unknownAttributes, sourceFile, enclosingMethod, sourceDebugExtension, bootstrapMethods);
 	}
 
-	private static boolean isInnerClass(@NotNull final Map<FieldUniqueness, FieldInformation> fields, @NotNull final KnownReferenceTypeName thisClassTypeName)
+	private static boolean isInnerClass(@NotNull final Map<FieldUniqueness, FieldInformation> fields, @NotNull final ParentName thisClassTypeName)
 	{
 		for (final FieldUniqueness fieldUniqueness : fields.keySet())
 		{
@@ -375,7 +376,6 @@ public final class ModernClassFileVersionedClassFileParser implements VersionedC
 				}
 
 
-				// TODO: validate parameters annos match up descriptor and parameter access stuff
 				final MethodInformation methodInformation;
 				if (methodName.equals(StaticInstanceInitializer))
 				{

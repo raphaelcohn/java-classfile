@@ -35,7 +35,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Set;
 
-public class BinaryOperationOpcodeParser extends AbstractOneOpcodeParser
+public final class BinaryOperationOpcodeParser extends AbstractOneOpcodeParser
 {
 	@NotNull
 	public static OpcodeParser binaryOperationOpcodeParser(@NotNull final ComputationalCategory computationalCategory, @NotNull final BinaryOperation binaryOperation, final boolean isStrictFloatingPoint)
@@ -52,7 +52,7 @@ public class BinaryOperationOpcodeParser extends AbstractOneOpcodeParser
 	@NotNull private final BinaryOperation binaryOperation;
 	private final boolean isStrictFloatingPoint;
 
-	public BinaryOperationOpcodeParser(@NotNull final ComputationalCategory computationalCategory, @NotNull final BinaryOperation binaryOperation, final boolean isStrictFloatingPoint)
+	private BinaryOperationOpcodeParser(@NotNull final ComputationalCategory computationalCategory, @NotNull final BinaryOperation binaryOperation, final boolean isStrictFloatingPoint)
 	{
 		this.computationalCategory = computationalCategory;
 		this.binaryOperation = binaryOperation;

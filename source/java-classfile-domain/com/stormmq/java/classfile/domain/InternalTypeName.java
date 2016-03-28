@@ -69,7 +69,7 @@ public final class InternalTypeName
 		return typeName.isVoid();
 	}
 
-	public boolean isPrimitive()
+	private boolean isPrimitive()
 	{
 		return typeName.isPrimitive();
 	}

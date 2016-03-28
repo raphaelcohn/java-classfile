@@ -27,7 +27,7 @@ import static java.lang.Double.longBitsToDouble;
 // This class exists because Double.longBitsToDouble() loses signalling NaN information that needs to be preserved
 public final class RawDouble
 {
-	public final long doubleValueAsRawLongBitsAsJavaLosesNaNInformationOnConversion;
+	private final long doubleValueAsRawLongBitsAsJavaLosesNaNInformationOnConversion;
 
 	public RawDouble(final long doubleValueAsRawLongBitsAsJavaLosesNaNInformationOnConversion)
 	{

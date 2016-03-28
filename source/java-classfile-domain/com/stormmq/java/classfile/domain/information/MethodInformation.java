@@ -59,14 +59,14 @@ public final class MethodInformation
 	@NotNull private final AnnotationValue[][] visibleParameterAnnotations;
 	@NotNull private final AnnotationValue[][] invisibleParameterAnnotations;
 	@NotNull private final TypeAnnotation[] visibleTypeAnnotations;
-	@NotNull private final TypeAnnotation[] invisibleTypeAnnotationss;
+	@NotNull private final TypeAnnotation[] invisibleTypeAnnotations;
 	@NotNull private final Set<KnownReferenceTypeName> exceptions;
 	@NotNull private final MethodParameter[] methodParameters;
 	@Nullable private final Object annotationDefault;
 	@NotNull private final UnknownAttributes unknownAttributes;
 	@Nullable private final Code code;
 
-	public MethodInformation(@NotNull final MethodUniqueness methodUniqueness, @NotNull final Visibility visibility, final boolean isSynthetic, final boolean isBridge, final boolean isVarArgs, @NotNull final Completeness completeness, final boolean isSynchronized, final boolean isNative, final boolean isStatic, final boolean isStrictFloatingPoint, final boolean isSyntheticAttribute, final boolean isDeprecated, @Nullable final Signature signature, @NotNull final AnnotationValue[] visibleAnnotations, @NotNull final AnnotationValue[] invisibleAnnotations, @NotNull final AnnotationValue[][] visibleParameterAnnotations, @NotNull final AnnotationValue[][] invisibleParameterAnnotations, @NotNull final TypeAnnotation[] visibleTypeAnnotations, @NotNull final TypeAnnotation[] invisibleTypeAnnotationss, @NotNull final Set<KnownReferenceTypeName> exceptions, @NotNull final MethodParameter[] methodParameters, @Nullable final Code code, @Nullable final Object annotationDefault, @NotNull final UnknownAttributes unknownAttributes)
+	public MethodInformation(@NotNull final MethodUniqueness methodUniqueness, @NotNull final Visibility visibility, final boolean isSynthetic, final boolean isBridge, final boolean isVarArgs, @NotNull final Completeness completeness, final boolean isSynchronized, final boolean isNative, final boolean isStatic, final boolean isStrictFloatingPoint, final boolean isSyntheticAttribute, final boolean isDeprecated, @Nullable final Signature signature, @NotNull final AnnotationValue[] visibleAnnotations, @NotNull final AnnotationValue[] invisibleAnnotations, @NotNull final AnnotationValue[][] visibleParameterAnnotations, @NotNull final AnnotationValue[][] invisibleParameterAnnotations, @NotNull final TypeAnnotation[] visibleTypeAnnotations, @NotNull final TypeAnnotation[] invisibleTypeAnnotations, @NotNull final Set<KnownReferenceTypeName> exceptions, @NotNull final MethodParameter[] methodParameters, @Nullable final Code code, @Nullable final Object annotationDefault, @NotNull final UnknownAttributes unknownAttributes)
 	{
 		this.methodUniqueness = methodUniqueness;
 		this.code = code;
@@ -87,7 +87,7 @@ public final class MethodInformation
 		this.visibleParameterAnnotations = visibleParameterAnnotations;
 		this.invisibleParameterAnnotations = invisibleParameterAnnotations;
 		this.visibleTypeAnnotations = visibleTypeAnnotations;
-		this.invisibleTypeAnnotationss = invisibleTypeAnnotationss;
+		this.invisibleTypeAnnotations = invisibleTypeAnnotations;
 		this.exceptions = exceptions;
 		this.methodParameters = methodParameters;
 		this.annotationDefault = annotationDefault;

@@ -123,6 +123,7 @@ public enum DigitToValue
 			}
 		}
 
+		@SuppressWarnings("RefusedBequest")
 		@Override
 		public long shift(final int length, final long input, final long decimalValue, final int digitIndex)
 		{
@@ -212,7 +213,7 @@ public enum DigitToValue
 		return shiftWithOr(length, input, decimalValue, digitIndex);
 	}
 
-	protected long shiftWithOr(final int length, final long input, final long decimalValue, final int digitIndex)
+	private long shiftWithOr(final int length, final long input, final long decimalValue, final int digitIndex)
 	{
 		final int shift = (length - 1 - digitIndex) * bitsPerDigit;
 		return (decimalValue << shift) | input;

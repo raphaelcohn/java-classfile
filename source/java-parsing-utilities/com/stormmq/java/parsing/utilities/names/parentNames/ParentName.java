@@ -30,9 +30,11 @@ public interface ParentName
 	@NotNull
 	String fullyQualifiedNameUsingDotsAndDollarSigns();
 
+	@SuppressWarnings("ClassReferencesSubclass")
 	@NotNull
 	KnownReferenceTypeName childOrSame(@NotNull final String anyPartiallyQualifiedTypeName);
 
+	@SuppressWarnings("ClassReferencesSubclass")
 	@NotNull
 	KnownReferenceTypeName child(@NotNull final String simpleTypeName);
 }

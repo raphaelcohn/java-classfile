@@ -39,7 +39,7 @@ public final class KnownReferenceTypeName extends AbstractParentName implements 
 {
 	@NotNull private static final ConcurrentMap<String, KnownReferenceTypeName> cache = new ConcurrentHashMap<>(8192);
 
-	@SuppressWarnings("HardcodedFileSeparator") @NotNull public static final String JavaLangObjectInternalName = "java/lang/Object";
+	@SuppressWarnings("HardcodedFileSeparator") @NotNull private static final String JavaLangObjectInternalName = "java/lang/Object";
 	@SuppressWarnings("HardcodedFileSeparator") @NotNull private static final String JavaLangAnnotationAnnotationInternalName = "java/lang/annotation/Annotation";
 	@SuppressWarnings("HardcodedFileSeparator") @NotNull private static final String JavaLangEnumInternalName = "java/lang/Enum";
 	@SuppressWarnings("HardcodedFileSeparator") @NotNull private static final String JavaLangStringInternalName = "java/lang/String";
@@ -73,12 +73,11 @@ public final class KnownReferenceTypeName extends AbstractParentName implements 
 	}
 
 	@NotNull
-	public static KnownReferenceTypeName knownReferenceTypeNameFromInternalName(@NotNull final String internalName)
+	private static KnownReferenceTypeName knownReferenceTypeNameFromInternalName(@NotNull final String internalName)
 	{
 		return knownReferenceTypeName(convertInternalNameToRegularName(internalName));
 	}
 
-	@SuppressWarnings("HardcodedFileSeparator")
 	@NotNull
 	private static String convertInternalNameToRegularName(@NotNull final String internalName)
 	{
@@ -104,7 +103,7 @@ public final class KnownReferenceTypeName extends AbstractParentName implements 
 	}
 
 	@NotNull
-	public static String dataOutputFileModifiedUtf8EncodeSizeCheck(@NotNull final String fullyQualifiedNameUsingDotsAndDollarSigns, @NotNull final String simpleTypeName, @NotNull final String delimiter)
+	private static String dataOutputFileModifiedUtf8EncodeSizeCheck(@NotNull final String fullyQualifiedNameUsingDotsAndDollarSigns, @NotNull final String simpleTypeName, @NotNull final String delimiter)
 	{
 		final String fullyQualifiedTypeName = fullyQualifiedNameUsingDotsAndDollarSigns.isEmpty() ? simpleTypeName : fullyQualifiedNameUsingDotsAndDollarSigns + delimiter + simpleTypeName;
 		final int size;
@@ -139,7 +138,7 @@ public final class KnownReferenceTypeName extends AbstractParentName implements 
 	}
 
 
-	public KnownReferenceTypeName(@NotNull final String fullyQualifiedNameUsingDotsAndDollarSigns)
+	private KnownReferenceTypeName(@NotNull final String fullyQualifiedNameUsingDotsAndDollarSigns)
 	{
 		super(fullyQualifiedNameUsingDotsAndDollarSigns, true);
 	}
