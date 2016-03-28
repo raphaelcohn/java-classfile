@@ -45,7 +45,7 @@ public final class FloatComparisonToIntegerOpcodeParser extends AbstractOneOpcod
 	}
 
 	@Override
-	public void parse(@NotNull final OperandStack operandStack, @NotNull final CodeReader codeReader, @NotNull final Set<Character> lineNumbers, @NotNull final Set<LocalVariableAtProgramCounter> localVariablesAtProgramCounter, @NotNull final RuntimeConstantPool runtimeConstantPool) throws InvalidOpcodeException, UnderflowInvalidOperandStackException, MismatchedTypeInvalidOperandStackException, OverflowInvalidOperandStackException, NotEnoughBytesInvalidOperandStackException
+	public void parse(@NotNull final OperandStack operandStack, @NotNull final CodeReader codeReader, @NotNull final Set<Character> lineNumbers, @NotNull final Set<LocalVariableAtProgramCounter> localVariablesAtProgramCounter, @NotNull final RuntimeConstantPool runtimeConstantPool) throws UnderflowInvalidOperandStackException, MismatchedTypeInvalidOperandStackException
 	{
 		final NumericOperandStackItem<Float> value2 = operandStack.popNumeric(_float);
 		final NumericOperandStackItem<Float> value1 = operandStack.popNumeric(_float);

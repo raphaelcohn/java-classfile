@@ -38,7 +38,7 @@ public final class FloatConstant extends AbstractSingleWidthConstant implements 
 	}
 
 	@Override
-	public void validateReferenceIndices() throws InvalidJavaClassFileException
+	public void validateReferenceIndices()
 	{
 	}
 

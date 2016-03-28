@@ -94,7 +94,7 @@ public final class MethodInformation
 		this.unknownAttributes = unknownAttributes;
 	}
 
-	public void parseCode() throws MismatchedTypeInvalidOperandStackException, NotEnoughBytesInvalidOperandStackException, MismatchedVariableInvalidOperandStackException, InvalidOpcodeException, UnderflowInvalidOperandStackException, OverflowInvalidOperandStackException
+	public void parseCode() throws MismatchedTypeInvalidOperandStackException, NotEnoughBytesInvalidOperandStackException, InvalidOpcodeException, UnderflowInvalidOperandStackException, OverflowInvalidOperandStackException
 	{
 		if (code == null)
 		{

@@ -62,7 +62,7 @@ public enum LoadSingleWidthConstantOpcodeParser implements OpcodeParser
 	}
 
 	@Override
-	public final char length() throws InvalidOpcodeException
+	public final char length()
 	{
 		return length;
 	}

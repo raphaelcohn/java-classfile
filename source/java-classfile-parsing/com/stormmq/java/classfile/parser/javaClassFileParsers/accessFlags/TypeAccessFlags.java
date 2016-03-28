@@ -129,7 +129,7 @@ public final class TypeAccessFlags
 	}
 
 	@NotNull
-	public static Visibility typeVisibility(final char accessFlags) throws InvalidJavaClassFileException
+	public static Visibility typeVisibility(final char accessFlags)
 	{
 		final boolean isPublic = hasFlagSet(accessFlags, ACC_PUBLIC);
 		return isPublic ? Public : PackageLocal;

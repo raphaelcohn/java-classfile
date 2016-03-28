@@ -265,7 +265,7 @@ public final class Attributes
 	}
 
 	@Nullable
-	public com.stormmq.java.classfile.domain.signatures.Signature signature(@NotNull final KnownReferenceTypeName thisClassTypeName, @Nullable final KnownReferenceTypeName superClassTypeName, @NotNull final Set<KnownReferenceTypeName> interfaces) throws InvalidJavaClassFileException
+	public com.stormmq.java.classfile.domain.signatures.Signature signature(@NotNull final KnownReferenceTypeName thisClassTypeName, @Nullable final KnownReferenceTypeName superClassTypeName, @NotNull final Set<KnownReferenceTypeName> interfaces)
 	{
 		@Nullable final com.stormmq.java.classfile.domain.signatures.Signature signature = getSignature();
 		if (signature == null)
@@ -276,7 +276,7 @@ public final class Attributes
 	}
 
 	@Nullable
-	public com.stormmq.java.classfile.domain.signatures.Signature signature(@NotNull final FieldDescriptor fieldDescriptor) throws InvalidJavaClassFileException
+	public com.stormmq.java.classfile.domain.signatures.Signature signature(@NotNull final FieldDescriptor fieldDescriptor)
 	{
 		@Nullable final com.stormmq.java.classfile.domain.signatures.Signature signature = getSignature();
 		if (signature == null)
@@ -287,7 +287,7 @@ public final class Attributes
 	}
 
 	@Nullable
-	public com.stormmq.java.classfile.domain.signatures.Signature signature(@NotNull final MethodDescriptor methodDescriptor) throws InvalidJavaClassFileException
+	public com.stormmq.java.classfile.domain.signatures.Signature signature(@NotNull final MethodDescriptor methodDescriptor)
 	{
 		@Nullable final com.stormmq.java.classfile.domain.signatures.Signature signature = getSignature();
 		if (signature == null)

@@ -25,7 +25,7 @@ package com.stormmq.java.classfile.domain.attributes.code.opcodeParsers;
 public abstract class AbstractThreeOpcodeParser implements OpcodeParser
 {
 	@Override
-	public final char length() throws InvalidOpcodeException
+	public final char length()
 	{
 		return 3;
 	}

@@ -86,7 +86,7 @@ public final class ByteBufferByteReader implements ByteReader
 	}
 
 	@Override
-	public void close() throws IOException
+	public void close()
 	{
 	}
 }
