@@ -22,6 +22,13 @@
 
 package com.stormmq.java.classfile.domain.attributes.annotations.targetInformations;
 
-public interface TargetInformation
+import org.jetbrains.annotations.*;
+
+public final class EmptyTargetInformation implements TargetInformation
 {
+	@NotNull public static final TargetInformation EmptyTarget = new EmptyTargetInformation();
+
+	private EmptyTargetInformation()
+	{
+	}
 }

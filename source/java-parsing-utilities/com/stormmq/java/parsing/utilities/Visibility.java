@@ -22,6 +22,12 @@
 
 package com.stormmq.java.parsing.utilities;
 
+import org.jetbrains.annotations.NotNull;
+
+import java.io.*;
+
+import static com.stormmq.string.StringUtilities.enumSerializationIsNotSupportedForConstantsInASecureContext;
+
 public enum Visibility
 {
 	Public,
@@ -37,6 +43,16 @@ public enum Visibility
 			{
 				throw new IllegalArgumentException("Class fields can not be abstract and private");
 			}
+		}
+
+		private void writeObject(@NotNull final ObjectOutputStream out) throws IOException
+		{
+			throw enumSerializationIsNotSupportedForConstantsInASecureContext();
+		}
+
+		private void readObject(@NotNull final ObjectInputStream in) throws IOException
+		{
+			throw enumSerializationIsNotSupportedForConstantsInASecureContext();
 		}
 	},
 	;

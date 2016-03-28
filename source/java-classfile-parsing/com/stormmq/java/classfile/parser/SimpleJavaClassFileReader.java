@@ -145,7 +145,7 @@ public final class SimpleJavaClassFileReader implements JavaClassFileReader
 	}
 
 	@Override
-	@SuppressWarnings({"NumericCastThatLosesPrecision"})
+	@SuppressWarnings("NumericCastThatLosesPrecision")
 	@NotNull
 	public String readModifiedUtf8String(@NotNull @NonNls final String what, final long length) throws JavaClassFileContainsDataTooLongToReadException, InvalidJavaClassFileException
 	{

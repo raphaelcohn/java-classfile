@@ -26,7 +26,6 @@ import com.stormmq.java.classfile.domain.TypeKind;
 import com.stormmq.java.classfile.parser.javaClassFileParsers.exceptions.InvalidJavaClassFileException;
 import com.stormmq.java.classfile.parser.javaClassFileParsers.constantPool.ConstantPoolJavaClassFileReader;
 import com.stormmq.java.classfile.parser.javaClassFileParsers.exceptions.JavaClassFileContainsDataTooLongToReadException;
-import com.stormmq.java.classfile.parser.javaClassFileParsers.functions.InvalidExceptionBiIntConsumer;
 import com.stormmq.java.parsing.utilities.names.typeNames.referenceTypeNames.KnownReferenceTypeName;
 import com.stormmq.string.Formatting;
 import org.jetbrains.annotations.*;
@@ -135,45 +134,41 @@ public final class TypeInterfacesParser
 		final Set<KnownReferenceTypeName> interfaces;
 		try
 		{
-			interfaces = javaClassFileReader.parseTableAsSetWith16BitLength(new InvalidExceptionBiIntConsumer<Set<KnownReferenceTypeName>>()
+			interfaces = javaClassFileReader.parseTableAsSetWith16BitLength((objects, index) ->
 			{
-				@Override
-				public void accept(@NotNull final Set<KnownReferenceTypeName> objects, final int index) throws InvalidJavaClassFileException
+				final KnownReferenceTypeName interfaceTypeName = javaClassFileReader.readKnownReferenceTypeName("implemented interface");
+
+				validateInterfaceIsNotAProhibitedTypeName(interfaceTypeName, ProhibitedInterfaceTypeNames);
+
+				if (interfaceTypeName.equals(thisClassTypeName))
 				{
-					final KnownReferenceTypeName interfaceTypeName = javaClassFileReader.readKnownReferenceTypeName("implemented interface");
-
-					validateInterfaceIsNotAProhibitedTypeName(interfaceTypeName, ProhibitedInterfaceTypeNames);
-
-					if (interfaceTypeName.equals(thisClassTypeName))
-					{
-						throw new InvalidJavaClassFileException(Formatting.format("Interface name '%1$s' is thisClass", interfaceTypeName));
-					}
-
-					if (superClassTypeName == null)
-					{
-						throw new InvalidJavaClassFileException(Formatting.format("'%1$s' can not implement interfaces", thisClassTypeName));
-					}
-
-					if (interfaceTypeName.equals(thisClassTypeName))
-					{
-						throw new InvalidJavaClassFileException(Formatting.format("Interface name '%1$s' is superClass", interfaceTypeName));
-					}
-
-					if (typeKind == Annotation)
-					{
-						if (index > 0)
-						{
-							throw new InvalidJavaClassFileException(Formatting.format("Annotation '%1$s' should not implement more than one interface", thisClassTypeName));
-						}
-					}
-
-					if (objects.add(interfaceTypeName))
-					{
-						return;
-					}
-
-					throw new InvalidJavaClassFileException(Formatting.format("Duplicate interface name '%1$s'", interfaceTypeName));
+					throw new InvalidJavaClassFileException(Formatting.format("Interface name '%1$s' is thisClass", interfaceTypeName));
 				}
+
+				if (superClassTypeName == null)
+				{
+					throw new InvalidJavaClassFileException(Formatting.format("'%1$s' can not implement interfaces", thisClassTypeName));
+				}
+
+				if (interfaceTypeName.equals(thisClassTypeName))
+				{
+					throw new InvalidJavaClassFileException(Formatting.format("Interface name '%1$s' is superClass", interfaceTypeName));
+				}
+
+				if (typeKind == Annotation)
+				{
+					if (index > 0)
+					{
+						throw new InvalidJavaClassFileException(Formatting.format("Annotation '%1$s' should not implement more than one interface", thisClassTypeName));
+					}
+				}
+
+				if (objects.add(interfaceTypeName))
+				{
+					return;
+				}
+
+				throw new InvalidJavaClassFileException(Formatting.format("Duplicate interface name '%1$s'", interfaceTypeName));
 			});
 		}
 		catch (final JavaClassFileContainsDataTooLongToReadException e)

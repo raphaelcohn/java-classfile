@@ -27,7 +27,6 @@ import com.stormmq.java.classfile.domain.attributes.code.constants.RuntimeConsta
 import com.stormmq.java.classfile.domain.attributes.code.invalidOperandStackExceptions.*;
 import com.stormmq.java.classfile.domain.attributes.code.localVariables.LocalVariableAtProgramCounter;
 import com.stormmq.java.classfile.domain.attributes.code.operandStack.OperandStack;
-import com.stormmq.java.classfile.domain.attributes.code.operandStackItems.OperandStackItem;
 import com.stormmq.java.classfile.domain.attributes.code.typing.ByteCharOrShort;
 import org.jetbrains.annotations.NotNull;
 
@@ -37,7 +36,12 @@ import static com.stormmq.java.classfile.domain.attributes.code.opcodeParsers.Ar
 import static com.stormmq.java.classfile.domain.attributes.code.opcodeParsers.ArrayStoreReferenceOpcodeParser.ArrayStoreReference;
 import static com.stormmq.java.classfile.domain.attributes.code.opcodeParsers.BinaryOperationOpcodeParser.binaryOperationOpcodeParser;
 import static com.stormmq.java.classfile.domain.attributes.code.opcodeParsers.BytePushOpcodeParser.BytePush;
+import static com.stormmq.java.classfile.domain.attributes.code.opcodeParsers.Duplicate2OpcodeParser.Duplicate2;
+import static com.stormmq.java.classfile.domain.attributes.code.opcodeParsers.Duplicate2X1OpcodeParser.Duplicate2X1;
+import static com.stormmq.java.classfile.domain.attributes.code.opcodeParsers.Duplicate2X2OpcodeParser.Duplicate2X2;
 import static com.stormmq.java.classfile.domain.attributes.code.opcodeParsers.DuplicateOpcodeParser.Duplicate;
+import static com.stormmq.java.classfile.domain.attributes.code.opcodeParsers.DuplicateX1OpcodeParser.DuplicateX1;
+import static com.stormmq.java.classfile.domain.attributes.code.opcodeParsers.DuplicateX2OpcodeParser.DuplicateX2;
 import static com.stormmq.java.classfile.domain.attributes.code.opcodeParsers.IntegerBitOperationOpcodeParser.integerBitOperationOpcodeParser;
 import static com.stormmq.java.classfile.domain.attributes.code.opcodeParsers.InvokeDynamicNotAllowedOpcodeParser.InvokeDynamicNotAllowed;
 import static com.stormmq.java.classfile.domain.attributes.code.opcodeParsers.LoadDoubleWidthConstantOpcodeParser.LoadWideDoubleWidthConstant;
@@ -655,149 +659,11 @@ public interface OpcodeParser
 		opcodeParsers[pop] = Pop;
 		opcodeParsers[pop2] = Pop2;
 		opcodeParsers[dup] = Duplicate;
-		opcodeParsers[dup_x1] = new AbstractOneOpcodeParser()
-		{
-			@Override
-			public void parse(@NotNull final OperandStack operandStack, @NotNull final CodeReader codeReader, @NotNull final Set<Character> lineNumbers, @NotNull final Set<LocalVariableAtProgramCounter> localVariablesAtProgramCounter, @NotNull final RuntimeConstantPool runtimeConstantPool) throws UnderflowInvalidOperandStackException, MismatchedTypeInvalidOperandStackException, OverflowInvalidOperandStackException
-			{
-				final OperandStackItem value1 = operandStack.popCategory1ComputationalType();
-				final OperandStackItem value2 = operandStack.popCategory1ComputationalType();
-				operandStack.pushWithCertainty(value1);
-				operandStack.pushWithCertainty(value2);
-				operandStack.push(value1);
-			}
-		};
-		opcodeParsers[dup_x2] = new AbstractOneOpcodeParser()
-		{
-			@Override
-			public void parse(@NotNull final OperandStack operandStack, @NotNull final CodeReader codeReader, @NotNull final Set<Character> lineNumbers, @NotNull final Set<LocalVariableAtProgramCounter> localVariablesAtProgramCounter, @NotNull final RuntimeConstantPool runtimeConstantPool) throws UnderflowInvalidOperandStackException, MismatchedTypeInvalidOperandStackException, OverflowInvalidOperandStackException
-			{
-				final OperandStackItem value1 = operandStack.popCategory1ComputationalType();
-				final OperandStackItem value2 = operandStack.pop();
-				if (value2.isCategory1())
-				{
-					final OperandStackItem value3 = operandStack.popCategory1ComputationalType();
-					operandStack.pushWithCertainty(value1);
-					operandStack.pushWithCertainty(value3);
-					operandStack.pushWithCertainty(value2);
-					operandStack.push(value1);
-				}
-				else
-				{
-					operandStack.pushWithCertainty(value1);
-					operandStack.pushWithCertainty(value2);
-					operandStack.push(value1);
-				}
-			}
-		};
-		opcodeParsers[dup2] = new AbstractOneOpcodeParser()
-		{
-			@Override
-			public void parse(@NotNull final OperandStack operandStack, @NotNull final CodeReader codeReader, @NotNull final Set<Character> lineNumbers, @NotNull final Set<LocalVariableAtProgramCounter> localVariablesAtProgramCounter, @NotNull final RuntimeConstantPool runtimeConstantPool) throws UnderflowInvalidOperandStackException, MismatchedTypeInvalidOperandStackException, OverflowInvalidOperandStackException
-			{
-				final OperandStackItem value = operandStack.pop();
-				if (value.isCategory1())
-				{
-					final OperandStackItem value1 = value;
-					final OperandStackItem value2 = operandStack.popCategory1ComputationalType();
-					operandStack.pushWithCertainty(value2);
-					operandStack.pushWithCertainty(value1);
-					operandStack.push(value2);
-					operandStack.push(value1);
-				}
-				else
-				{
-					operandStack.pushWithCertainty(value);
-					operandStack.push(value);
-				}
-			}
-		};
-		opcodeParsers[dup2_x1] = new AbstractOneOpcodeParser()
-		{
-			@Override
-			public void parse(@NotNull final OperandStack operandStack, @NotNull final CodeReader codeReader, @NotNull final Set<Character> lineNumbers, @NotNull final Set<LocalVariableAtProgramCounter> localVariablesAtProgramCounter, @NotNull final RuntimeConstantPool runtimeConstantPool) throws UnderflowInvalidOperandStackException, MismatchedTypeInvalidOperandStackException, OverflowInvalidOperandStackException
-			{
-				final OperandStackItem value1 = operandStack.pop();
-				if (value1.isCategory1())
-				{
-					final OperandStackItem value2 = operandStack.popCategory1ComputationalType();
-					final OperandStackItem value3 = operandStack.popCategory1ComputationalType();
-					operandStack.pushWithCertainty(value2);
-					operandStack.pushWithCertainty(value1);
-					operandStack.pushWithCertainty(value3);
-					operandStack.push(value2);
-					operandStack.push(value1);
-				}
-				else
-				{
-					final OperandStackItem value2 = operandStack.popCategory2ComputationalType();
-					operandStack.pushWithCertainty(value1);
-					operandStack.pushWithCertainty(value2);
-					operandStack.push(value1);
-				}
-			}
-		};
-		opcodeParsers[dup_x2] = new AbstractOneOpcodeParser()
-		{
-			@Override
-			public void parse(@NotNull final OperandStack operandStack, @NotNull final CodeReader codeReader, @NotNull final Set<Character> lineNumbers, @NotNull final Set<LocalVariableAtProgramCounter> localVariablesAtProgramCounter, @NotNull final RuntimeConstantPool runtimeConstantPool) throws InvalidOpcodeException, UnderflowInvalidOperandStackException, MismatchedTypeInvalidOperandStackException, OverflowInvalidOperandStackException
-			{
-				final OperandStackItem value1 = operandStack.pop();
-				if (value1.isCategory1())
-				{
-					final OperandStackItem value2 = operandStack.pop();
-					if (value2.isCategory1())
-					{
-						final OperandStackItem value3 = operandStack.pop();
-						// "Form 1"
-						if (value3.isCategory1())
-						{
-							final OperandStackItem value4 = operandStack.popCategory1ComputationalType();
-							operandStack.pushWithCertainty(value2);
-							operandStack.pushWithCertainty(value1);
-							operandStack.pushWithCertainty(value4);
-							operandStack.pushWithCertainty(value3);
-							operandStack.push(value2);
-							operandStack.push(value1);
-						}
-						// "Form 3"
-						else
-						{
-							operandStack.pushWithCertainty(value2);
-							operandStack.pushWithCertainty(value1);
-							operandStack.pushWithCertainty(value3);
-							operandStack.push(value2);
-							operandStack.push(value1);
-						}
-					}
-					else
-					{
-						throw new InvalidOpcodeException("dup_x2 has category 1 value1 but category 2 value2");
-					}
-				}
-				else
-				{
-					final OperandStackItem value2 = operandStack.pop();
-					// "Form 2"
-					if (value2.isCategory1())
-					{
-						final OperandStackItem value3 = operandStack.popCategory1ComputationalType();
-						operandStack.pushWithCertainty(value1);
-						operandStack.pushWithCertainty(value3);
-						operandStack.pushWithCertainty(value2);
-						operandStack.push(value1);
-					}
-					// "Form 4"
-					else
-					{
-						operandStack.pushWithCertainty(value1);
-						operandStack.pushWithCertainty(value2);
-						operandStack.push(value1);
-					}
-				}
-			}
-		};
-
+		opcodeParsers[dup_x1] = DuplicateX1;
+		opcodeParsers[dup_x2] = DuplicateX2;
+		opcodeParsers[dup2] = Duplicate2;
+		opcodeParsers[dup2_x1] = Duplicate2X1;
+		opcodeParsers[dup2_x2] = Duplicate2X2;
 		opcodeParsers[swap] = Swap;
 	}
 

@@ -23,6 +23,11 @@
 package com.stormmq.java.parsing.utilities.literalParsers;
 
 import com.stormmq.string.Formatting;
+import org.jetbrains.annotations.NotNull;
+
+import java.io.*;
+
+import static com.stormmq.string.StringUtilities.enumSerializationIsNotSupportedForConstantsInASecureContext;
 
 public enum DigitToValue
 {
@@ -42,6 +47,16 @@ public enum DigitToValue
 				default:
 					throw new IllegalArgumentException(Formatting.format("Invalid binary digit '%1$s'", digit));
 			}
+		}
+
+		private void writeObject(@NotNull final ObjectOutputStream out) throws IOException
+		{
+			throw enumSerializationIsNotSupportedForConstantsInASecureContext();
+		}
+
+		private void readObject(@NotNull final ObjectInputStream in) throws IOException
+		{
+			throw enumSerializationIsNotSupportedForConstantsInASecureContext();
 		}
 	},
 	Octal(3, 0L)
@@ -78,6 +93,16 @@ public enum DigitToValue
 				default:
 					throw new IllegalArgumentException(Formatting.format("Invalid octal digit '%1$s'", digit));
 			}
+		}
+
+		private void writeObject(@NotNull final ObjectOutputStream out) throws IOException
+		{
+			throw enumSerializationIsNotSupportedForConstantsInASecureContext();
+		}
+
+		private void readObject(@NotNull final ObjectInputStream in) throws IOException
+		{
+			throw enumSerializationIsNotSupportedForConstantsInASecureContext();
 		}
 	},
 	Decimal(0, 10L)
@@ -128,6 +153,16 @@ public enum DigitToValue
 		public long shift(final int length, final long input, final long decimalValue, final int digitIndex)
 		{
 			return shiftWithValue(length, input, decimalValue, digitIndex);
+		}
+
+		private void writeObject(@NotNull final ObjectOutputStream out) throws IOException
+		{
+			throw enumSerializationIsNotSupportedForConstantsInASecureContext();
+		}
+
+		private void readObject(@NotNull final ObjectInputStream in) throws IOException
+		{
+			throw enumSerializationIsNotSupportedForConstantsInASecureContext();
 		}
 	},
 	Hexadecimal(4, 0L)
@@ -194,6 +229,16 @@ public enum DigitToValue
 				default:
 					throw new IllegalArgumentException(Formatting.format("Invalid hexadecimal digit '%1$s'", digit));
 			}
+		}
+
+		private void writeObject(@NotNull final ObjectOutputStream out) throws IOException
+		{
+			throw enumSerializationIsNotSupportedForConstantsInASecureContext();
+		}
+
+		private void readObject(@NotNull final ObjectInputStream in) throws IOException
+		{
+			throw enumSerializationIsNotSupportedForConstantsInASecureContext();
 		}
 	},
 	;

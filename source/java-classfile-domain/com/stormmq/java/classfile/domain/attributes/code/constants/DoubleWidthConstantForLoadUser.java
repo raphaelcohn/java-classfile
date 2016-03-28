@@ -28,7 +28,7 @@ import org.jetbrains.annotations.NotNull;
 
 public interface DoubleWidthConstantForLoadUser<T>
 {
-	@NotNull DoubleWidthConstantForLoadUser<ConstantOperandStackItem> DoubleWidthConstantForLoadUserInstance = new DoubleWidthConstantForLoadUser<ConstantOperandStackItem>()
+	@SuppressWarnings("AnonymousInnerClass") @NotNull DoubleWidthConstantForLoadUser<ConstantOperandStackItem> DoubleWidthConstantForLoadUserInstance = new DoubleWidthConstantForLoadUser<ConstantOperandStackItem>()
 	{
 		@NotNull
 		@Override

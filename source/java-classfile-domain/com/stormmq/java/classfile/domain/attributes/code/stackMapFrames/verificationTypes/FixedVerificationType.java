@@ -20,8 +20,16 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-package com.stormmq.java.classfile.domain.attributes.annotations.targetInformations;
+package com.stormmq.java.classfile.domain.attributes.code.stackMapFrames.verificationTypes;
 
-public interface TargetInformation
+public enum FixedVerificationType implements VerificationType
 {
+	Top,
+	Integer,
+	Float,
+	Long,
+	Double,
+	Null,
+	UninitializedThis,
+	;
 }

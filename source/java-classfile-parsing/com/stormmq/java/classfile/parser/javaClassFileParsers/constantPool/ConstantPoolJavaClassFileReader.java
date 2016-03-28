@@ -55,10 +55,13 @@ import static com.stormmq.java.classfile.domain.attributes.annotations.targetInf
 import static com.stormmq.java.classfile.domain.attributes.annotations.targetInformations.LocalVariableTargetInformation.EmptyLocalVariableTargetInformation;
 import static com.stormmq.java.classfile.domain.attributes.annotations.targetInformations.OffsetTargetInformation.offset;
 import static com.stormmq.java.classfile.domain.attributes.annotations.targetInformations.SuperTypeTargetInformation.SuperType;
-import static com.stormmq.java.classfile.domain.attributes.annotations.targetInformations.TargetInformation.EmptyTarget;
+import static com.stormmq.java.classfile.domain.attributes.annotations.targetInformations.EmptyTargetInformation.EmptyTarget;
 import static com.stormmq.java.classfile.domain.attributes.annotations.targetInformations.ThrowsTypeTargetInformation.throwsType;
 import static com.stormmq.java.classfile.domain.attributes.annotations.targetInformations.TypeParameterTargetInformation.typeParameter;
 import static com.stormmq.java.classfile.domain.attributes.annotations.typePathElements.AnnotationIsOnATypeArgumentOfAParameterizedTypeTypePathElement.annotationIsOnATypeArgumentOfAParameterizedType;
+import static com.stormmq.java.classfile.domain.attributes.annotations.typePathElements.FixedTypePathElement.AnnotationIsDeeperInANestedType;
+import static com.stormmq.java.classfile.domain.attributes.annotations.typePathElements.FixedTypePathElement.AnnotationIsDeeperInAnArrayType;
+import static com.stormmq.java.classfile.domain.attributes.annotations.typePathElements.FixedTypePathElement.AnnotationIsOnTheBoundOfAWildcardTypeArgumentOfAParameterizedType;
 import static com.stormmq.java.classfile.domain.attributes.annotations.typePathElements.TypePathElement.*;
 import static com.stormmq.java.classfile.parser.javaClassFileParsers.constantPool.ClassLikeTypeDescriptorParser.processClassLikeDescriptor;
 import static com.stormmq.java.classfile.parser.javaClassFileParsers.constantPool.ConstantPoolIndex.referenceIndexToConstantPoolIndex;

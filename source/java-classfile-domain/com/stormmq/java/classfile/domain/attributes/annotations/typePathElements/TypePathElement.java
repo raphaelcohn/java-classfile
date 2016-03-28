@@ -27,9 +27,4 @@ import org.jetbrains.annotations.NotNull;
 public interface TypePathElement
 {
 	@NotNull TypePathElement[] EmptyTypePathElements = {};
-
-	@NotNull TypePathElement AnnotationIsDeeperInAnArrayType = new TypePathElement() {};
-	@NotNull TypePathElement AnnotationIsDeeperInANestedType = new TypePathElement() {};
-	@NotNull TypePathElement AnnotationIsOnTheBoundOfAWildcardTypeArgumentOfAParameterizedType = new TypePathElement() {};
-
 }

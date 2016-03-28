@@ -30,9 +30,11 @@ import com.stormmq.java.classfile.domain.attributes.code.operandStack.OperandSta
 import com.stormmq.java.classfile.domain.attributes.code.operandStackItems.constantOperandStackItems.ConstantOperandStackItem;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.*;
 import java.util.Set;
 
 import static com.stormmq.java.classfile.domain.attributes.code.constants.SingleWidthConstantForLoadUser.SingleWidthConstantForLoadUserInstance;
+import static com.stormmq.string.StringUtilities.enumSerializationIsNotSupportedForConstantsInASecureContext;
 
 public enum LoadSingleWidthConstantOpcodeParser implements OpcodeParser
 {
@@ -43,6 +45,16 @@ public enum LoadSingleWidthConstantOpcodeParser implements OpcodeParser
 		{
 			return (char) codeReader.readUnsigned8BitInteger();
 		}
+
+		private void writeObject(@NotNull final ObjectOutputStream out) throws IOException
+		{
+			throw enumSerializationIsNotSupportedForConstantsInASecureContext();
+		}
+
+		private void readObject(@NotNull final ObjectInputStream in) throws IOException
+		{
+			throw enumSerializationIsNotSupportedForConstantsInASecureContext();
+		}
 	},
 	LoadWideSingleWidthConstant((char) 3)
 	{
@@ -50,6 +62,16 @@ public enum LoadSingleWidthConstantOpcodeParser implements OpcodeParser
 		protected char readIndex(@NotNull final CodeReader codeReader) throws NotEnoughBytesInvalidOperandStackException
 		{
 			return codeReader.readBigEndianUnsigned16BitInteger();
+		}
+
+		private void writeObject(@NotNull final ObjectOutputStream out) throws IOException
+		{
+			throw enumSerializationIsNotSupportedForConstantsInASecureContext();
+		}
+
+		private void readObject(@NotNull final ObjectInputStream in) throws IOException
+		{
+			throw enumSerializationIsNotSupportedForConstantsInASecureContext();
 		}
 	},
 	;

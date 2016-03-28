@@ -20,8 +20,12 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-package com.stormmq.java.classfile.domain.attributes.annotations.targetInformations;
+package com.stormmq.java.classfile.domain.attributes.annotations.typePathElements;
 
-public interface TargetInformation
+public enum FixedTypePathElement implements TypePathElement
 {
+	AnnotationIsDeeperInAnArrayType,
+	AnnotationIsDeeperInANestedType,
+	AnnotationIsOnTheBoundOfAWildcardTypeArgumentOfAParameterizedType,
+	;
 }

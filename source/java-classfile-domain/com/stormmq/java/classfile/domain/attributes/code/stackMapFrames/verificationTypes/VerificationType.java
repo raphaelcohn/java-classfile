@@ -22,35 +22,6 @@
 
 package com.stormmq.java.classfile.domain.attributes.code.stackMapFrames.verificationTypes;
 
-import org.jetbrains.annotations.NotNull;
-
 public interface VerificationType
 {
-	@NotNull VerificationType Top = new VerificationType()
-	{
-	};
-
-	@NotNull VerificationType Integer = new VerificationType()
-	{
-	};
-
-	@NotNull VerificationType Float = new VerificationType()
-	{
-	};
-
-	@NotNull VerificationType Long = new VerificationType()
-	{
-	};
-
-	@NotNull VerificationType Double = new VerificationType()
-	{
-	};
-
-	@NotNull VerificationType Null = new VerificationType()
-	{
-	};
-
-	@NotNull VerificationType UninitializedThis = new VerificationType()
-	{
-	};
 }

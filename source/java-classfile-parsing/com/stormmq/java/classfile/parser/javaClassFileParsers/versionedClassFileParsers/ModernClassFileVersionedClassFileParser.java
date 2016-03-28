@@ -272,6 +272,7 @@ public final class ModernClassFileVersionedClassFileParser implements VersionedC
 	@NotNull
 	private Map<MethodUniqueness, MethodInformation> parseMethods(@NotNull final ConstantPoolJavaClassFileReader constantPoolJavaClassFileReader, final boolean isInterfaceOrAnnotation, @NotNull final KnownReferenceTypeName thisClassTypeName, final boolean isAnnotation, final boolean isEnum, final boolean isInnerClass) throws InvalidJavaClassFileException, JavaClassFileContainsDataTooLongToReadException
 	{
+		//noinspection AnonymousInnerClass
 		return constantPoolJavaClassFileReader.parseTableAsMapWith16BitLength(new InvalidExceptionBiIntConsumer<Map<MethodUniqueness, MethodInformation>>()
 		{
 			private boolean staticInitializerEncountered = false;

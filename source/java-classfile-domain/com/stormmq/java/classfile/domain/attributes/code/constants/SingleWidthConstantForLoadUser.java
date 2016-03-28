@@ -31,7 +31,7 @@ import org.jetbrains.annotations.NotNull;
 
 public interface SingleWidthConstantForLoadUser<T>
 {
-	@NotNull SingleWidthConstantForLoadUser<ConstantOperandStackItem> SingleWidthConstantForLoadUserInstance = new SingleWidthConstantForLoadUser<ConstantOperandStackItem>()
+	@SuppressWarnings("AnonymousInnerClass") @NotNull SingleWidthConstantForLoadUser<ConstantOperandStackItem> SingleWidthConstantForLoadUserInstance = new SingleWidthConstantForLoadUser<ConstantOperandStackItem>()
 	{
 		@NotNull
 		@Override

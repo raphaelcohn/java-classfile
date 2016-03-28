@@ -26,8 +26,6 @@ import com.stormmq.java.classfile.domain.attributes.UnknownAttributeData;
 import com.stormmq.java.classfile.parser.javaClassFileParsers.exceptions.InvalidJavaClassFileException;
 import com.stormmq.java.classfile.parser.javaClassFileParsers.exceptions.JavaClassFileContainsDataTooLongToReadException;
 import com.stormmq.java.classfile.parser.javaClassFileParsers.constantPool.ConstantPoolJavaClassFileReader;
-import com.stormmq.java.classfile.parser.javaClassFileParsers.functions.InvalidExceptionBiIntConsumer;
-import com.stormmq.string.Formatting;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

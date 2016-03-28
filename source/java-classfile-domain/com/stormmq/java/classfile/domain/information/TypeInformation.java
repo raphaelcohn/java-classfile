@@ -43,7 +43,7 @@ import java.util.Set;
 public final class TypeInformation
 {
 	@SuppressWarnings("WeakerAccess") @NotNull public final TypeKind typeKind;
-	@NotNull public final Visibility visibility;
+	@SuppressWarnings("WeakerAccess") @NotNull public final Visibility visibility;
 	@SuppressWarnings("WeakerAccess") @NotNull public final Completeness completeness;
 	@SuppressWarnings("WeakerAccess") public final boolean isSynthetic;
 	@SuppressWarnings("WeakerAccess") public final boolean hasLegacySuperFlagSetting;
@@ -54,7 +54,7 @@ public final class TypeInformation
 	@SuppressWarnings("WeakerAccess") @NotNull public final Map<MethodUniqueness, MethodInformation> methods;
 	@SuppressWarnings("WeakerAccess") public final boolean isSyntheticAttribute;
 	@SuppressWarnings("WeakerAccess") public final boolean isDeprecated;
-	@Nullable public final Signature signature;
+	@SuppressWarnings("WeakerAccess") @Nullable public final Signature signature;
 	@SuppressWarnings("WeakerAccess") @NotNull public final AnnotationValue[] visibleAnnotations;
 	@SuppressWarnings("WeakerAccess") @NotNull public final AnnotationValue[] invisibleAnnotations;
 	@SuppressWarnings("WeakerAccess") @NotNull public final TypeAnnotation[] typeAnnotations;
