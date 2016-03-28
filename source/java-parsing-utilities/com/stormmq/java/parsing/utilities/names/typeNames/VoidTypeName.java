@@ -34,7 +34,7 @@ public enum VoidTypeName implements TypeName
 
 	VoidTypeName()
 	{
-		this.name = name().substring(1);
+		name = name().substring(1);
 	}
 
 	@Override

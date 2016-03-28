@@ -22,10 +22,9 @@
 
 package com.stormmq.java.parsing.utilities.literalParsers;
 
+import com.stormmq.string.Formatting;
+import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
-
-import static java.lang.String.format;
-import static java.util.Locale.ENGLISH;
 
 public enum IntegerLiteralParser
 {
@@ -40,7 +39,7 @@ public enum IntegerLiteralParser
 	private final int hexadecimalMaximumLength;
 	@NotNull private final long[] maximumDecimalValueDigits;
 
-	private IntegerLiteralParser(final int binaryMaximumLength, final int octalMaximumLength, final int decimalMaximumLength, final int hexadecimalMaximumLength, @NotNull final long... maximumDecimalValueDigits)
+	IntegerLiteralParser(final int binaryMaximumLength, final int octalMaximumLength, final int decimalMaximumLength, final int hexadecimalMaximumLength, @NotNull final long... maximumDecimalValueDigits)
 	{
 
 		this.binaryMaximumLength = binaryMaximumLength;
@@ -68,7 +67,7 @@ public enum IntegerLiteralParser
 
 		if (valueIncludingRadixPrefixAndUnderscoresLength == 0)
 		{
-			throw new IllegalArgumentException(format(ENGLISH, "Java %1$s literal may not be empty", name()));
+			throw new IllegalArgumentException(Formatting.format("Java %1$s literal may not be empty", name()));
 		}
 
 		final char firstCharacter = valueIncludingRadixPrefixAndUnderscores.charAt(0);
@@ -80,29 +79,14 @@ public enum IntegerLiteralParser
 
 		if (isUnderscore(valueIncludingRadixPrefixAndUnderscores.charAt(valueIncludingRadixPrefixAndUnderscoresLength - 1)))
 		{
-			throw new IllegalArgumentException(format(ENGLISH, "Java %2$s literal '%1$s' may not end with an underscore", valueIncludingRadixPrefixAndUnderscores, name()));
+			throw new IllegalArgumentException(Formatting.format("Java %2$s literal '%1$s' may not end with an underscore", valueIncludingRadixPrefixAndUnderscores, name()));
 		}
 
 		// Signs are NOT supplied (it is considered an unary expression if it starts '-', eg '-67')
 		switch (firstCharacter)
 		{
 			case '0':
-				final char secondCharacter = valueIncludingRadixPrefixAndUnderscores.charAt(1);
-
-				switch (secondCharacter)
-				{
-					case '_':
-						// Seems to be allowed in IntelliJ
-						throw new IllegalArgumentException(format(ENGLISH, "Java %2$s literal '%1$s' was supposedly 'octal' (or incomplete radix) with a leading underscore", valueIncludingRadixPrefixAndUnderscores, name()));
-					case 'b':
-					case 'B':
-						return parseBinaryLiteral(valueIncludingRadixPrefixAndUnderscores, valueIncludingRadixPrefixAndUnderscoresLength);
-					case 'x':
-					case 'X':
-						return parseHexadecimalLiteral(valueIncludingRadixPrefixAndUnderscores, valueIncludingRadixPrefixAndUnderscoresLength);
-					default:
-						return parseOctalLiteral(valueIncludingRadixPrefixAndUnderscores, valueIncludingRadixPrefixAndUnderscoresLength);
-				}
+				return parseBinaryOctalOrHexadecimalConstant(valueIncludingRadixPrefixAndUnderscores, valueIncludingRadixPrefixAndUnderscoresLength);
 			case '1':
 			case '2':
 			case '3':
@@ -114,9 +98,30 @@ public enum IntegerLiteralParser
 			case '9':
 				return parseDecimalLiteral(valueIncludingRadixPrefixAndUnderscores, valueIncludingRadixPrefixAndUnderscoresLength);
 			case '_':
-				throw new IllegalArgumentException(format(ENGLISH, "Java %2$s literal '%1$s' may not start with an underscore", valueIncludingRadixPrefixAndUnderscores, name()));
+				throw new IllegalArgumentException(Formatting.format("Java %2$s literal '%1$s' may not start with an underscore", valueIncludingRadixPrefixAndUnderscores, name()));
 			default:
-				throw new IllegalArgumentException(format(ENGLISH, "Java %2$s literal '%1$s' had an invalid radix", valueIncludingRadixPrefixAndUnderscores, name()));
+				throw new IllegalArgumentException(Formatting.format("Java %2$s literal '%1$s' had an invalid radix", valueIncludingRadixPrefixAndUnderscores, name()));
+		}
+	}
+
+	private long parseBinaryOctalOrHexadecimalConstant(@NonNls @NotNull final String valueIncludingRadixPrefixAndUnderscores, final int valueIncludingRadixPrefixAndUnderscoresLength)
+	{
+		switch (valueIncludingRadixPrefixAndUnderscores.charAt(1))
+		{
+			case '_':
+				// Seems to be allowed in IntelliJ
+				throw new IllegalArgumentException(Formatting.format("Java %2$s literal '%1$s' was supposedly 'octal' (or incomplete radix) with a leading underscore", valueIncludingRadixPrefixAndUnderscores, name()));
+
+			case 'b':
+			case 'B':
+				return parseBinaryLiteral(valueIncludingRadixPrefixAndUnderscores, valueIncludingRadixPrefixAndUnderscoresLength);
+
+			case 'x':
+			case 'X':
+				return parseHexadecimalLiteral(valueIncludingRadixPrefixAndUnderscores, valueIncludingRadixPrefixAndUnderscoresLength);
+
+			default:
+				return parseOctalLiteral(valueIncludingRadixPrefixAndUnderscores, valueIncludingRadixPrefixAndUnderscoresLength);
 		}
 	}
 
@@ -142,7 +147,7 @@ public enum IntegerLiteralParser
 				case '0':
 					break;
 				default:
-					throw new IllegalArgumentException(String.format(ENGLISH, "Java %2$s literal '%1$s' was %3$s but with a leading digit that is too big", valueIncludingRadixPrefixAndUnderscores, name(), DigitToValue.Octal.name()));
+					throw new IllegalArgumentException(Formatting.format("Java %2$s literal '%1$s' was %3$s but with a leading digit that is too big", valueIncludingRadixPrefixAndUnderscores, name(), DigitToValue.Octal.name()));
 			}
 		}
 
@@ -158,7 +163,7 @@ public enum IntegerLiteralParser
 		if (atMaximumLength[0])
 		{
 			int index = initialIndex;
-			int digitIndex = 0;
+			final int digitIndex = 0;
 			while (index < valueIncludingRadixPrefixAndUnderscoresLength)
 			{
 				final char digit = valueIncludingRadixPrefixAndUnderscores.charAt(index);
@@ -166,7 +171,7 @@ public enum IntegerLiteralParser
 				{
 					if (DigitToValue.Decimal.digitToValue(digit) > maximumDecimalValueDigits[digitIndex])
 					{
-						throw new IllegalArgumentException(String.format(ENGLISH, "Java %2$s literal '%1$s' was %3$s but was too big", valueIncludingRadixPrefixAndUnderscores, name(), DigitToValue.Decimal.name()));
+						throw new IllegalArgumentException(Formatting.format("Java %2$s literal '%1$s' was %3$s but was too big", valueIncludingRadixPrefixAndUnderscores, name(), DigitToValue.Decimal.name()));
 					}
 				}
 				index++;
@@ -192,7 +197,7 @@ public enum IntegerLiteralParser
 		{
 			if (digitIndex == maximumLength)
 			{
-				throw new IllegalArgumentException(format(ENGLISH, "Java %2$s literal '%1$s' was %3$s but was too long", valueIncludingRadixPrefixAndUnderscores, name(), digitToValue.name()));
+				throw new IllegalArgumentException(Formatting.format("Java %2$s literal '%1$s' was %3$s but was too long", valueIncludingRadixPrefixAndUnderscores, name(), digitToValue.name()));
 			}
 
 			final char digit = valueIncludingRadixPrefixAndUnderscores.charAt(index);
@@ -200,7 +205,7 @@ public enum IntegerLiteralParser
 			{
 				if (index == initialIndex)
 				{
-					throw new IllegalArgumentException(format(ENGLISH, "Java %2$s literal '%1$s' was %3$s but with a leading underscore", valueIncludingRadixPrefixAndUnderscores, name(), digitToValue.name()));
+					throw new IllegalArgumentException(Formatting.format("Java %2$s literal '%1$s' was %3$s but with a leading underscore", valueIncludingRadixPrefixAndUnderscores, name(), digitToValue.name()));
 				}
 				lastDigitWasUnderscore = true;
 			}
@@ -210,9 +215,9 @@ public enum IntegerLiteralParser
 				{
 					digitValues[digitIndex] = digitToValue.digitToValue(digit);
 				}
-				catch (IllegalArgumentException e)
+				catch (final IllegalArgumentException e)
 				{
-					throw new IllegalArgumentException(format(ENGLISH, "Java %2$s literal '%1$s' was %3$s but with an invalid digit", valueIncludingRadixPrefixAndUnderscores, name(), digitToValue.name()), e);
+					throw new IllegalArgumentException(Formatting.format("Java %2$s literal '%1$s' was %3$s but with an invalid digit", valueIncludingRadixPrefixAndUnderscores, name(), digitToValue.name()), e);
 				}
 				lastDigitWasUnderscore = false;
 				digitIndex++;
@@ -223,12 +228,12 @@ public enum IntegerLiteralParser
 
 		if (lastDigitWasUnderscore)
 		{
-			throw new IllegalArgumentException(format(ENGLISH, "Java %2$s literal '%1$s' was binary but with a trailing underscore", valueIncludingRadixPrefixAndUnderscores, name()));
+			throw new IllegalArgumentException(Formatting.format("Java %2$s literal '%1$s' was binary but with a trailing underscore", valueIncludingRadixPrefixAndUnderscores, name()));
 		}
 
 		if (digitIndex == 0)
 		{
-			throw new IllegalArgumentException(format(ENGLISH, "Java %2$s literal '%1$s' was binary but with no value", valueIncludingRadixPrefixAndUnderscores, name()));
+			throw new IllegalArgumentException(Formatting.format("Java %2$s literal '%1$s' was binary but with no value", valueIncludingRadixPrefixAndUnderscores, name()));
 		}
 
 		final int length = digitIndex;

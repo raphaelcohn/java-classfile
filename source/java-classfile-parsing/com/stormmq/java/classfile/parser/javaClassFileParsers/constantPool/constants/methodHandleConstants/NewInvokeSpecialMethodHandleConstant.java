@@ -28,12 +28,11 @@ import com.stormmq.java.classfile.parser.javaClassFileParsers.constantPool.Const
 import com.stormmq.java.classfile.parser.javaClassFileParsers.constantPool.constants.Constant;
 import com.stormmq.java.classfile.parser.javaClassFileParsers.constantPool.constants.referenceIndexConstants.doubles.ClassMethodReferenceIndexConstant;
 import com.stormmq.java.classfile.parser.javaClassFileParsers.exceptions.InvalidJavaClassFileException;
+import com.stormmq.string.Formatting;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 
 import static com.stormmq.java.classfile.domain.names.MethodName.InstanceInitializer;
-import static java.lang.String.format;
-import static java.util.Locale.ENGLISH;
 
 public final class NewInvokeSpecialMethodHandleConstant extends AbstractInvokeMethodHandleConstant
 {
@@ -43,7 +42,7 @@ public final class NewInvokeSpecialMethodHandleConstant extends AbstractInvokeMe
 	}
 
 	@Override
-	protected void validate(@NotNull final Constant constant, @NotNull final ConstantPoolIndex referenceIndex) throws InvalidJavaClassFileException
+	protected void validate(@NotNull final Constant constant) throws InvalidJavaClassFileException
 	{
 		validateMethodReference(constant);
 		validateMethodReferenceIsInstanceInitializer(constant);
@@ -61,6 +60,6 @@ public final class NewInvokeSpecialMethodHandleConstant extends AbstractInvokeMe
 			return;
 		}
 
-		throw new InvalidJavaClassFileException(format(ENGLISH, "A method handle that is of kind InvokeInterface must reference '%1$s' an instance initializer of '<init>', not '%2$s'", referenceIndex, methodName));
+		throw new InvalidJavaClassFileException(Formatting.format("A method handle that is of kind InvokeInterface must reference '%1$s' an instance initializer of '<init>', not '%2$s'", referenceIndex, methodName));
 	}
 }

@@ -32,10 +32,8 @@ import com.stormmq.java.classfile.parser.javaClassFileParsers.constantPool.const
 import com.stormmq.java.classfile.parser.javaClassFileParsers.constantPool.constants.referenceIndexConstants.NameAndTypeReferenceIndexConstant;
 import com.stormmq.java.classfile.parser.javaClassFileParsers.constantPool.constants.referenceIndexConstants.singles.TypeReferenceIndexConstant;
 import com.stormmq.java.classfile.parser.javaClassFileParsers.exceptions.InvalidJavaClassFileException;
+import com.stormmq.string.Formatting;
 import org.jetbrains.annotations.NotNull;
-
-import static java.lang.String.format;
-import static java.util.Locale.ENGLISH;
 
 public final class ConstantPool implements RuntimeConstantPool
 {
@@ -63,13 +61,13 @@ public final class ConstantPool implements RuntimeConstantPool
 		}
 		catch (final IllegalArgumentException e)
 		{
-			throw new InvalidConstantException(format(ENGLISH, "Index '%1$s' is out of range for single width", (int) index), e);
+			throw new InvalidConstantException(Formatting.format("Index '%1$s' is out of range for single width", (int) index), e);
 		}
 
 		final Constant constant = retrieve(referenceIndex);
 		if (!(constant instanceof SingleWidthConstantForLoad))
 		{
-			throw new InvalidConstantException(format(ENGLISH, "Index '%1$s' is not a single width constant suitable for loading", (int) index));
+			throw new InvalidConstantException(Formatting.format("Index '%1$s' is not a single width constant suitable for loading", (int) index));
 		}
 		return ((SingleWidthConstantForLoad) constant).visit(singleWidthConstantForLoadUser);
 	}
@@ -85,13 +83,13 @@ public final class ConstantPool implements RuntimeConstantPool
 		}
 		catch (final IllegalArgumentException e)
 		{
-			throw new InvalidConstantException(format(ENGLISH, "Index '%1$s' is out of range for double width", (int) index), e);
+			throw new InvalidConstantException(Formatting.format("Index '%1$s' is out of range for double width", (int) index), e);
 		}
 
 		final Constant constant = retrieve(referenceIndex);
 		if (!(constant instanceof DoubleWidthConstantForLoad))
 		{
-			throw new InvalidConstantException(format(ENGLISH, "Index '%1$s' is not a double width constant suitable for loading", (int) index));
+			throw new InvalidConstantException(Formatting.format("Index '%1$s' is not a double width constant suitable for loading", (int) index));
 		}
 		return ((DoubleWidthConstantForLoad) constant).visit(doubleWidthConstantForLoadUser);
 	}

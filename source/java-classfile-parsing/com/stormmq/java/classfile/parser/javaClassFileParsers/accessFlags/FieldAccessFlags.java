@@ -26,6 +26,7 @@ import com.stormmq.java.classfile.parser.javaClassFileParsers.exceptions.Invalid
 import com.stormmq.java.parsing.utilities.*;
 import org.jetbrains.annotations.NotNull;
 
+import static com.stormmq.java.classfile.parser.javaClassFileParsers.accessFlags.AccessFlags.computeFlagsInverseMask;
 import static com.stormmq.java.classfile.parser.javaClassFileParsers.accessFlags.AccessFlags.hasFlagSet;
 import static com.stormmq.java.parsing.utilities.Visibility.*;
 
@@ -41,7 +42,7 @@ public final class FieldAccessFlags
 	private static final char ACC_SYNTHETIC = 0x1000; // Declared synthetic; not present in the source code.
 	private static final char ACC_ENUM = 0x4000; // Declared as an element of an enum.
 
-	public static final int FieldAccessFlagsValidityMask = ~(ACC_PUBLIC | ACC_PRIVATE | ACC_PROTECTED | ACC_STATIC | ACC_FINAL | ACC_VOLATILE | ACC_TRANSIENT | ACC_SYNTHETIC | ACC_ENUM);
+	public static final int FieldAccessFlagsValidityMask = computeFlagsInverseMask(ACC_PUBLIC, ACC_PRIVATE, ACC_PROTECTED, ACC_STATIC, ACC_FINAL, ACC_VOLATILE, ACC_TRANSIENT, ACC_SYNTHETIC, ACC_ENUM);
 
 	@NotNull
 	public static FieldFinality fieldFinality(final char accessFlags) throws InvalidJavaClassFileException

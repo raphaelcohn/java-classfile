@@ -58,7 +58,7 @@ public enum LocalVariableSimpleType
 			throw new IllegalStateException("name() should not be empty");
 		}
 
-		actualName = name.charAt(0) != '_' ? name : name.substring(1);
+		actualName = name.charAt(0) == '_' ? name.substring(1) : name;
 		this.computationalCategory = computationalCategory;
 		this.category = category;
 		isByteCharOrShort = actualName.equals("byte") || actualName.equals("char") || actualName.equals("short");

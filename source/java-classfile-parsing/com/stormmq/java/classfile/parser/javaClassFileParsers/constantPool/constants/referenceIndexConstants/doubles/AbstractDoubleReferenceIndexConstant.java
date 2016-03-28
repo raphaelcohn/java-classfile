@@ -32,11 +32,9 @@ import com.stormmq.java.classfile.parser.javaClassFileParsers.constantPool.const
 import com.stormmq.java.classfile.domain.descriptors.FieldDescriptor;
 import com.stormmq.java.classfile.domain.descriptors.MethodDescriptor;
 import com.stormmq.java.classfile.parser.javaClassFileParsers.exceptions.InvalidJavaClassFileException;
+import com.stormmq.string.Formatting;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import static java.lang.String.format;
-import static java.util.Locale.ENGLISH;
 
 public abstract class AbstractDoubleReferenceIndexConstant extends AbstractSingleWidthConstant
 {
@@ -86,9 +84,10 @@ public abstract class AbstractDoubleReferenceIndexConstant extends AbstractSingl
 	@NotNull
 	public final String toString()
 	{
-		return format(ENGLISH, "%1$s(%2$s, %3$s)", getClass().getSimpleName(), classReferenceIndex, nameAndTypeDescriptorReferenceIndex);
+		return Formatting.format("%1$s(%2$s, %3$s)", getClass().getSimpleName(), classReferenceIndex, nameAndTypeDescriptorReferenceIndex);
 	}
 
+	@SuppressWarnings("RedundantIfStatement")
 	@Override
 	public final boolean equals(@Nullable final Object o)
 	{

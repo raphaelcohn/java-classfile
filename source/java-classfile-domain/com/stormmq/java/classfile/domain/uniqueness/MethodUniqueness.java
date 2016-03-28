@@ -24,10 +24,8 @@ package com.stormmq.java.classfile.domain.uniqueness;
 
 import com.stormmq.java.classfile.domain.descriptors.MethodDescriptor;
 import com.stormmq.java.classfile.domain.names.MethodName;
+import com.stormmq.string.Formatting;
 import org.jetbrains.annotations.*;
-
-import static java.lang.String.format;
-import static java.util.Locale.ENGLISH;
 
 public final class MethodUniqueness
 {
@@ -45,9 +43,10 @@ public final class MethodUniqueness
 	@Override
 	public String toString()
 	{
-		return format(ENGLISH, "%1$s(%2$s, %3$s)", getClass().getSimpleName(), methodName, methodDescriptor);
+		return Formatting.format("%1$s(%2$s, %3$s)", getClass().getSimpleName(), methodName, methodDescriptor);
 	}
 
+	@SuppressWarnings("RedundantIfStatement")
 	@Override
 	public boolean equals(@Nullable final Object o)
 	{

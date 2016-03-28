@@ -33,10 +33,8 @@ import com.stormmq.java.classfile.parser.javaClassFileParsers.constantPool.const
 import com.stormmq.java.classfile.parser.javaClassFileParsers.constantPool.constants.referenceIndexConstants.doubles.*;
 import com.stormmq.java.classfile.parser.javaClassFileParsers.constantPool.constants.referenceIndexConstants.singles.*;
 import com.stormmq.java.classfile.parser.javaClassFileParsers.exceptions.InvalidJavaClassFileException;
+import com.stormmq.string.Formatting;
 import org.jetbrains.annotations.NotNull;
-
-import static java.lang.String.format;
-import static java.util.Locale.ENGLISH;
 
 @FunctionalInterface
 public interface ConstantParser
@@ -106,7 +104,7 @@ public interface ConstantParser
 						return new InvokeInterfaceMethodHandleConstant(constantPool, referenceIndex);
 
 					default:
-						throw new InvalidJavaClassFileException(format(ENGLISH, "A reference kind must be between 1 to 9 inclusive, not '%1$s'", referenceKind));
+						throw new InvalidJavaClassFileException(Formatting.format("A reference kind must be between 1 to 9 inclusive, not '%1$s'", referenceKind));
 				}
 			};
 			constantParsers[16] = (constantPoolIndex, javaClassFileReader, constantPool) -> new MethodTypeReferenceIndexConstant(constantPool, javaClassFileReader.readStringReferenceIndex(constantPoolIndex));

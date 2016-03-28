@@ -38,6 +38,7 @@ import com.stormmq.java.classfile.parser.javaClassFileParsers.exceptions.Invalid
 import com.stormmq.java.classfile.parser.javaClassFileParsers.exceptions.JavaClassFileContainsDataTooLongToReadException;
 import com.stormmq.java.classfile.parser.javaClassFileParsers.functions.*;
 import com.stormmq.java.parsing.utilities.names.typeNames.referenceTypeNames.KnownReferenceTypeName;
+import com.stormmq.string.Formatting;
 import org.jetbrains.annotations.*;
 
 import java.nio.ByteBuffer;
@@ -66,10 +67,8 @@ import static com.stormmq.java.classfile.parser.javaClassFileParsers.constantPoo
 import static com.stormmq.java.classfile.parser.javaClassFileParsers.constantPool.constants.referenceIndexConstants.NameAndTypeReferenceIndexConstant.parseFieldName;
 import static com.stormmq.java.classfile.parser.javaClassFileParsers.constantPool.constants.referenceIndexConstants.NameAndTypeReferenceIndexConstant.parseMethodName;
 import static java.lang.Integer.toHexString;
-import static java.lang.String.format;
 import static java.util.Collections.emptyMap;
 import static java.util.Collections.emptySet;
-import static java.util.Locale.ENGLISH;
 
 public final class ConstantPoolJavaClassFileReader implements JavaClassFileReader
 {
@@ -105,13 +104,12 @@ public final class ConstantPoolJavaClassFileReader implements JavaClassFileReade
 		{
 			final char tableLength = constantPoolJavaClassFileReader.readBigEndianUnsigned16BitInteger("table length");
 
-			final LocalVariableTargetInformationItem[] localVariableTargetInformationItems;
 			if (tableLength == 0)
 			{
 				return EmptyLocalVariableTargetInformation;
 			}
 
-			localVariableTargetInformationItems = new LocalVariableTargetInformationItem[tableLength];
+			final LocalVariableTargetInformationItem[] localVariableTargetInformationItems = new LocalVariableTargetInformationItem[tableLength];
 			for(char index = 0; index < tableLength; index++)
 			{
 				final char startProgramCount = constantPoolJavaClassFileReader.readBigEndianUnsigned16BitInteger("start program count");
@@ -293,7 +291,7 @@ public final class ConstantPoolJavaClassFileReader implements JavaClassFileReade
 			final Object elementValue = parseAnnotationElementValue();
 			if (table.put(elementName, elementValue) != null)
 			{
-				throw new InvalidJavaClassFileException(format(ENGLISH, "Duplicate annotation element key '%1$s'", elementName));
+				throw new InvalidJavaClassFileException(Formatting.format("Duplicate annotation element key '%1$s'", elementName));
 			}
 		});
 	}
@@ -327,7 +325,7 @@ public final class ConstantPoolJavaClassFileReader implements JavaClassFileReade
 					return annotationIsOnATypeArgumentOfAParameterizedType(typePathArgumentIndex);
 
 				default:
-					throw new InvalidJavaClassFileException(format(ENGLISH, "The type path kind '%1$s' is invalid", typePathKind));
+					throw new InvalidJavaClassFileException(Formatting.format("The type path kind '%1$s' is invalid", typePathKind));
 			}
 		});
 	}
@@ -339,7 +337,7 @@ public final class ConstantPoolJavaClassFileReader implements JavaClassFileReade
 		@Nullable final TargetType targetType = targetTypesForLocation[targetTypeTag];
 		if (targetType == null)
 		{
-			throw new InvalidJavaClassFileException(format(ENGLISH, "No known target type for tag '0x%1$s' at this parse location", toHexString(targetTypeTag)));
+			throw new InvalidJavaClassFileException(Formatting.format("No known target type for tag '0x%1$s' at this parse location", toHexString(targetTypeTag)));
 		}
 		return targetType;
 	}
@@ -417,7 +415,7 @@ public final class ConstantPoolJavaClassFileReader implements JavaClassFileReade
 				return arrayValues;
 
 			default:
-				throw new InvalidJavaClassFileException(format(ENGLISH, "Unknown annotation default tag '%1$s'", tag));
+				throw new InvalidJavaClassFileException(Formatting.format("Unknown annotation default tag '%1$s'", tag));
 		}
 	}
 
@@ -472,7 +470,7 @@ public final class ConstantPoolJavaClassFileReader implements JavaClassFileReade
 		final ConstantPoolIndex referenceIndex = readReferenceIndex(what);
 		if (ourConstantPoolIndex.equals(referenceIndex))
 		{
-			throw new InvalidJavaClassFileException(format(ENGLISH, "A %1$s of '%2$s' can not point to itself", what, referenceIndex));
+			throw new InvalidJavaClassFileException(Formatting.format("A %1$s of '%2$s' can not point to itself", what, referenceIndex));
 		}
 		return referenceIndex;
 	}
@@ -637,7 +635,7 @@ public final class ConstantPoolJavaClassFileReader implements JavaClassFileReade
 		final char constantPoolCount = constantPool.constantPoolCount();
 		if (referenceIndex >= constantPoolCount)
 		{
-			throw new InvalidJavaClassFileException(format(ENGLISH, "A '%1$s' can not point to a value ('%2$s') outside of the constant pool (whose count is '%3$s')", what, (int) referenceIndex, (int) constantPoolCount));
+			throw new InvalidJavaClassFileException(Formatting.format("A '%1$s' can not point to a value ('%2$s') outside of the constant pool (whose count is '%3$s')", what, (int) referenceIndex, (int) constantPoolCount));
 		}
 		return referenceIndexToConstantPoolIndex(referenceIndex, what);
 	}

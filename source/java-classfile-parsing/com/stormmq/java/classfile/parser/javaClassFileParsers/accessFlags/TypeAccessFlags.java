@@ -29,6 +29,7 @@ import com.stormmq.java.parsing.utilities.Completeness;
 import com.stormmq.java.parsing.utilities.Visibility;
 import org.jetbrains.annotations.NotNull;
 
+import static com.stormmq.java.classfile.parser.javaClassFileParsers.accessFlags.AccessFlags.computeFlagsInverseMask;
 import static com.stormmq.java.classfile.parser.javaClassFileParsers.accessFlags.AccessFlags.hasFlagSet;
 import static com.stormmq.java.parsing.utilities.Completeness.Abstract;
 import static com.stormmq.java.parsing.utilities.Completeness.Final;
@@ -47,7 +48,7 @@ public final class TypeAccessFlags
 	private static final char ACC_ANNOTATION = 0x2000; // Declared as an annotation type.
 	private static final char ACC_ENUM = 0x4000; // Declared as an enum type.
 
-	@SuppressWarnings("OverlyComplexBooleanExpression") public static final int TypeAccessFlagsValidityMask = ~(ACC_PUBLIC | ACC_FINAL | ACC_SUPER | ACC_INTERFACE | ACC_ABSTRACT | ACC_SYNTHETIC | ACC_ANNOTATION | ACC_ENUM);
+	public static final int TypeAccessFlagsValidityMask = computeFlagsInverseMask(ACC_PUBLIC, ACC_FINAL, ACC_SUPER, ACC_INTERFACE, ACC_ABSTRACT, ACC_SYNTHETIC, ACC_ANNOTATION, ACC_ENUM);
 
 	public static boolean isTypeSynthetic(final char accessFlags)
 	{
@@ -88,18 +89,18 @@ public final class TypeAccessFlags
 			}
 			return TypeKind.Interface;
 		}
-		else
+
+		if (isAnnotation)
 		{
-			if (isAnnotation)
-			{
-				throw new InvalidJavaClassFileException("Type access flags can not be an annotation if they distinguish a class or enum");
-			}
-			if (isAbstract && isFinal)
-			{
-				throw new InvalidJavaClassFileException("Type access flags can not be both abstract and final if they distinguish a class or enum");
-			}
-			return isEnum ? TypeKind.Enum : TypeKind.Class;
+			throw new InvalidJavaClassFileException("Type access flags can not be an annotation if they distinguish a class or enum");
 		}
+
+		if (isAbstract && isFinal)
+		{
+			throw new InvalidJavaClassFileException("Type access flags can not be both abstract and final if they distinguish a class or enum");
+		}
+
+		return isEnum ? TypeKind.Enum : TypeKind.Class;
 	}
 
 	public static boolean hasLegacySuperFlagSetting(final char accessFlags, @NotNull final JavaClassFileVersion javaClassFileVersion) throws InvalidJavaClassFileException

@@ -22,8 +22,7 @@
 
 package com.stormmq.java.parsing.utilities.literalParsers;
 
-import static java.lang.String.format;
-import static java.util.Locale.ENGLISH;
+import com.stormmq.string.Formatting;
 
 public enum DigitToValue
 {
@@ -41,7 +40,7 @@ public enum DigitToValue
 					return 1;
 
 				default:
-					throw new IllegalArgumentException(format(ENGLISH, "Invalid binary digit '%1$s'", digit));
+					throw new IllegalArgumentException(Formatting.format("Invalid binary digit '%1$s'", digit));
 			}
 		}
 	},
@@ -77,7 +76,7 @@ public enum DigitToValue
 					return 7;
 
 				default:
-					throw new IllegalArgumentException(format(ENGLISH, "Invalid octal digit '%1$s'", digit));
+					throw new IllegalArgumentException(Formatting.format("Invalid octal digit '%1$s'", digit));
 			}
 		}
 	},
@@ -120,7 +119,7 @@ public enum DigitToValue
 					return 9;
 
 				default:
-					throw new IllegalArgumentException(format(ENGLISH, "Invalid decimal digit '%1$s'", digit));
+					throw new IllegalArgumentException(Formatting.format("Invalid decimal digit '%1$s'", digit));
 			}
 		}
 
@@ -192,7 +191,7 @@ public enum DigitToValue
 					return 15;
 
 				default:
-					throw new IllegalArgumentException(format(ENGLISH, "Invalid hexadecimal digit '%1$s'", digit));
+					throw new IllegalArgumentException(Formatting.format("Invalid hexadecimal digit '%1$s'", digit));
 			}
 		}
 	},
@@ -200,7 +199,7 @@ public enum DigitToValue
 	private final int bitsPerDigit;
 	private final long scalar;
 
-	private DigitToValue(final int bitsPerDigit, final long scalar)
+	DigitToValue(final int bitsPerDigit, final long scalar)
 	{
 		this.bitsPerDigit = bitsPerDigit;
 		this.scalar = scalar;

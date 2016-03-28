@@ -28,6 +28,7 @@ import com.stormmq.java.classfile.parser.byteReaders.ByteReader;
 import com.stormmq.java.classfile.parser.javaClassFileParsers.VersionedClassFileParserChooser;
 import com.stormmq.java.classfile.parser.javaClassFileParsers.exceptions.*;
 import com.stormmq.java.classfile.parser.javaClassFileParsers.versionedClassFileParsers.VersionedClassFileParser;
+import com.stormmq.string.Formatting;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 
@@ -37,8 +38,6 @@ import static com.stormmq.java.classfile.domain.JavaClassFileVersion.values;
 import static com.stormmq.java.classfile.parser.javaClassFileParsers.VersionedClassFileParserChooser.Lax;
 import static com.stormmq.java.classfile.parser.javaClassFileParsers.VersionedClassFileParserChooser.Strict;
 import static com.stormmq.java.classfile.parser.javaClassFileParsers.exceptions.NotAJavaClassFileException.JavaClassFileMagicNumber;
-import static java.lang.String.format;
-import static java.util.Locale.ENGLISH;
 
 public final class JavaClassFileParser
 {
@@ -90,9 +89,9 @@ public final class JavaClassFileParser
 			{
 				if (rejectedForPreviousComparisonBecauseOfMinorVersionNumber)
 				{
-					throw new InvalidJavaClassFileException(format(ENGLISH, minorVersionUnsupportedMessage, majorVersionNumber, minorVersionNumber));
+					throw new InvalidJavaClassFileException(Formatting.format(minorVersionUnsupportedMessage, majorVersionNumber, minorVersionNumber));
 				}
-				throw new InvalidJavaClassFileException(format(ENGLISH, "Major version number '%1$s' is a legacy java version which is unsupported (minor version number is '%2$s')", majorVersionNumber, minorVersionNumber));
+				throw new InvalidJavaClassFileException(Formatting.format("Major version number '%1$s' is a legacy java version which is unsupported (minor version number is '%2$s')", majorVersionNumber, minorVersionNumber));
 			}
 			if (javaClassFileVersion.minimumInclusiveMinorVersionNumber >= minorVersionNumber || minorVersionNumber <= javaClassFileVersion.maximumInclusiveMinorVersionNumber)
 			{
@@ -102,9 +101,9 @@ public final class JavaClassFileParser
 		}
 		if (rejectedForPreviousComparisonBecauseOfMinorVersionNumber)
 		{
-			throw new InvalidJavaClassFileException(format(ENGLISH, minorVersionUnsupportedMessage, majorVersionNumber, minorVersionNumber));
+			throw new InvalidJavaClassFileException(Formatting.format(minorVersionUnsupportedMessage, majorVersionNumber, minorVersionNumber));
 		}
-		throw new InvalidJavaClassFileException(format(ENGLISH, "Major version number '%1$s' is a newer java version which is unsupported (minor version number is '%2$s')", majorVersionNumber, minorVersionNumber));
+		throw new InvalidJavaClassFileException(Formatting.format("Major version number '%1$s' is a newer java version which is unsupported (minor version number is '%2$s')", majorVersionNumber, minorVersionNumber));
 	}
 
 	private JavaClassFileParser()

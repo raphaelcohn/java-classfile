@@ -23,12 +23,10 @@
 package com.stormmq.java.classfile.domain.descriptors;
 
 import com.stormmq.java.classfile.domain.InternalTypeName;
+import com.stormmq.string.Formatting;
 import org.jetbrains.annotations.*;
 
 import java.util.*;
-
-import static java.lang.String.format;
-import static java.util.Locale.ENGLISH;
 
 public final class MethodDescriptor
 {
@@ -54,9 +52,10 @@ public final class MethodDescriptor
 	@Override
 	public String toString()
 	{
-		return format(ENGLISH, "%1$s(%2$s, %3$s)", getClass().getSimpleName(), returnDescriptor, Arrays.toString(parameterDescriptors));
+		return Formatting.format("%1$s(%2$s, %3$s)", getClass().getSimpleName(), returnDescriptor, Arrays.toString(parameterDescriptors));
 	}
 
+	@SuppressWarnings("RedundantIfStatement")
 	@Override
 	public boolean equals(@Nullable final Object o)
 	{

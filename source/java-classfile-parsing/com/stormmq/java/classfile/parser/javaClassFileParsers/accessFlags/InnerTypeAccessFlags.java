@@ -26,10 +26,9 @@ import com.stormmq.java.classfile.domain.TypeKind;
 import com.stormmq.java.classfile.parser.javaClassFileParsers.exceptions.InvalidJavaClassFileException;
 import com.stormmq.java.parsing.utilities.Completeness;
 import com.stormmq.java.parsing.utilities.Visibility;
-import com.stormmq.java.parsing.utilities.names.typeNames.referenceTypeNames.KnownReferenceTypeName;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
+import static com.stormmq.java.classfile.parser.javaClassFileParsers.accessFlags.AccessFlags.computeFlagsInverseMask;
 import static com.stormmq.java.classfile.parser.javaClassFileParsers.accessFlags.AccessFlags.hasFlagSet;
 import static com.stormmq.java.parsing.utilities.Completeness.*;
 import static com.stormmq.java.parsing.utilities.Visibility.*;
@@ -47,7 +46,7 @@ public final class InnerTypeAccessFlags
 	private static final char ACC_ANNOTATION = 0x2000;
 	private static final char ACC_ENUM = 0x4000;
 
-	@SuppressWarnings("OverlyComplexBooleanExpression") public static final int InnerTypeAccessFlagsValidityMask = ~(ACC_PUBLIC | ACC_PRIVATE | ACC_PROTECTED | ACC_STATIC | ACC_FINAL | ACC_INTERFACE | ACC_ABSTRACT | ACC_SYNTHETIC | ACC_ANNOTATION | ACC_ENUM);
+	public static final int InnerTypeAccessFlagsValidityMask = computeFlagsInverseMask(ACC_PUBLIC, ACC_PRIVATE, ACC_PROTECTED, ACC_STATIC, ACC_FINAL, ACC_INTERFACE, ACC_ABSTRACT, ACC_SYNTHETIC, ACC_ANNOTATION, ACC_ENUM);
 
 	public static boolean isInnerTypeSynthetic(final char accessFlags)
 	{

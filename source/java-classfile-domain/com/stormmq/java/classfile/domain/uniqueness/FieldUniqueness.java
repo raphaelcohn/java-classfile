@@ -24,10 +24,8 @@ package com.stormmq.java.classfile.domain.uniqueness;
 
 import com.stormmq.java.classfile.domain.descriptors.FieldDescriptor;
 import com.stormmq.java.classfile.domain.names.FieldName;
+import com.stormmq.string.Formatting;
 import org.jetbrains.annotations.*;
-
-import static java.lang.String.format;
-import static java.util.Locale.ENGLISH;
 
 public final class FieldUniqueness
 {
@@ -45,9 +43,10 @@ public final class FieldUniqueness
 	@Override
 	public String toString()
 	{
-		return format(ENGLISH, "%1$s(%2$s, %3$s)", getClass().getSimpleName(), fieldName, fieldDescriptor);
+		return Formatting.format("%1$s(%2$s, %3$s)", getClass().getSimpleName(), fieldName, fieldDescriptor);
 	}
 
+	@SuppressWarnings("RedundantIfStatement")
 	@Override
 	public boolean equals(@Nullable final Object o)
 	{

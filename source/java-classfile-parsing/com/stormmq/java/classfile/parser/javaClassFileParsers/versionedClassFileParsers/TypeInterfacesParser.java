@@ -28,6 +28,7 @@ import com.stormmq.java.classfile.parser.javaClassFileParsers.constantPool.Const
 import com.stormmq.java.classfile.parser.javaClassFileParsers.exceptions.JavaClassFileContainsDataTooLongToReadException;
 import com.stormmq.java.classfile.parser.javaClassFileParsers.functions.InvalidExceptionBiIntConsumer;
 import com.stormmq.java.parsing.utilities.names.typeNames.referenceTypeNames.KnownReferenceTypeName;
+import com.stormmq.string.Formatting;
 import org.jetbrains.annotations.*;
 
 import java.util.*;
@@ -37,10 +38,7 @@ import static com.stormmq.java.classfile.domain.TypeKind.Class;
 import static com.stormmq.java.classfile.domain.TypeKind.Interface;
 import static com.stormmq.java.parsing.utilities.StringConstants.Should_be_impossible;
 import static com.stormmq.java.parsing.utilities.names.typeNames.referenceTypeNames.KnownReferenceTypeName.*;
-import static com.stormmq.java.parsing.utilities.names.typeNames.referenceTypeNames.KnownReferenceTypeName.JavaLangAnnotationAnnotation;
 import static com.stormmq.string.StringUtilities.aOrAn;
-import static java.lang.String.format;
-import static java.util.Locale.ENGLISH;
 
 public final class TypeInterfacesParser
 {
@@ -148,24 +146,24 @@ public final class TypeInterfacesParser
 
 					if (interfaceTypeName.equals(thisClassTypeName))
 					{
-						throw new InvalidJavaClassFileException(format(ENGLISH, "Interface name '%1$s' is thisClass", interfaceTypeName));
+						throw new InvalidJavaClassFileException(Formatting.format("Interface name '%1$s' is thisClass", interfaceTypeName));
 					}
 
 					if (superClassTypeName == null)
 					{
-						throw new InvalidJavaClassFileException(format(ENGLISH, "'%1$s' can not implement interfaces", thisClassTypeName));
+						throw new InvalidJavaClassFileException(Formatting.format("'%1$s' can not implement interfaces", thisClassTypeName));
 					}
 
 					if (interfaceTypeName.equals(thisClassTypeName))
 					{
-						throw new InvalidJavaClassFileException(format(ENGLISH, "Interface name '%1$s' is superClass", interfaceTypeName));
+						throw new InvalidJavaClassFileException(Formatting.format("Interface name '%1$s' is superClass", interfaceTypeName));
 					}
 
 					if (typeKind == Annotation)
 					{
 						if (index > 0)
 						{
-							throw new InvalidJavaClassFileException(format(ENGLISH, "Annotation '%1$s' should not implement more than one interface", thisClassTypeName));
+							throw new InvalidJavaClassFileException(Formatting.format("Annotation '%1$s' should not implement more than one interface", thisClassTypeName));
 						}
 					}
 
@@ -174,7 +172,7 @@ public final class TypeInterfacesParser
 						return;
 					}
 
-					throw new InvalidJavaClassFileException(format(ENGLISH, "Duplicate interface name '%1$s'", interfaceTypeName));
+					throw new InvalidJavaClassFileException(Formatting.format("Duplicate interface name '%1$s'", interfaceTypeName));
 				}
 			});
 		}
@@ -187,12 +185,12 @@ public final class TypeInterfacesParser
 		{
 			if (interfaces.isEmpty())
 			{
-				throw new InvalidJavaClassFileException(format(ENGLISH, "Annotation '%1$s' should implement one interface (implements none)", thisClassTypeName));
+				throw new InvalidJavaClassFileException(Formatting.format("Annotation '%1$s' should implement one interface (implements none)", thisClassTypeName));
 			}
 
 			if (!interfaces.contains(JavaLangAnnotationAnnotation))
 			{
-				throw new InvalidJavaClassFileException(format(ENGLISH, "Annotation '%1$s' should implement the interface '%2$s'", thisClassTypeName, JavaLangAnnotationAnnotation));
+				throw new InvalidJavaClassFileException(Formatting.format("Annotation '%1$s' should implement the interface '%2$s'", thisClassTypeName, JavaLangAnnotationAnnotation));
 			}
 
 			return AnnotationKnownReferenceTypeNamesSet;
@@ -207,7 +205,7 @@ public final class TypeInterfacesParser
 		{
 			if (interfaceTypeName.equals(prohibitedInterfaceTypeName))
 			{
-				throw new InvalidJavaClassFileException(format(ENGLISH, "Interface name '%1$s' is '%2$s' which is not an interface", interfaceTypeName, prohibitedInterfaceTypeName));
+				throw new InvalidJavaClassFileException(Formatting.format("Interface name '%1$s' is '%2$s' which is not an interface", interfaceTypeName, prohibitedInterfaceTypeName));
 			}
 		}
 	}

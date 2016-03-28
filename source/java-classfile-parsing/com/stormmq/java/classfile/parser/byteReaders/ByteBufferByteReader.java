@@ -25,7 +25,6 @@ package com.stormmq.java.classfile.parser.byteReaders;
 import org.jetbrains.annotations.*;
 
 import java.io.EOFException;
-import java.io.IOException;
 import java.nio.ByteBuffer;
 
 public final class ByteBufferByteReader implements ByteReader

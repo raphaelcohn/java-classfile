@@ -71,4 +71,4 @@ public enum Completeness
 	public abstract boolean isFinal();
 
 	public abstract boolean isAbstract();
-};
+}

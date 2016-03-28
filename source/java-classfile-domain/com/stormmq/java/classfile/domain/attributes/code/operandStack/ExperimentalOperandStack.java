@@ -28,10 +28,10 @@ import com.stormmq.java.classfile.domain.attributes.code.operandStackItems.Opera
 import com.stormmq.java.classfile.domain.attributes.code.operandStackItems.numericOperandStackItems.NumericOperandStackItem;
 import com.stormmq.java.classfile.domain.attributes.code.operandStackItems.referenceOperandStackItems.ReferenceOperandStackItem;
 import com.stormmq.java.classfile.domain.attributes.code.typing.ComputationalCategory;
+import com.stormmq.string.Formatting;
 import org.jetbrains.annotations.NotNull;
 
-import static java.lang.String.format;
-import static java.util.Locale.ENGLISH;
+import static java.lang.System.out;
 
 public final class ExperimentalOperandStack implements OperandStack
 {
@@ -90,17 +90,13 @@ public final class ExperimentalOperandStack implements OperandStack
 		// does the stack item have a reference to a stack item stackPointer?
 		// is this an assignment?
 		// when we pop something, we could wrap it with a stackPointer-reference
-		final String line;
 		final int fromOperandStackPointer = operandStackItem.stackPointer();
-		if (fromOperandStackPointer != EmptyStackPointer)
-		{
-			line = format(ENGLISH, "%%%1$s = %%%2$s\n", trackingOperandStack.currentStackPointer(), fromOperandStackPointer);
-		}
-		else
+		if (fromOperandStackPointer == EmptyStackPointer)
 		{
 			throw new UnsupportedOperationException("Fix me");
 		}
-		System.out.println( "%" + Integer.toString(trackingOperandStack.currentStackPointer()));
+		final String line = Formatting.format("%%%1$s = %%%2$s\n", trackingOperandStack.currentStackPointer(), fromOperandStackPointer);
+		out.println( "%" + Integer.toString(trackingOperandStack.currentStackPointer()));
 
 		return oldStackPointer;
 	}

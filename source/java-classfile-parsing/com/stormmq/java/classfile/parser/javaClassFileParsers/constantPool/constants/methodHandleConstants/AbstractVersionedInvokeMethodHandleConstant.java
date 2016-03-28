@@ -28,10 +28,8 @@ import com.stormmq.java.classfile.parser.javaClassFileParsers.constantPool.Const
 import com.stormmq.java.classfile.parser.javaClassFileParsers.constantPool.constants.Constant;
 import com.stormmq.java.classfile.parser.javaClassFileParsers.constantPool.constants.referenceIndexConstants.doubles.ClassMethodReferenceIndexConstant;
 import com.stormmq.java.classfile.parser.javaClassFileParsers.constantPool.constants.referenceIndexConstants.doubles.InterfaceMethodReferenceIndexConstant;
+import com.stormmq.string.Formatting;
 import org.jetbrains.annotations.NotNull;
-
-import static java.lang.String.format;
-import static java.util.Locale.ENGLISH;
 
 public abstract class AbstractVersionedInvokeMethodHandleConstant extends AbstractInvokeMethodHandleConstant
 {
@@ -44,7 +42,7 @@ public abstract class AbstractVersionedInvokeMethodHandleConstant extends Abstra
 	}
 
 	@Override
-	protected final void validate(@NotNull final Constant constant, @NotNull final ConstantPoolIndex referenceIndex) throws InvalidJavaClassFileException
+	protected final void validate(@NotNull final Constant constant) throws InvalidJavaClassFileException
 	{
 		if (isLessThanJava8)
 		{
@@ -54,7 +52,7 @@ public abstract class AbstractVersionedInvokeMethodHandleConstant extends Abstra
 		{
 			if (!(constant instanceof ClassMethodReferenceIndexConstant) && !(constant instanceof InterfaceMethodReferenceIndexConstant))
 			{
-				throw new InvalidJavaClassFileException(format(ENGLISH, "The reference at constant pool index '%1$s' is not a CONSTANT_Methodref_info or CONSTANT_Interfaceref_info but is instead a '%2$s'", this.referenceIndex, constant.getClass().getSimpleName()));
+				throw new InvalidJavaClassFileException(Formatting.format("The reference at constant pool index '%1$s' is not a CONSTANT_Methodref_info or CONSTANT_Interfaceref_info but is instead a '%2$s'", this.referenceIndex, constant.getClass().getSimpleName()));
 			}
 		}
 

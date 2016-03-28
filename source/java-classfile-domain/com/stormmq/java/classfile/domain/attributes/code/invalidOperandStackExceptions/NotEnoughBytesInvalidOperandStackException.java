@@ -22,20 +22,18 @@
 
 package com.stormmq.java.classfile.domain.attributes.code.invalidOperandStackExceptions;
 
+import com.stormmq.string.Formatting;
 import org.jetbrains.annotations.NotNull;
-
-import static java.lang.String.format;
-import static java.util.Locale.ENGLISH;
 
 public final class NotEnoughBytesInvalidOperandStackException extends InvalidOperandStackException
 {
 	public NotEnoughBytesInvalidOperandStackException(final long required)
 	{
-		super(format(ENGLISH, "Not enough bytes, needed '%1$s' more", required));
+		super(Formatting.format("Not enough bytes, needed '%1$s' more", required));
 	}
 
 	public NotEnoughBytesInvalidOperandStackException(final long required, @NotNull final Exception cause)
 	{
-		super(format(ENGLISH, "Not enough bytes, needed '%1$s' more (exception on read)", required), cause);
+		super(Formatting.format("Not enough bytes, needed '%1$s' more (exception on read)", required), cause);
 	}
 }

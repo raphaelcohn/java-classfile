@@ -27,6 +27,7 @@ import com.stormmq.java.classfile.parser.javaClassFileParsers.exceptions.Invalid
 import com.stormmq.java.classfile.domain.descriptors.MethodDescriptor;
 import com.stormmq.java.parsing.utilities.InvalidJavaIdentifierException;
 import com.stormmq.java.parsing.utilities.names.typeNames.TypeName;
+import com.stormmq.string.Formatting;
 import org.jetbrains.annotations.*;
 
 import java.util.ArrayList;
@@ -39,8 +40,6 @@ import static com.stormmq.java.parsing.utilities.ReservedIdentifiers.validateIsJ
 import static com.stormmq.java.parsing.utilities.StringConstants.*;
 import static com.stormmq.java.parsing.utilities.names.typeNames.PrimitiveTypeName.*;
 import static com.stormmq.java.parsing.utilities.names.typeNames.referenceTypeNames.KnownReferenceTypeName.knownReferenceTypeName;
-import static java.lang.String.format;
-import static java.util.Locale.ENGLISH;
 
 public final class MethodDescriptorParser
 {
@@ -150,7 +149,7 @@ public final class MethodDescriptorParser
 						{
 							return new ParsedTypeDescriptorResult(VoidInternalTypeName, index);
 						}
-						throw new InvalidJavaClassFileException(format(ENGLISH, "A void can not be an array of dimension count '%1$s'", arrayDimensions));
+						throw new InvalidJavaClassFileException(Formatting.format("A void can not be an array of dimension count '%1$s'", arrayDimensions));
 					}
 					throw new InvalidJavaClassFileException("A void is not allowed in a method parameter or field methodDescriptor");
 
@@ -191,7 +190,7 @@ public final class MethodDescriptorParser
 					break;
 
 				default:
-					throw new InvalidJavaClassFileException(format(ENGLISH, "Unknown type code '%1$s'", typeCode));
+					throw new InvalidJavaClassFileException(Formatting.format("Unknown type code '%1$s'", typeCode));
 			}
 		}
 		throw new InvalidJavaClassFileException("Type descriptor consists solely of array dimensions or is empty");
@@ -216,6 +215,9 @@ public final class MethodDescriptorParser
 					extractElement(rawTypeDescriptor, index, startIndex, internalTypeName, false);
 					internalTypeName.append(ExternalTypeNameSeparator);
 					startIndex = index + 1;
+					break;
+
+				default:
 					break;
 			}
 

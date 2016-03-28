@@ -22,19 +22,13 @@
 
 package com.stormmq.java.classfile.parser.javaClassFileParsers.constantPool.constants.methodHandleConstants;
 
-import com.stormmq.java.classfile.domain.names.MethodName;
 import com.stormmq.java.classfile.parser.javaClassFileParsers.constantPool.ConstantPool;
 import com.stormmq.java.classfile.parser.javaClassFileParsers.constantPool.ConstantPoolIndex;
 import com.stormmq.java.classfile.parser.javaClassFileParsers.constantPool.constants.Constant;
 import com.stormmq.java.classfile.parser.javaClassFileParsers.constantPool.constants.referenceIndexConstants.doubles.InterfaceMethodReferenceIndexConstant;
 import com.stormmq.java.classfile.parser.javaClassFileParsers.exceptions.InvalidJavaClassFileException;
-import org.jetbrains.annotations.NonNls;
+import com.stormmq.string.Formatting;
 import org.jetbrains.annotations.NotNull;
-
-import static com.stormmq.java.classfile.domain.names.MethodName.InstanceInitializer;
-import static com.stormmq.java.classfile.domain.names.MethodName.StaticInstanceInitializer;
-import static java.lang.String.format;
-import static java.util.Locale.ENGLISH;
 
 public final class InvokeInterfaceMethodHandleConstant extends AbstractInvokeMethodHandleConstant
 {
@@ -44,7 +38,7 @@ public final class InvokeInterfaceMethodHandleConstant extends AbstractInvokeMet
 	}
 
 	@Override
-	protected void validate(@NotNull final Constant constant, @NotNull final ConstantPoolIndex referenceIndex) throws InvalidJavaClassFileException
+	protected void validate(@NotNull final Constant constant) throws InvalidJavaClassFileException
 	{
 		validateInterfaceReference(constant);
 		validateInterfaceReferenceIsNotAnInstanceOrStaticInitializer(constant);
@@ -56,6 +50,6 @@ public final class InvokeInterfaceMethodHandleConstant extends AbstractInvokeMet
 		{
 			return;
 		}
-		throw new InvalidJavaClassFileException(format(ENGLISH, "The reference at constant pool index '%1$s' is not a CONSTANT_Interfaceref_info but is instead a '%2$s'", referenceIndex, constant.getClass().getSimpleName()));
+		throw new InvalidJavaClassFileException(Formatting.format("The reference at constant pool index '%1$s' is not a CONSTANT_Interfaceref_info but is instead a '%2$s'", referenceIndex, constant.getClass().getSimpleName()));
 	}
 }

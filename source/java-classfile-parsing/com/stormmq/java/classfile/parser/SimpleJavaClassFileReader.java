@@ -25,6 +25,7 @@ package com.stormmq.java.classfile.parser;
 import com.stormmq.java.classfile.parser.javaClassFileParsers.exceptions.InvalidJavaClassFileException;
 import com.stormmq.java.classfile.parser.byteReaders.*;
 import com.stormmq.java.classfile.parser.javaClassFileParsers.exceptions.JavaClassFileContainsDataTooLongToReadException;
+import com.stormmq.string.Formatting;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 
@@ -35,9 +36,7 @@ import java.nio.file.Path;
 import static com.stormmq.java.classfile.parser.byteReaders.ByteReader.ByteMask;
 import static java.lang.Float.intBitsToFloat;
 import static java.lang.Integer.MAX_VALUE;
-import static java.lang.String.format;
 import static java.nio.file.Files.readAllBytes;
-import static java.util.Locale.ENGLISH;
 
 // This class is NOT thread safe
 public final class SimpleJavaClassFileReader implements JavaClassFileReader
@@ -159,6 +158,7 @@ public final class SimpleJavaClassFileReader implements JavaClassFileReader
 		return parseModifiedUtf8String(what, (int) length);
 	}
 
+	@SuppressWarnings("MagicNumber")
 	@NotNull
 	private String parseModifiedUtf8String(@NonNls @NotNull final String what, final int length) throws InvalidJavaClassFileException
 	{
@@ -172,7 +172,7 @@ public final class SimpleJavaClassFileReader implements JavaClassFileReader
 		// Optimisation that assumes most strings are US-ASCII
 		while (count < length)
 		{
-			final int char1 = byteBuffer.get(count) & ByteMask;
+			final int char1 = getByteAsInteger(byteBuffer, count);
 			if (char1 > 127)
 			{
 				break;
@@ -184,7 +184,7 @@ public final class SimpleJavaClassFileReader implements JavaClassFileReader
 
 		while (count < length)
 		{
-			final int char1 = byteBuffer.get(count) & ByteMask;
+			final int char1 = getByteAsInteger(byteBuffer, count);
 			final int char2;
 			final int char3;
 			final char character;
@@ -213,10 +213,10 @@ public final class SimpleJavaClassFileReader implements JavaClassFileReader
 
 					guardForCompleteSequence(length, count);
 
-					char2 = byteBuffer.get(count - 1);
+					char2 = getByteAsInteger(byteBuffer, count - 1);
 					guardForMalformedCharacter(char2);
 
-					character = (char) (((char1 & x1F) << 6) | (char2 & x3F));
+					character = (char) ((char1 & x1F) << 6 | extractPartOfCodepoint(char2));
 					break;
 
 				case 14:
@@ -226,13 +226,13 @@ public final class SimpleJavaClassFileReader implements JavaClassFileReader
 
 					guardForCompleteSequence(length, count);
 
-					char2 = byteBuffer.get(count - 2);
+					char2 = getByteAsInteger(byteBuffer, count - 2);
 					guardForMalformedCharacter(char2);
 
-					char3 = byteBuffer.get(count - 1);
+					char3 = getByteAsInteger(byteBuffer, count - 1);
 					guardForMalformedCharacter(char3);
 
-					character = (char) (((char1 & x0F) << 12) | ((char2 & x3F) << 6) | ((char3 & x3F)));
+					character = (char) ((char1 & x0F) << 12 | extractPartOfCodepoint(char2) << 6 | extractPartOfCodepoint(char3));
 					break;
 
 				default:
@@ -245,6 +245,16 @@ public final class SimpleJavaClassFileReader implements JavaClassFileReader
 			charactersCount++;
 		}
 		return new String(characters, 0, charactersCount);
+	}
+
+	private static int getByteAsInteger(@NotNull final ByteBuffer byteBuffer, final int count)
+	{
+		return byteBuffer.get(count) & ByteMask;
+	}
+
+	private static int extractPartOfCodepoint(final int char3)
+	{
+		return char3 & x3F;
 	}
 
 	private static void guardForMalformedCharacter(final int character) throws InvalidJavaClassFileException
@@ -277,7 +287,7 @@ public final class SimpleJavaClassFileReader implements JavaClassFileReader
 		}
 		catch (final EOFException e)
 		{
-			throw new InvalidJavaClassFileException(format(ENGLISH, "Could not readByte '%1$s'", what), e);
+			throw new InvalidJavaClassFileException(Formatting.format("Could not readByte '%1$s'", what), e);
 		}
 	}
 
@@ -289,7 +299,7 @@ public final class SimpleJavaClassFileReader implements JavaClassFileReader
 		}
 		catch (final EOFException e)
 		{
-			throw new InvalidJavaClassFileException(format(ENGLISH, "Could not readFully '%1$s'", what), e);
+			throw new InvalidJavaClassFileException(Formatting.format("Could not readFully '%1$s'", what), e);
 		}
 	}
 
@@ -302,7 +312,7 @@ public final class SimpleJavaClassFileReader implements JavaClassFileReader
 		}
 		catch (final EOFException e)
 		{
-			throw new InvalidJavaClassFileException(format(ENGLISH, "Could not readBytesBuffer '%1$s'", what), e);
+			throw new InvalidJavaClassFileException(Formatting.format("Could not readBytesBuffer '%1$s'", what), e);
 		}
 	}
 

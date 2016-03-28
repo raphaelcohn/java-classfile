@@ -68,7 +68,6 @@ public enum ComputationalCategory
 	@NotNull
 	private String actualName()
 	{
-		final String actualName;
 		final String name = name();
 
 		if (name.isEmpty())
@@ -76,7 +75,6 @@ public enum ComputationalCategory
 			throw new IllegalStateException("name() should not be empty");
 		}
 
-		actualName = name.charAt(0) != '_' ? name : name.substring(1);
-		return actualName;
+		return name.charAt(0) == '_' ? name.substring(1) : name;
 	}
 }

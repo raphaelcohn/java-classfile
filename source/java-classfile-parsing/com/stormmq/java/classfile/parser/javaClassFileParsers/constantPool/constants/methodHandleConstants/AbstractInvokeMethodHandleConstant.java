@@ -29,13 +29,12 @@ import com.stormmq.java.classfile.parser.javaClassFileParsers.constantPool.const
 import com.stormmq.java.classfile.parser.javaClassFileParsers.constantPool.constants.referenceIndexConstants.doubles.ClassMethodReferenceIndexConstant;
 import com.stormmq.java.classfile.parser.javaClassFileParsers.constantPool.constants.referenceIndexConstants.doubles.InterfaceMethodReferenceIndexConstant;
 import com.stormmq.java.classfile.parser.javaClassFileParsers.exceptions.InvalidJavaClassFileException;
+import com.stormmq.string.Formatting;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 
 import static com.stormmq.java.classfile.domain.names.MethodName.InstanceInitializer;
 import static com.stormmq.java.classfile.domain.names.MethodName.StaticInstanceInitializer;
-import static java.lang.String.format;
-import static java.util.Locale.ENGLISH;
 
 public abstract class AbstractInvokeMethodHandleConstant extends AbstractMethodHandleConstant
 {
@@ -50,7 +49,7 @@ public abstract class AbstractInvokeMethodHandleConstant extends AbstractMethodH
 		{
 			return;
 		}
-		throw new InvalidJavaClassFileException(format(ENGLISH, "The reference at constant pool index '%1$s' is not a CONSTANT_Methodref_info but is instead a '%2$s'", referenceIndex, constant.getClass().getSimpleName()));
+		throw new InvalidJavaClassFileException(Formatting.format("The reference at constant pool index '%1$s' is not a CONSTANT_Methodref_info but is instead a '%2$s'", referenceIndex, constant.getClass().getSimpleName()));
 	}
 
 	protected final void validateMethodReferenceIsNotAnInstanceOrStaticInitializer(@NotNull final Constant constant) throws InvalidJavaClassFileException
@@ -62,12 +61,12 @@ public abstract class AbstractInvokeMethodHandleConstant extends AbstractMethodH
 
 		if (methodName.equals(InstanceInitializer))
 		{
-			throw new InvalidJavaClassFileException(format(ENGLISH, "A method handle that is not of kind InvokeInterface may not reference '%1$s' an instance initializer of '<init>'", referenceIndex));
+			throw new InvalidJavaClassFileException(Formatting.format("A method handle that is not of kind InvokeInterface may not reference '%1$s' an instance initializer of '<init>'", referenceIndex));
 		}
 
 		if (methodName.equals(StaticInstanceInitializer))
 		{
-			throw new InvalidJavaClassFileException(format(ENGLISH, "A method handle that is not of kind InvokeInterface may not reference '%1$s' a static initializer of '<clinit>'", referenceIndex));
+			throw new InvalidJavaClassFileException(Formatting.format("A method handle that is not of kind InvokeInterface may not reference '%1$s' a static initializer of '<clinit>'", referenceIndex));
 		}
 	}
 
@@ -80,12 +79,12 @@ public abstract class AbstractInvokeMethodHandleConstant extends AbstractMethodH
 
 		if (methodName.equals(InstanceInitializer))
 		{
-			throw new InvalidJavaClassFileException(format(ENGLISH, "A method handle that is not of kind InvokeInterface may not reference '%1$s' an instance initializer of '<init>'", referenceIndex));
+			throw new InvalidJavaClassFileException(Formatting.format("A method handle that is not of kind InvokeInterface may not reference '%1$s' an instance initializer of '<init>'", referenceIndex));
 		}
 
 		if (methodName.equals(StaticInstanceInitializer))
 		{
-			throw new InvalidJavaClassFileException(format(ENGLISH, "A method handle that is not of kind InvokeInterface may not reference '%1$s' a static initializer of '<clinit>'", referenceIndex));
+			throw new InvalidJavaClassFileException(Formatting.format("A method handle that is not of kind InvokeInterface may not reference '%1$s' a static initializer of '<clinit>'", referenceIndex));
 		}
 	}
 }

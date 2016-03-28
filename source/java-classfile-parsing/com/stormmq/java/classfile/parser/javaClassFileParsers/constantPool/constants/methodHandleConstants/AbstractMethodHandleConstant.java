@@ -64,13 +64,13 @@ public abstract class AbstractMethodHandleConstant extends AbstractSingleWidthCo
 	public final void validateReferenceIndices() throws InvalidJavaClassFileException
 	{
 		final Constant constant = retrieveConstant();
-		validate(constant, referenceIndex);
+		validate(constant);
 	}
 
-	protected abstract void validate(@NotNull final Constant constant, @NotNull final ConstantPoolIndex referenceIndex) throws InvalidJavaClassFileException;
+	protected abstract void validate(@NotNull final Constant constant) throws InvalidJavaClassFileException;
 
 	@NotNull
-	protected final Constant retrieveConstant()
+	private Constant retrieveConstant()
 	{
 		return constantPool.retrieve(referenceIndex);
 	}

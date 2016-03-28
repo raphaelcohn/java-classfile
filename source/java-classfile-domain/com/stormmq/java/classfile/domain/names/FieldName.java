@@ -40,6 +40,7 @@ public final class FieldName
 		return validatedMethodName;
 	}
 
+	@SuppressWarnings("RedundantIfStatement")
 	@Override
 	public boolean equals(@Nullable final Object o)
 	{

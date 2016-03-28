@@ -73,7 +73,7 @@ public final class PrimitiveTypeHelper
 		return !isBoxedPrimitiveExcludingVoid(potentialBoxedType);
 	}
 
-	public static boolean isBoxedPrimitiveExcludingVoid(@NotNull final Class<?> potentialBoxedType)
+	private static boolean isBoxedPrimitiveExcludingVoid(@NotNull final Class<?> potentialBoxedType)
 	{
 		return boxedToUnboxedPrimitiveTypes.containsKey(potentialBoxedType);
 	}
@@ -90,13 +90,6 @@ public final class PrimitiveTypeHelper
 
 	public static boolean isNotBoxedOrUnboxedPrimitiveExcludingVoid(@NotNull final Class<?> valueType)
 	{
-		if ((boxedToUnboxedPrimitiveTypes.containsKey(valueType) || unboxedPrimitiveTypes.contains(valueType)))
-		{
-			return false;
-		}
-		else
-		{
-			return true;
-		}
+		return !(boxedToUnboxedPrimitiveTypes.containsKey(valueType) || unboxedPrimitiveTypes.contains(valueType));
 	}
 }

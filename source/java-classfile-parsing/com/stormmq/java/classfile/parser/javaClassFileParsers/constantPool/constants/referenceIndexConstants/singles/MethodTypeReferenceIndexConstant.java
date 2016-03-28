@@ -39,12 +39,6 @@ public final class MethodTypeReferenceIndexConstant extends AbstractSingleRefere
 	}
 
 	@Override
-	public void validateReferenceIndices() throws InvalidJavaClassFileException
-	{
-		super.validateReferenceIndices();
-	}
-
-	@Override
 	public boolean isSuitableForAStaticFieldConstant()
 	{
 		return false;
@@ -62,6 +56,7 @@ public final class MethodTypeReferenceIndexConstant extends AbstractSingleRefere
 		return true;
 	}
 
+	@NotNull
 	@Override
 	public <T> T visit(@NotNull final SingleWidthConstantForLoadUser<T> singleWidthConstantForLoadUser) throws InvalidConstantException
 	{

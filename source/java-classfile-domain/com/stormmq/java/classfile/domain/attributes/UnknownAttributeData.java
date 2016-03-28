@@ -26,8 +26,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.nio.ByteBuffer;
 
-import static java.util.Arrays.copyOf;
-
 public final class UnknownAttributeData
 {
 	@NotNull private final ByteBuffer[] dataItems;

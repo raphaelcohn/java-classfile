@@ -26,13 +26,11 @@ import com.stormmq.java.classfile.domain.attributes.code.codeReaders.CodeReader;
 import com.stormmq.java.classfile.domain.attributes.code.constants.RuntimeConstantPool;
 import com.stormmq.java.classfile.domain.attributes.code.localVariables.LocalVariableAtProgramCounter;
 import com.stormmq.java.classfile.domain.attributes.code.operandStack.OperandStack;
+import com.stormmq.string.Formatting;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Set;
-
-import static java.lang.String.format;
-import static java.util.Locale.ENGLISH;
 
 public final class ReservedOpcodeParser implements OpcodeParser
 {
@@ -40,7 +38,7 @@ public final class ReservedOpcodeParser implements OpcodeParser
 
 	public ReservedOpcodeParser(final short opcode, @NotNull @NonNls final String name)
 	{
-		invalidOpcodeException = new InvalidOpcodeException(format(ENGLISH, "The opcode '%1$s' (known as '%2$s') is reserved", (int) opcode, name));
+		invalidOpcodeException = new InvalidOpcodeException(Formatting.format("The opcode '%1$s' (known as '%2$s') is reserved", (int) opcode, name));
 	}
 
 	@Override

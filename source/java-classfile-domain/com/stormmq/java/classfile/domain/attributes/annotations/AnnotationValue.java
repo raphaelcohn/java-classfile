@@ -24,12 +24,10 @@ package com.stormmq.java.classfile.domain.attributes.annotations;
 
 import com.stormmq.java.classfile.domain.descriptors.FieldDescriptor;
 import com.stormmq.java.classfile.domain.names.MethodName;
+import com.stormmq.string.Formatting;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
-
-import static java.lang.String.format;
-import static java.util.Locale.ENGLISH;
 
 public final class AnnotationValue
 {
@@ -49,6 +47,6 @@ public final class AnnotationValue
 	@NotNull
 	public String toString()
 	{
-		return format(ENGLISH, "%1$s(%2$s, %3$s)", getClass().getSimpleName(), typeIndexFieldDescriptor, fieldValues);
+		return Formatting.format("%1$s(%2$s, %3$s)", getClass().getSimpleName(), typeIndexFieldDescriptor, fieldValues);
 	}
 }

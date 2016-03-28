@@ -24,11 +24,10 @@ package com.stormmq.java.classfile.domain;
 
 import com.stormmq.java.parsing.utilities.names.typeNames.TypeName;
 import com.stormmq.java.parsing.utilities.names.typeNames.referenceTypeNames.KnownReferenceTypeName;
+import com.stormmq.string.Formatting;
 import org.jetbrains.annotations.*;
 
 import static com.stormmq.java.parsing.utilities.names.typeNames.VoidTypeName._void;
-import static java.lang.String.format;
-import static java.util.Locale.ENGLISH;
 
 public final class InternalTypeName
 {
@@ -43,17 +42,17 @@ public final class InternalTypeName
 	{
 		if (arrayDimensions < 0)
 		{
-			throw new IllegalArgumentException(format(ENGLISH, "arrayDimensions can not be negative, such as '%1$s'", arrayDimensions));
+			throw new IllegalArgumentException(Formatting.format("arrayDimensions can not be negative, such as '%1$s'", arrayDimensions));
 		}
 
 		if (arrayDimensions > MaximumArrayDimensions)
 		{
-			throw new IllegalArgumentException(format(ENGLISH, "arrayDimensions can not exceed '%1$s'; they can not be '%2$s'", MaximumArrayDimensions, arrayDimensions));
+			throw new IllegalArgumentException(Formatting.format("arrayDimensions can not exceed '%1$s'; they can not be '%2$s'", MaximumArrayDimensions, arrayDimensions));
 		}
 
 		if (typeName == _void && arrayDimensions != 0)
 		{
-			throw new IllegalArgumentException(format(ENGLISH, "void can not have arrayDimensions other than zero (and certainly not '%1$s')", arrayDimensions));
+			throw new IllegalArgumentException(Formatting.format("void can not have arrayDimensions other than zero (and certainly not '%1$s')", arrayDimensions));
 		}
 
 		this.typeName = typeName;
@@ -80,9 +79,10 @@ public final class InternalTypeName
 	@Override
 	public String toString()
 	{
-		return format(ENGLISH, "%1$s(%2$s, %3$s)", getClass().getSimpleName(), typeName, arrayDimensions);
+		return Formatting.format("%1$s(%2$s, %3$s)", getClass().getSimpleName(), typeName, arrayDimensions);
 	}
 
+	@SuppressWarnings("RedundantIfStatement")
 	@Override
 	public boolean equals(@Nullable final Object o)
 	{
@@ -122,7 +122,7 @@ public final class InternalTypeName
 	{
 		if (isArray() || isVoid() || isPrimitive())
 		{
-			throw new InvalidInternalTypeNameException(format(ENGLISH, "Type name '%1$s' is not suitable for a class, interface, enum or annotation", toString()));
+			throw new InvalidInternalTypeNameException(Formatting.format("Type name '%1$s' is not suitable for a class, interface, enum or annotation", toString()));
 		}
 		return (KnownReferenceTypeName) typeName;
 	}

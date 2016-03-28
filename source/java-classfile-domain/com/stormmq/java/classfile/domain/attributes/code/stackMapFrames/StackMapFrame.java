@@ -27,6 +27,4 @@ import org.jetbrains.annotations.NotNull;
 public interface StackMapFrame
 {
 	@NotNull StackMapFrame[] ImplicitStackMap = {};
-
-	;
 }

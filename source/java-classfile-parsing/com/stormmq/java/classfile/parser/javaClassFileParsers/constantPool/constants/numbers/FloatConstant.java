@@ -25,7 +25,6 @@ package com.stormmq.java.classfile.parser.javaClassFileParsers.constantPool.cons
 import com.stormmq.java.classfile.domain.attributes.code.constants.SingleWidthConstantForLoad;
 import com.stormmq.java.classfile.domain.attributes.code.constants.SingleWidthConstantForLoadUser;
 import com.stormmq.java.classfile.parser.javaClassFileParsers.constantPool.constants.*;
-import com.stormmq.java.classfile.parser.javaClassFileParsers.exceptions.InvalidJavaClassFileException;
 import org.jetbrains.annotations.NotNull;
 
 public final class FloatConstant extends AbstractSingleWidthConstant implements FieldConstant, SingleWidthConstantForLoad

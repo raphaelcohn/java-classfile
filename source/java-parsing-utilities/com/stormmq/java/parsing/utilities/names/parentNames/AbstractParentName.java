@@ -98,15 +98,7 @@ public abstract class AbstractParentName implements ParentName
 	{
 		final int lastIndex = fullyQualifiedNameUsingDotsAndDollarSigns.lastIndexOf(ExternalTypeNameSeparator);
 
-		final String simpleName;
-		if (lastIndex == -1)
-		{
-			simpleName = fullyQualifiedNameUsingDotsAndDollarSigns;
-		}
-		else
-		{
-			simpleName = fullyQualifiedNameUsingDotsAndDollarSigns.substring(lastIndex + 1);
-		}
+		final String simpleName = lastIndex == -1 ? fullyQualifiedNameUsingDotsAndDollarSigns : fullyQualifiedNameUsingDotsAndDollarSigns.substring(lastIndex + 1);
 
 		if (simpleName.isEmpty())
 		{
@@ -122,6 +114,7 @@ public abstract class AbstractParentName implements ParentName
 		return fullyQualifiedNameUsingDotsAndDollarSigns;
 	}
 
+	@SuppressWarnings("RedundantIfStatement")
 	@Override
 	public boolean equals(@Nullable final Object o)
 	{

@@ -24,16 +24,15 @@ package com.stormmq.java.classfile.parser.javaClassFileParsers.constantPool;
 
 import com.stormmq.java.classfile.parser.javaClassFileParsers.constantPool.constants.Constant;
 import com.stormmq.java.classfile.parser.javaClassFileParsers.exceptions.InvalidJavaClassFileException;
+import com.stormmq.string.Formatting;
 import org.jetbrains.annotations.*;
 
 import static com.stormmq.java.classfile.parser.JavaClassFileReader.unsigned16BitIntegerToString;
-import static java.lang.String.format;
-import static java.util.Locale.ENGLISH;
 
 public final class ConstantPoolIndex
 {
 	private static final char Maximum = 65535;
-	@NotNull private static final String InvalidMaximum = format(ENGLISH, "constantPoolIndexUnsigned16BitValue can not be the maximum %1$s", unsigned16BitIntegerToString(Maximum));
+	@NotNull private static final String InvalidMaximum = Formatting.format("constantPoolIndexUnsigned16BitValue can not be the maximum %1$s", unsigned16BitIntegerToString(Maximum));
 	@NotNull private static final ConstantPoolIndex[] ConstantPoolIndices = constantPoolIndices();
 
 	@NotNull
@@ -54,7 +53,7 @@ public final class ConstantPoolIndex
 	{
 		if (referenceIndex == 0)
 		{
-			throw new InvalidJavaClassFileException(format(ENGLISH, "A %1$s can not point to zero", what));
+			throw new InvalidJavaClassFileException(Formatting.format("A %1$s can not point to zero", what));
 		}
 		if (referenceIndex == Maximum)
 		{
@@ -125,7 +124,7 @@ public final class ConstantPoolIndex
 		}
 		if (incremented == constantPoolCount)
 		{
-			throw new InvalidJavaClassFileException(format(ENGLISH, "Constant pool index is the final one but the constant is double width (ie constant pool index is '%1$s')", this));
+			throw new InvalidJavaClassFileException(Formatting.format("Constant pool index is the final one but the constant is double width (ie constant pool index is '%1$s')", this));
 		}
 		return new ConstantPoolIndex((char) incremented);
 	}
@@ -134,7 +133,7 @@ public final class ConstantPoolIndex
 	{
 		if (constants[constantPoolIndexUnsigned16BitValue] != null)
 		{
-			throw new IllegalStateException(format(ENGLISH, "Constant index '%1$s' is already in use", this));
+			throw new IllegalStateException(Formatting.format("Constant index '%1$s' is already in use", this));
 		}
 		constants[constantPoolIndexUnsigned16BitValue] = constant;
 	}

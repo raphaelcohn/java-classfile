@@ -23,10 +23,8 @@
 package com.stormmq.java.classfile.domain.descriptors;
 
 import com.stormmq.java.classfile.domain.InternalTypeName;
+import com.stormmq.string.Formatting;
 import org.jetbrains.annotations.*;
-
-import static java.lang.String.format;
-import static java.util.Locale.ENGLISH;
 
 public final class FieldDescriptor
 {
@@ -46,9 +44,10 @@ public final class FieldDescriptor
 	@NotNull
 	public String toString()
 	{
-		return format(ENGLISH, "%1$s(%2$s)", getClass().getSimpleName(), internalTypeName);
+		return Formatting.format("%1$s(%2$s)", getClass().getSimpleName(), internalTypeName);
 	}
 
+	@SuppressWarnings("RedundantIfStatement")
 	@Override
 	public boolean equals(@Nullable final Object o)
 	{

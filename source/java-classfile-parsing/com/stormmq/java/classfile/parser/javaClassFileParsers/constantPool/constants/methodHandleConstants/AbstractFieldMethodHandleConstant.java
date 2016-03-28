@@ -27,10 +27,8 @@ import com.stormmq.java.classfile.parser.javaClassFileParsers.constantPool.Const
 import com.stormmq.java.classfile.parser.javaClassFileParsers.constantPool.ConstantPoolIndex;
 import com.stormmq.java.classfile.parser.javaClassFileParsers.constantPool.constants.Constant;
 import com.stormmq.java.classfile.parser.javaClassFileParsers.constantPool.constants.referenceIndexConstants.doubles.FieldReferenceIndexConstant;
+import com.stormmq.string.Formatting;
 import org.jetbrains.annotations.*;
-
-import static java.lang.String.format;
-import static java.util.Locale.ENGLISH;
 
 public abstract class AbstractFieldMethodHandleConstant extends AbstractMethodHandleConstant
 {
@@ -40,7 +38,7 @@ public abstract class AbstractFieldMethodHandleConstant extends AbstractMethodHa
 	}
 
 	@Override
-	protected final void validate(@NotNull final Constant constant, @NotNull final ConstantPoolIndex referenceIndex) throws InvalidJavaClassFileException
+	protected final void validate(@NotNull final Constant constant) throws InvalidJavaClassFileException
 	{
 		validateFieldReference(constant);
 	}
@@ -51,6 +49,6 @@ public abstract class AbstractFieldMethodHandleConstant extends AbstractMethodHa
 		{
 			return;
 		}
-		throw new InvalidJavaClassFileException(format(ENGLISH, "The reference at constant pool index '%1$s' is not a CONSTANT_Fieldref_info but is instead a '%2$s'", referenceIndex, constant.getClass().getSimpleName()));
+		throw new InvalidJavaClassFileException(Formatting.format("The reference at constant pool index '%1$s' is not a CONSTANT_Fieldref_info but is instead a '%2$s'", referenceIndex, constant.getClass().getSimpleName()));
 	}
 }

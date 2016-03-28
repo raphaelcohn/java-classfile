@@ -30,6 +30,7 @@ import com.stormmq.java.parsing.utilities.Visibility;
 import org.jetbrains.annotations.NotNull;
 
 import static com.stormmq.java.classfile.domain.names.MethodName.StaticInstanceInitializer;
+import static com.stormmq.java.classfile.parser.javaClassFileParsers.accessFlags.AccessFlags.computeFlagsInverseMask;
 import static com.stormmq.java.classfile.parser.javaClassFileParsers.accessFlags.AccessFlags.hasFlagSet;
 import static com.stormmq.java.parsing.utilities.Completeness.*;
 import static com.stormmq.java.parsing.utilities.Visibility.*;
@@ -49,7 +50,7 @@ public final class MethodAccessFlags
 	private static final char ACC_STRICT = 0x0800; // Declared strictfp; floating-point mode is FP-strict.
 	private static final char ACC_SYNTHETIC = 0x1000; // Declared synthetic; not present in the source code.
 
-	public static final int MethodAccessFlagsValidityMask = ~(ACC_PUBLIC | ACC_PRIVATE | ACC_PROTECTED | ACC_STATIC | ACC_FINAL | ACC_SYNCHRONIZED | ACC_BRIDGE | ACC_VARARGS | ACC_NATIVE | ACC_ABSTRACT | ACC_STRICT | ACC_SYNTHETIC);
+	public static final int MethodAccessFlagsValidityMask = computeFlagsInverseMask(ACC_PUBLIC, ACC_PRIVATE, ACC_PROTECTED, ACC_STATIC, ACC_FINAL, ACC_SYNCHRONIZED, ACC_BRIDGE, ACC_VARARGS, ACC_NATIVE, ACC_ABSTRACT, ACC_STRICT, ACC_SYNTHETIC);
 
 	@NotNull
 	public static Visibility validateAccessFlags(final char accessFlags, final boolean isInterfaceOrAnnotation, @NotNull final JavaClassFileVersion javaClassFileVersion, @NotNull final MethodName methodName) throws InvalidJavaClassFileException

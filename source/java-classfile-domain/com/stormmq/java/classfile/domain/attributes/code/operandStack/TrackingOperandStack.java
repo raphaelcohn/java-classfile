@@ -93,6 +93,7 @@ public final class TrackingOperandStack implements OperandStack
 		return pop;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	@NotNull
 	public <N extends Number> NumericOperandStackItem<N> popNumeric(@NotNull final ComputationalCategory computationalCategory) throws UnderflowInvalidOperandStackException, MismatchedTypeInvalidOperandStackException
@@ -105,6 +106,7 @@ public final class TrackingOperandStack implements OperandStack
 			{
 				throw new MismatchedTypeInvalidOperandStackException(computationalCategory, LeftHandMessage);
 			}
+			return (NumericOperandStackItem<N>) popped;
 		}
 		throw new MismatchedTypeInvalidOperandStackException(computationalCategory, LeftHandMessage);
 	}

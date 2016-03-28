@@ -50,6 +50,7 @@ import com.stormmq.java.classfile.parser.javaClassFileParsers.functions.InvalidE
 import com.stormmq.java.parsing.utilities.*;
 import com.stormmq.java.parsing.utilities.names.typeNames.TypeName;
 import com.stormmq.java.parsing.utilities.names.typeNames.referenceTypeNames.KnownReferenceTypeName;
+import com.stormmq.string.Formatting;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -66,8 +67,6 @@ import static com.stormmq.java.classfile.parser.javaClassFileParsers.constantPoo
 import static com.stormmq.java.parsing.utilities.Completeness.Abstract;
 import static com.stormmq.java.parsing.utilities.Completeness.Final;
 import static com.stormmq.java.parsing.utilities.Visibility.Public;
-import static java.lang.String.format;
-import static java.util.Locale.ENGLISH;
 
 public final class ModernClassFileVersionedClassFileParser implements VersionedClassFileParser
 {
@@ -234,7 +233,7 @@ public final class ModernClassFileVersionedClassFileParser implements VersionedC
 	@NotNull
 	private Map<FieldUniqueness, FieldInformation> parseFields(@NotNull final ConstantPoolJavaClassFileReader constantPoolJavaClassFileReader, final boolean isInterfaceOrAnnotation, @NotNull final KnownReferenceTypeName thisClassTypeName) throws InvalidJavaClassFileException, JavaClassFileContainsDataTooLongToReadException
 	{
-		return constantPoolJavaClassFileReader.parseTableAsMapWith16BitLength((InvalidExceptionBiIntConsumer<Map<FieldUniqueness, FieldInformation>>) (fields, index) ->
+		return constantPoolJavaClassFileReader.parseTableAsMapWith16BitLength((fields, index) ->
 		{
 			final char fieldAccessFlags = constantPoolJavaClassFileReader.readAccessFlags(FieldAccessFlagsValidityMask);
 			final FieldName fieldName = constantPoolJavaClassFileReader.readFieldName("field name");
@@ -244,7 +243,7 @@ public final class ModernClassFileVersionedClassFileParser implements VersionedC
 			final FieldUniqueness fieldUniqueness = new FieldUniqueness(fieldName, fieldDescriptor);
 			if (fields.containsKey(fieldUniqueness))
 			{
-				throw new InvalidJavaClassFileException(format(ENGLISH, "The field '%1$s' in type '%2$s' is a duplicate", fieldUniqueness, thisClassTypeName));
+				throw new InvalidJavaClassFileException(Formatting.format("The field '%1$s' in type '%2$s' is a duplicate", fieldUniqueness, thisClassTypeName));
 			}
 
 			final boolean isSynthetic = isFieldSynthetic(fieldAccessFlags);
@@ -290,18 +289,18 @@ public final class ModernClassFileVersionedClassFileParser implements VersionedC
 				{
 					if (methodDescriptor.hasParameters())
 					{
-						throw new InvalidJavaClassFileException(format(ENGLISH, "The method '%1$s' in type '%2$s' is on an annotation but has parameters", methodUniqueness, thisClassTypeName));
+						throw new InvalidJavaClassFileException(Formatting.format("The method '%1$s' in type '%2$s' is on an annotation but has parameters", methodUniqueness, thisClassTypeName));
 					}
 
 					if (methodDescriptor.hasVoidReturnType())
 					{
-						throw new InvalidJavaClassFileException(format(ENGLISH, "The method '%1$s' in type '%2$s' is on an annotation but has a void return type", methodUniqueness, thisClassTypeName));
+						throw new InvalidJavaClassFileException(Formatting.format("The method '%1$s' in type '%2$s' is on an annotation but has a void return type", methodUniqueness, thisClassTypeName));
 					}
 				}
 
 				if (methods.containsKey(methodUniqueness))
 				{
-					throw new InvalidJavaClassFileException(format(ENGLISH, "The method '%1$s' in type '%2$s' is a duplicate", methodUniqueness, thisClassTypeName));
+					throw new InvalidJavaClassFileException(Formatting.format("The method '%1$s' in type '%2$s' is a duplicate", methodUniqueness, thisClassTypeName));
 				}
 
 				final Visibility methodVisibility = validateAccessFlags(methodAccessFlags, isInterfaceOrAnnotation, javaClassFileVersion, methodName);
@@ -354,24 +353,24 @@ public final class ModernClassFileVersionedClassFileParser implements VersionedC
 				{
 					if (isNative)
 					{
-						throw new InvalidJavaClassFileException(format(ENGLISH, "The method '%1$s' in type '%2$s' is native but has a Code attribute", methodUniqueness, thisClassTypeName));
+						throw new InvalidJavaClassFileException(Formatting.format("The method '%1$s' in type '%2$s' is native but has a Code attribute", methodUniqueness, thisClassTypeName));
 					}
 
 					if (methodCompleteness == Abstract)
 					{
-						throw new InvalidJavaClassFileException(format(ENGLISH, "The method '%1$s' in type '%2$s' is abstract but has a Code attribute", methodUniqueness, thisClassTypeName));
+						throw new InvalidJavaClassFileException(Formatting.format("The method '%1$s' in type '%2$s' is abstract but has a Code attribute", methodUniqueness, thisClassTypeName));
 					}
 
 					if (isAnnotation)
 					{
-						throw new InvalidJavaClassFileException(format(ENGLISH, "The method '%1$s' in type '%2$s' is on an annotation but has a Code attribute", methodUniqueness, thisClassTypeName));
+						throw new InvalidJavaClassFileException(Formatting.format("The method '%1$s' in type '%2$s' is on an annotation but has a Code attribute", methodUniqueness, thisClassTypeName));
 					}
 				}
 				else
 				{
 					if (methodCompleteness != Abstract && !isNative)
 					{
-						throw new InvalidJavaClassFileException(format(ENGLISH, "The method '%1$s' in type '%2$s' is '%3$s' and is not native but has a Code attribute", methodUniqueness, thisClassTypeName, methodCompleteness));
+						throw new InvalidJavaClassFileException(Formatting.format("The method '%1$s' in type '%2$s' is '%3$s' and is not native but has a Code attribute", methodUniqueness, thisClassTypeName, methodCompleteness));
 					}
 				}
 
@@ -382,17 +381,17 @@ public final class ModernClassFileVersionedClassFileParser implements VersionedC
 				{
 					if (methodDescriptor.hasParameters())
 					{
-						throw new InvalidJavaClassFileException(format(ENGLISH, "The static initializer method has parameters in type '%1$s'", thisClassTypeName));
+						throw new InvalidJavaClassFileException(Formatting.format("The static initializer method has parameters in type '%1$s'", thisClassTypeName));
 					}
 
 					if (methodDescriptor.hasReturnTypeOtherThanVoid())
 					{
-						throw new InvalidJavaClassFileException(format(ENGLISH, "The static initializer method has a return type other than void in type '%1$s'", thisClassTypeName));
+						throw new InvalidJavaClassFileException(Formatting.format("The static initializer method has a return type other than void in type '%1$s'", thisClassTypeName));
 					}
 
 					if (staticInitializerEncountered)
 					{
-						throw new InvalidJavaClassFileException(format(ENGLISH, "The static initializer method is duplicated in type '%1$s'", thisClassTypeName));
+						throw new InvalidJavaClassFileException(Formatting.format("The static initializer method is duplicated in type '%1$s'", thisClassTypeName));
 					}
 					staticInitializerEncountered = true;
 

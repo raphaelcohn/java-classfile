@@ -22,11 +22,23 @@
 
 package com.stormmq.java.classfile.parser.javaClassFileParsers.accessFlags;
 
+import org.jetbrains.annotations.NotNull;
+
 public final class AccessFlags
 {
 	public static boolean hasFlagSet(final char unsigned16BitInteger, final char flag)
 	{
 		return (unsigned16BitInteger & flag) == flag;
+	}
+
+	public static int computeFlagsInverseMask(@NotNull final char... flags)
+	{
+		int combination = 0;
+		for (final char flag : flags)
+		{
+			combination |= flag;
+		}
+		return ~combination;
 	}
 
 	private AccessFlags()

@@ -27,11 +27,10 @@ import com.stormmq.java.classfile.parser.javaClassFileParsers.constantPool.Const
 import com.stormmq.java.classfile.parser.javaClassFileParsers.constantPool.constants.Constant;
 import com.stormmq.java.classfile.parser.javaClassFileParsers.exceptions.InvalidJavaClassFileException;
 import com.stormmq.java.classfile.parser.javaClassFileParsers.constantPool.ConstantPoolJavaClassFileReader;
+import com.stormmq.string.Formatting;
 import org.jetbrains.annotations.NotNull;
 
 import static com.stormmq.java.classfile.parser.JavaClassFileReader.unsigned8BitIntegerToString;
-import static java.lang.String.format;
-import static java.util.Locale.ENGLISH;
 
 public final class UnsupportedConstantParser implements ConstantParser
 {
@@ -46,6 +45,6 @@ public final class UnsupportedConstantParser implements ConstantParser
 	@Override
 	public Constant parse(@NotNull final ConstantPoolIndex constantPoolIndex, @NotNull final ConstantPoolJavaClassFileReader javaClassFileReader, @NotNull final ConstantPool constantPool) throws InvalidJavaClassFileException
 	{
-		throw new InvalidJavaClassFileException(format(ENGLISH, "The tag '%1$s' at constant pool index '%2$s' is unsupported", unsigned8BitIntegerToString(tag), constantPoolIndex));
+		throw new InvalidJavaClassFileException(Formatting.format("The tag '%1$s' at constant pool index '%2$s' is unsupported", unsigned8BitIntegerToString(tag), constantPoolIndex));
 	}
 }

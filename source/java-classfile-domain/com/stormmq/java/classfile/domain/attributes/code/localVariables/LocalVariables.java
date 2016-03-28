@@ -36,8 +36,8 @@ public final class LocalVariables
 {
 	@NotNull private static final Set<LocalVariableAtProgramCounter> EmptyLocalVariablesAtProgramCounter = emptySet();
 
-	public final long codeLength;
-	public final char maximumLocals;
+	private final long codeLength;
+	private final char maximumLocals;
 	@NotNull private final List<DescriptorLocalVariable> descriptorLocalVariables;
 	@NotNull private final List<SignatureLocalVariable> signatureLocalVariables;
 

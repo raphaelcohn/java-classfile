@@ -22,6 +22,7 @@
 
 package com.stormmq.java.classfile.parser.javaClassFileParsers.accessFlags;
 
+import static com.stormmq.java.classfile.parser.javaClassFileParsers.accessFlags.AccessFlags.computeFlagsInverseMask;
 import static com.stormmq.java.classfile.parser.javaClassFileParsers.accessFlags.AccessFlags.hasFlagSet;
 
 public final class ParameterAccessFlags
@@ -30,7 +31,7 @@ public final class ParameterAccessFlags
 	private static final char ACC_SYNTHETIC = 0x1000; // Indicates that the formal parameter was not explicitly or implicitly declared in source code, according to the specification of the language in which the source code was written (JLS §13.1). (The formal parameter is an implementation artifact of the compiler which produced this class file.)
 	private static final char ACC_MANDATORY = 0x8000; // Indicates that the formal parameter was implicitly declared in source code, according to the specification of the language in which the source code was written (JLS §13.1). (The formal parameter is mandated by a language specification, so all compilers for the language must emit it.)
 
-	public static final int ParameterAccessFlagsValidityMask = ~(ACC_FINAL | ACC_SYNTHETIC | ACC_MANDATORY);
+	public static final int ParameterAccessFlagsValidityMask = computeFlagsInverseMask(ACC_FINAL, ACC_SYNTHETIC, ACC_MANDATORY);
 
 	public static boolean isParameterFinal(final char accessFlags)
 	{

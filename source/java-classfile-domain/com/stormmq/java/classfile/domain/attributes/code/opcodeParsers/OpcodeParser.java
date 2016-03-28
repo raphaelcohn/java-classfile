@@ -515,23 +515,9 @@ public interface OpcodeParser
 	{
 		if (opcode186IsPermittedBecauseThisIsForJava7OrLater)
 		{
-			if (isStrictFloatingPoint)
-			{
-				return Java7AndLaterOpcodeParsersStrictFloatingPoint;
-			}
-			else
-			{
-				return Java7AndLaterOpcodeParsers;
-			}
+			return isStrictFloatingPoint ? Java7AndLaterOpcodeParsersStrictFloatingPoint : Java7AndLaterOpcodeParsers;
 		}
-		if (isStrictFloatingPoint)
-		{
-			return Java6AndEarlierOpcodeParserStrictFloatingPoint;
-		}
-		else
-		{
-			return Java6AndEarlierOpcodeParser;
-		}
+		return isStrictFloatingPoint ? Java6AndEarlierOpcodeParserStrictFloatingPoint : Java6AndEarlierOpcodeParser;
 	}
 
 	@NotNull

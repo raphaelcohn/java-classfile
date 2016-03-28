@@ -22,11 +22,10 @@
 
 package com.stormmq.java.classfile.parser.javaClassFileParsers.exceptions;
 
+import com.stormmq.string.Formatting;
 import org.jetbrains.annotations.NotNull;
 
 import static java.lang.Integer.toHexString;
-import static java.lang.String.format;
-import static java.util.Locale.ENGLISH;
 
 public final class NotAJavaClassFileException extends Exception
 {
@@ -35,7 +34,7 @@ public final class NotAJavaClassFileException extends Exception
 
 	public NotAJavaClassFileException(final int magicNumber)
 	{
-		super(format(ENGLISH, "Java class file magic number should be '0x%1$s' but was '0x%2$s", JavaClassFileMagicNumberHexString, toHexString(magicNumber)));
+		super(Formatting.format("Java class file magic number should be '0x%1$s' but was '0x%2$s", JavaClassFileMagicNumberHexString, toHexString(magicNumber)));
 	}
 
 	public NotAJavaClassFileException(@NotNull final InvalidJavaClassFileException notEnoughBytes)

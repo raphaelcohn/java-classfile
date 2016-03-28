@@ -50,6 +50,7 @@ import com.stormmq.java.classfile.parser.javaClassFileParsers.functions.InvalidE
 import com.stormmq.java.parsing.utilities.Completeness;
 import com.stormmq.java.parsing.utilities.Visibility;
 import com.stormmq.java.parsing.utilities.names.typeNames.referenceTypeNames.KnownReferenceTypeName;
+import com.stormmq.string.Formatting;
 import org.jetbrains.annotations.*;
 
 import java.nio.ByteBuffer;
@@ -71,8 +72,6 @@ import static com.stormmq.java.classfile.parser.javaClassFileParsers.accessFlags
 import static com.stormmq.java.classfile.parser.javaClassFileParsers.accessFlags.ParameterAccessFlags.*;
 import static com.stormmq.java.classfile.parser.javaClassFileParsers.attributesParsers.Attributes.*;
 import static com.stormmq.java.classfile.parser.javaClassFileParsers.constantPool.FieldSignatureParser.parseFieldSignature;
-import static java.lang.String.format;
-import static java.util.Locale.ENGLISH;
 
 public final class AttributeParserMappings
 {
@@ -171,13 +170,9 @@ public final class AttributeParserMappings
 			return new InsideEnclosingMethod(enclosingTypeName, nameAndTypeReferenceIndexConstant.methodName(), nameAndTypeReferenceIndexConstant.methodDescriptor());
 		});
 
-		tableSetMapping(Exceptions, Java1_0_2, OnlyMethod, new TableSetParser<KnownReferenceTypeName>()
+		tableSetMapping(Exceptions, Java1_0_2, OnlyMethod, (javaClassFileReader, set) ->
 		{
-			@Override
-			public void parse(@NotNull final ConstantPoolJavaClassFileReader javaClassFileReader, @NotNull final Set<KnownReferenceTypeName> set) throws InvalidJavaClassFileException
-			{
-				set.add(javaClassFileReader.readKnownReferenceTypeName("method's exception"));
-			}
+			set.add(javaClassFileReader.readKnownReferenceTypeName("method's exception"));
 		});
 
 		tableArrayMapping(InnerClasses, Java1_1, OnlyType, InnerTypeInformation[]::new, (javaClassFileReader) ->
@@ -271,12 +266,12 @@ public final class AttributeParserMappings
 		{
 			if (notValidForThisVersion.contains(attributeName))
 			{
-				throw new InvalidJavaClassFileException(format(ENGLISH, "The attribute '%1$s' is not valid for this version of Java ('%2$s')", attributeName, javaClassFileVersion));
+				throw new InvalidJavaClassFileException(Formatting.format("The attribute '%1$s' is not valid for this version of Java ('%2$s')", attributeName, javaClassFileVersion));
 			}
 
 			if (notValidForThisLocation.contains(attributeName))
 			{
-				throw new InvalidJavaClassFileException(format(ENGLISH, "The attribute '%1$s' is not valid for this location ('%2$s')", attributeName, attributeLocation));
+				throw new InvalidJavaClassFileException(Formatting.format("The attribute '%1$s' is not valid for this location ('%2$s')", attributeName, attributeLocation));
 			}
 
 			attributeData = parseUnknownAttribute(attributeName, attributeLengthUnsigned32BitInteger, javaClassFileReader);
@@ -301,7 +296,7 @@ public final class AttributeParserMappings
 	@FunctionalInterface
 	private interface TableSetParser<T>
 	{
-		void parse(@NotNull final ConstantPoolJavaClassFileReader javaClassFileReader, @NotNull final Set<T> set) throws InvalidJavaClassFileException, JavaClassFileContainsDataTooLongToReadException;
+		void parse(@NotNull final ConstantPoolJavaClassFileReader javaClassFileReader, @NotNull final Set<T> set) throws InvalidJavaClassFileException;
 	}
 
 	@FunctionalInterface
@@ -347,14 +342,14 @@ public final class AttributeParserMappings
 		final long bytesActuallyRead = positionAfter - positionBefore;
 		if (bytesActuallyRead != attributeLengthUnsigned32BitInteger)
 		{
-			throw new InvalidJavaClassFileException(format(ENGLISH, "Did not read the correct number '%1$s' of bytes (actually read '%2$s') for attribute '%3$s'", attributeLengthUnsigned32BitInteger, bytesActuallyRead, attributeName));
+			throw new InvalidJavaClassFileException(Formatting.format("Did not read the correct number '%1$s' of bytes (actually read '%2$s') for attribute '%3$s'", attributeLengthUnsigned32BitInteger, bytesActuallyRead, attributeName));
 		}
 	}
 
 	@NotNull
 	private static UnknownAttributeData parseUnknownAttribute(@NotNull final String attributeName, final long attributeLengthUnsigned32BitInteger, @NotNull final ConstantPoolJavaClassFileReader javaClassFileReader) throws JavaClassFileContainsDataTooLongToReadException, InvalidJavaClassFileException
 	{
-		final String what = format(ENGLISH, "unknown attribute '%1$s' of length '%2$s'", attributeName, attributeLengthUnsigned32BitInteger);
+		final String what = Formatting.format("unknown attribute '%1$s' of length '%2$s'", attributeName, attributeLengthUnsigned32BitInteger);
 		return new UnknownAttributeData(javaClassFileReader.readBytes(what, attributeLengthUnsigned32BitInteger));
 	}
 
@@ -411,7 +406,7 @@ public final class AttributeParserMappings
 				{
 					function = constantPoolJavaClassFileReader ->
 					{
-						throw new InvalidJavaClassFileException(format(ENGLISH, "Frame type '%1$s' is undefined", frameType));
+						throw new InvalidJavaClassFileException(Formatting.format("Frame type '%1$s' is undefined", frameType));
 					};
 				}
 				else if (frameType == 247)
@@ -534,7 +529,7 @@ public final class AttributeParserMappings
 					return new UninitializedVerificationType(javaClassFileReader.readBigEndianUnsigned16BitInteger("offset"));
 
 				default:
-					throw new InvalidJavaClassFileException(format(ENGLISH, "Unknown stack map frame tag '%1$s'", verificationTag));
+					throw new InvalidJavaClassFileException(Formatting.format("Unknown stack map frame tag '%1$s'", verificationTag));
 			}
 		}
 	}

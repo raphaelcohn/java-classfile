@@ -27,6 +27,7 @@ import com.stormmq.java.classfile.parser.javaClassFileParsers.exceptions.Invalid
 import com.stormmq.java.classfile.parser.javaClassFileParsers.exceptions.JavaClassFileContainsDataTooLongToReadException;
 import com.stormmq.java.classfile.parser.javaClassFileParsers.constantPool.ConstantPoolJavaClassFileReader;
 import com.stormmq.java.classfile.parser.javaClassFileParsers.functions.InvalidExceptionBiIntConsumer;
+import com.stormmq.string.Formatting;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -35,10 +36,8 @@ import java.util.*;
 import static com.stormmq.java.classfile.parser.javaClassFileParsers.attributesParsers.Attributes.LineNumberTable;
 import static com.stormmq.java.classfile.parser.javaClassFileParsers.attributesParsers.Attributes.LocalVariableTable;
 import static com.stormmq.java.classfile.parser.javaClassFileParsers.attributesParsers.Attributes.LocalVariableTypeTable;
-import static java.lang.String.format;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyMap;
-import static java.util.Locale.ENGLISH;
 
 public final class AttributesParser
 {
@@ -86,7 +85,7 @@ public final class AttributesParser
 					final Object attributeDataToStore;
 					if (AttributesWhichCanOccurMoreThanOnce.contains(attributeName))
 					{
-						final List<Object> canOccurMoreThanOnceList = alreadyEncountered == null ? new ArrayList<>(4) : (List<Object>) alreadyEncountered;
+						@SuppressWarnings("unchecked") final List<Object> canOccurMoreThanOnceList = alreadyEncountered == null ? new ArrayList<>(4) : (List<Object>) alreadyEncountered;
 						canOccurMoreThanOnceList.add(attributeData);
 						attributeDataToStore = canOccurMoreThanOnceList;
 					}
@@ -94,7 +93,7 @@ public final class AttributesParser
 					{
 						if (alreadyEncountered != null)
 						{
-							throw new InvalidJavaClassFileException(format(ENGLISH, "The attribute '%1$s' is only allowed to occur once", attributeName));
+							throw new InvalidJavaClassFileException(Formatting.format("The attribute '%1$s' is only allowed to occur once", attributeName));
 						}
 						attributeDataToStore = attributeData;
 					}

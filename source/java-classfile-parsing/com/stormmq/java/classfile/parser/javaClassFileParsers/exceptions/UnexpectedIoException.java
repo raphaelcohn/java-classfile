@@ -22,22 +22,20 @@
 
 package com.stormmq.java.classfile.parser.javaClassFileParsers.exceptions;
 
+import com.stormmq.string.Formatting;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
-
-import static java.lang.String.format;
-import static java.util.Locale.ENGLISH;
 
 public final class UnexpectedIoException extends RuntimeException
 {
 	public UnexpectedIoException(@NotNull final String what)
 	{
-		super(format(ENGLISH, "Could not read enough bytes for '%1$s'", what));
+		super(Formatting.format("Could not read enough bytes for '%1$s'", what));
 	}
 
 	public UnexpectedIoException(@NotNull final String what, @NotNull final IOException cause)
 	{
-		super(format(ENGLISH, "Could not read enough bytes for '%1$s'", what), cause);
+		super(Formatting.format("Could not read enough bytes for '%1$s'", what), cause);
 	}
 }

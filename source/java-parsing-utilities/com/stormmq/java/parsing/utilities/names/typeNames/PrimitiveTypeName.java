@@ -39,9 +39,9 @@ public enum PrimitiveTypeName implements TypeName
 	@NotNull
 	private final String name;
 
-	private PrimitiveTypeName()
+	PrimitiveTypeName()
 	{
-		this.name = name().substring(1);
+		name = name().substring(1);
 	}
 
 	@Override

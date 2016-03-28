@@ -36,7 +36,7 @@ public final class InvokeVirtualMethodHandleConstant extends AbstractInvokeMetho
 	}
 
 	@Override
-	protected void validate(@NotNull final Constant constant, @NotNull final ConstantPoolIndex referenceIndex) throws InvalidJavaClassFileException
+	protected void validate(@NotNull final Constant constant) throws InvalidJavaClassFileException
 	{
 		validateMethodReference(constant);
 		validateMethodReferenceIsNotAnInstanceOrStaticInitializer(constant);

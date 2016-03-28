@@ -34,6 +34,7 @@ import com.stormmq.java.classfile.domain.attributes.code.opcodeParsers.OpcodePar
 import com.stormmq.java.classfile.domain.attributes.code.operandStack.OperandStack;
 import com.stormmq.java.classfile.domain.attributes.code.operandStack.TrackingOperandStack;
 import com.stormmq.java.classfile.domain.attributes.code.stackMapFrames.StackMapFrame;
+import com.stormmq.string.Formatting;
 import org.jetbrains.annotations.NotNull;
 
 import java.nio.ByteBuffer;
@@ -41,9 +42,7 @@ import java.util.Map;
 import java.util.Set;
 
 import static com.stormmq.java.classfile.domain.attributes.code.opcodeParsers.OpcodeParser.chooseOpcodeParsers;
-import static java.lang.String.format;
 import static java.util.Collections.emptySet;
-import static java.util.Locale.ENGLISH;
 
 public final class Code
 {
@@ -69,12 +68,12 @@ public final class Code
 		this.runtimeConstantPool = runtimeConstantPool;
 		if (codeLength <= 0L)
 		{
-			throw new IllegalArgumentException(format(ENGLISH, "code length can not be zero or less bytes (ie not '%1$s')", codeLength));
+			throw new IllegalArgumentException(Formatting.format("code length can not be zero or less bytes (ie not '%1$s')", codeLength));
 		}
 
 		if (codeLength > MaximumCodeLength)
 		{
-			throw new IllegalArgumentException(format(ENGLISH, "code length can not be more than '%1$s' bytes (ie not '%2$s')", MaximumCodeLength, codeLength));
+			throw new IllegalArgumentException(Formatting.format("code length can not be more than '%1$s' bytes (ie not '%2$s')", MaximumCodeLength, codeLength));
 		}
 
 		this.maximumDepthOfTheOperandStackOfTheMethod = maximumDepthOfTheOperandStackOfTheMethod;

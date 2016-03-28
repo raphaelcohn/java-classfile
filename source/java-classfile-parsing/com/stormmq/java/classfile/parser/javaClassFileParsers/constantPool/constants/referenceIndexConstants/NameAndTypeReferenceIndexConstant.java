@@ -31,13 +31,12 @@ import com.stormmq.java.classfile.parser.javaClassFileParsers.constantPool.Const
 import com.stormmq.java.classfile.parser.javaClassFileParsers.constantPool.ConstantPoolIndex;
 import com.stormmq.java.classfile.parser.javaClassFileParsers.constantPool.constants.AbstractSingleWidthConstant;
 import com.stormmq.java.parsing.utilities.InvalidJavaIdentifierException;
+import com.stormmq.string.Formatting;
 import org.jetbrains.annotations.*;
 
 import static com.stormmq.java.classfile.parser.javaClassFileParsers.constantPool.FieldDescriptorParser.parseFieldDescriptor;
 import static com.stormmq.java.classfile.parser.javaClassFileParsers.constantPool.MethodDescriptorParser.parseMethodDescriptor;
 import static com.stormmq.java.parsing.utilities.ReservedIdentifiers.*;
-import static java.lang.String.format;
-import static java.util.Locale.ENGLISH;
 
 public final class NameAndTypeReferenceIndexConstant extends AbstractSingleWidthConstant
 {
@@ -87,9 +86,10 @@ public final class NameAndTypeReferenceIndexConstant extends AbstractSingleWidth
 	@NotNull
 	public String toString()
 	{
-		return format(ENGLISH, "%1$s(%2$s, %3$s)", getClass().getSimpleName(), modifiedUtf8StringReferenceIndexForName, modifiedUtf8StringReferenceIndexForDescriptor);
+		return Formatting.format("%1$s(%2$s, %3$s)", getClass().getSimpleName(), modifiedUtf8StringReferenceIndexForName, modifiedUtf8StringReferenceIndexForDescriptor);
 	}
 
+	@SuppressWarnings("RedundantIfStatement")
 	@Override
 	public boolean equals(@Nullable final Object o)
 	{

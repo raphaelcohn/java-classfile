@@ -22,6 +22,7 @@
 
 package com.stormmq.java.parsing.utilities;
 
+import com.stormmq.string.Formatting;
 import com.stormmq.string.InvalidUtf16StringException;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
@@ -33,8 +34,6 @@ import static com.stormmq.java.parsing.utilities.StringConstants.*;
 import static com.stormmq.string.StringUtilities.iterateOverStringCodePoints;
 import static java.lang.Character.isJavaIdentifierPart;
 import static java.lang.Character.isJavaIdentifierStart;
-import static java.lang.String.format;
-import static java.util.Locale.ENGLISH;
 
 public final class ReservedIdentifiers
 {
@@ -125,7 +124,10 @@ public final class ReservedIdentifiers
 					case EndOfTypeDescriptorCharacter:
 					case ArrayTypeCodeCharacter:
 					case InternalTypeNameSeparator:
-						throw new InvalidUtf16StringException(format(ENGLISH, "%1$s '%2$s' contains the code point '%3$s' which is invalid", unqualifiedNameDescription, unqualifiedName, codePoint));
+						throw new InvalidUtf16StringException(Formatting.format("%1$s '%2$s' contains the code point '%3$s' which is invalid", unqualifiedNameDescription, unqualifiedName, codePoint));
+
+					default:
+						break;
 				}
 			});
 		}
@@ -170,14 +172,14 @@ public final class ReservedIdentifiers
 				{
 					if (!isJavaIdentifierStart(codePoint))
 					{
-						throw new InvalidJavaIdentifierException(format(ENGLISH, "%1$s '%2$s' starts with an illegal code point '0x%3$s' at index '%4$s'", javaIdentifierDescription, javaIdentifier, Integer.toHexString(codePoint), 0));
+						throw new InvalidJavaIdentifierException(Formatting.format("%1$s '%2$s' starts with an illegal code point '0x%3$s' at index '%4$s'", javaIdentifierDescription, javaIdentifier, Integer.toHexString(codePoint), 0));
 					}
 				}
 				else
 				{
 					if (!isJavaIdentifierPart(codePoint))
 					{
-						throw new InvalidJavaIdentifierException(format(ENGLISH, "%1$s '%2$s' contains an illegal code point '0x%3$s' at index '%4$s'", javaIdentifierDescription, javaIdentifier, Integer.toHexString(codePoint), index));
+						throw new InvalidJavaIdentifierException(Formatting.format("%1$s '%2$s' contains an illegal code point '0x%3$s' at index '%4$s'", javaIdentifierDescription, javaIdentifier, Integer.toHexString(codePoint), index));
 					}
 				}
 			});
@@ -218,7 +220,7 @@ public final class ReservedIdentifiers
 	{
 		if (ReservedIdentifiers.contains(javaIdentifier))
 		{
-			throw new IllegalArgumentException(format(ENGLISH, "%1$s is not allowed to be '%2$s'", whatIsIt, javaIdentifier));
+			throw new IllegalArgumentException(Formatting.format("%1$s is not allowed to be '%2$s'", whatIsIt, javaIdentifier));
 		}
 	}
 
