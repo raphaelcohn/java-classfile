@@ -28,8 +28,8 @@ import org.jetbrains.annotations.NotNull;
 
 public final class EnumConstantAnnotationDefaultValue
 {
-	@NotNull public final KnownReferenceTypeName enumTypeName;
-	@NotNull public final FieldName enumConstantName;
+	@NotNull private final KnownReferenceTypeName enumTypeName;
+	@NotNull private final FieldName enumConstantName;
 
 	public EnumConstantAnnotationDefaultValue(@NotNull final KnownReferenceTypeName enumTypeName, @NotNull final FieldName enumConstantName)
 	{

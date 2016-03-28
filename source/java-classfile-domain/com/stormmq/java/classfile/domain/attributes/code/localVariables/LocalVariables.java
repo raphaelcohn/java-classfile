@@ -52,27 +52,21 @@ public final class LocalVariables
 	@NotNull
 	public Set<LocalVariableAtProgramCounter> getForProgramCounter(final char programCounter, final char opcodeLength)
 	{
-		for (final DescriptorLocalVariable descriptorLocalVariable : descriptorLocalVariables)
+		descriptorLocalVariables.stream().filter(descriptorLocalVariable -> descriptorLocalVariable.startProgramCounter == programCounter).forEach(descriptorLocalVariable ->
 		{
-			if (descriptorLocalVariable.startProgramCounter == programCounter)
-			{
-				final FieldName descriptorLocalVariableName = descriptorLocalVariable.localVariableName;
-				final char descriptorLength = descriptorLocalVariable.length;
-				final char descriptorLocalVariableIndex = descriptorLocalVariable.localVariableIndex;
-				final FieldDescriptor localVariableDescriptor = descriptorLocalVariable.localVariableDescriptor;
-			}
-		}
+			final FieldName descriptorLocalVariableName = descriptorLocalVariable.localVariableName;
+			final char descriptorLength = descriptorLocalVariable.length;
+			final char descriptorLocalVariableIndex = descriptorLocalVariable.localVariableIndex;
+			final FieldDescriptor localVariableDescriptor = descriptorLocalVariable.localVariableDescriptor;
+		});
 
-		for (final SignatureLocalVariable signatureLocalVariable : signatureLocalVariables)
+		signatureLocalVariables.stream().filter(signatureLocalVariable -> signatureLocalVariable.startProgramCounter == programCounter).forEach(signatureLocalVariable ->
 		{
-			if (signatureLocalVariable.startProgramCounter == programCounter)
-			{
-				final FieldName descriptorLocalVariableName = signatureLocalVariable.localVariableName;
-				final char descriptorLength = signatureLocalVariable.length;
-				final char descriptorLocalVariableIndex = signatureLocalVariable.localVariableIndex;
-				final Signature localVariableSignature = signatureLocalVariable.localVariableSignature;
-			}
-		}
+			final FieldName descriptorLocalVariableName = signatureLocalVariable.localVariableName;
+			final char descriptorLength = signatureLocalVariable.length;
+			final char descriptorLocalVariableIndex = signatureLocalVariable.localVariableIndex;
+			final Signature localVariableSignature = signatureLocalVariable.localVariableSignature;
+		});
 
 		return EmptyLocalVariablesAtProgramCounter;
 	}

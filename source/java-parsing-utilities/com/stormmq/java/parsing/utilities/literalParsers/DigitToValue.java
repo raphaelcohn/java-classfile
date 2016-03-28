@@ -219,6 +219,7 @@ public enum DigitToValue
 		return (decimalValue << shift) | input;
 	}
 
+	@SuppressWarnings("WeakerAccess")
 	protected long shiftWithValue(final int length, final long input, final long decimalValue, final int digitIndex)
 	{
 		final long shift = ((long) length - 1 - digitIndex) * scalar;

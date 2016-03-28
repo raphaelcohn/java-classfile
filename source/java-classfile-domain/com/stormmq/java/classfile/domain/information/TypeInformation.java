@@ -42,28 +42,28 @@ import java.util.Set;
 
 public final class TypeInformation
 {
-	@NotNull private final TypeKind typeKind;
-	@NotNull private final Visibility visibility;
-	@NotNull private final Completeness completeness;
-	private final boolean isSynthetic;
-	private final boolean hasLegacySuperFlagSetting;
-	@NotNull private final KnownReferenceTypeName thisClassTypeName;
-	@Nullable private final KnownReferenceTypeName superClassTypeName;
-	@NotNull private final Set<KnownReferenceTypeName> interfaces;
-	@NotNull private final Map<FieldUniqueness, FieldInformation> fields;
-	@NotNull private final Map<MethodUniqueness, MethodInformation> methods;
-	private final boolean isSyntheticAttribute;
-	private final boolean isDeprecated;
-	@Nullable private final Signature signature;
-	@NotNull private final AnnotationValue[] visibleAnnotations;
-	@NotNull private final AnnotationValue[] invisibleAnnotations;
-	@NotNull private final TypeAnnotation[] typeAnnotations;
-	@NotNull private final TypeAnnotation[] visibleTypeAnnotations;
-	@NotNull private final UnknownAttributes unknownAttributes;
-	@Nullable private final String sourceFile;
-	@Nullable private final EnclosingMethod enclosingMethod;
-	@Nullable private final String sourceDebugExtension;
-	@NotNull private final BootstrapMethod[] bootstrapMethods;
+	@SuppressWarnings("WeakerAccess") @NotNull public final TypeKind typeKind;
+	@NotNull public final Visibility visibility;
+	@SuppressWarnings("WeakerAccess") @NotNull public final Completeness completeness;
+	@SuppressWarnings("WeakerAccess") public final boolean isSynthetic;
+	@SuppressWarnings("WeakerAccess") public final boolean hasLegacySuperFlagSetting;
+	@SuppressWarnings("WeakerAccess") @NotNull public final KnownReferenceTypeName thisClassTypeName;
+	@SuppressWarnings("WeakerAccess") @Nullable public final KnownReferenceTypeName superClassTypeName;
+	@SuppressWarnings("WeakerAccess") @NotNull public final Set<KnownReferenceTypeName> interfaces;
+	@SuppressWarnings("WeakerAccess") @NotNull public final Map<FieldUniqueness, FieldInformation> fields;
+	@SuppressWarnings("WeakerAccess") @NotNull public final Map<MethodUniqueness, MethodInformation> methods;
+	@SuppressWarnings("WeakerAccess") public final boolean isSyntheticAttribute;
+	@SuppressWarnings("WeakerAccess") public final boolean isDeprecated;
+	@Nullable public final Signature signature;
+	@SuppressWarnings("WeakerAccess") @NotNull public final AnnotationValue[] visibleAnnotations;
+	@SuppressWarnings("WeakerAccess") @NotNull public final AnnotationValue[] invisibleAnnotations;
+	@SuppressWarnings("WeakerAccess") @NotNull public final TypeAnnotation[] typeAnnotations;
+	@SuppressWarnings("WeakerAccess") @NotNull public final TypeAnnotation[] visibleTypeAnnotations;
+	@SuppressWarnings("WeakerAccess") @NotNull public final UnknownAttributes unknownAttributes;
+	@SuppressWarnings("WeakerAccess") @Nullable public final String sourceFile;
+	@SuppressWarnings("WeakerAccess") @Nullable public final EnclosingMethod enclosingMethod;
+	@SuppressWarnings("WeakerAccess") @Nullable public final String sourceDebugExtension;
+	@SuppressWarnings("WeakerAccess") @NotNull public final BootstrapMethod[] bootstrapMethods;
 
 	public TypeInformation(@NotNull final TypeKind typeKind, @NotNull final Visibility visibility, @NotNull final Completeness completeness, final boolean isSynthetic, final boolean hasLegacySuperFlagSetting, @NotNull final KnownReferenceTypeName thisClassTypeName, @Nullable final KnownReferenceTypeName superClassTypeName, @NotNull final Set<KnownReferenceTypeName> interfaces, @NotNull final Map<FieldUniqueness, FieldInformation> fields, @NotNull final Map<MethodUniqueness, MethodInformation> methods, final boolean isSyntheticAttribute, final boolean isDeprecated, @Nullable final Signature signature, @NotNull final AnnotationValue[] visibleAnnotations, @NotNull final AnnotationValue[] invisibleAnnotations, @NotNull final TypeAnnotation[] typeAnnotations, @NotNull final TypeAnnotation[] visibleTypeAnnotations, @NotNull final UnknownAttributes unknownAttributes, @Nullable final String sourceFile, @Nullable final EnclosingMethod enclosingMethod, @Nullable final String sourceDebugExtension, @NotNull final BootstrapMethod[] bootstrapMethods)
 	{

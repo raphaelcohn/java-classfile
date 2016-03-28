@@ -33,7 +33,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Set;
 
-import static com.stormmq.java.classfile.domain.attributes.code.localVariables.LocalVariableAtProgramCounter.forInformationOnlyUntilWeWorkOutHowToProperlyInterpretThisData;
+import static com.stormmq.java.classfile.domain.attributes.code.localVariables.ForInformationOnlyUntilWeWorkOutHowToProperlyInterpretThisData.forInformationOnlyUntilWeWorkOutHowToProperlyInterpretThisData;
 
 public final class NarrowFixedLoadReferenceVariableOpcodeParser extends AbstractOneOpcodeParser
 {

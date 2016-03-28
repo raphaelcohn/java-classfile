@@ -22,6 +22,7 @@
 
 package com.stormmq.java.parsing.utilities.names.typeNames.referenceTypeNames;
 
+import com.stormmq.java.parsing.utilities.StringConstants;
 import com.stormmq.java.parsing.utilities.names.parentNames.AbstractParentName;
 import org.jetbrains.annotations.*;
 
@@ -134,7 +135,7 @@ public final class KnownReferenceTypeName extends AbstractParentName implements 
 	@NotNull
 	private static IllegalStateException newShouldNotBePossible(@NotNull final IOException e)
 	{
-		return new IllegalStateException("Should not be possible", e);
+		return new IllegalStateException(Should_not_be_possible, e);
 	}
 
 

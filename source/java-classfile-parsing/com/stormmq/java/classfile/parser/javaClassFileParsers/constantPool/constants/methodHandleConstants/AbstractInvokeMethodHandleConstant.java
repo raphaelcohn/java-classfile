@@ -61,12 +61,12 @@ public abstract class AbstractInvokeMethodHandleConstant extends AbstractMethodH
 
 		if (methodName.equals(InstanceInitializer))
 		{
-			throw new InvalidJavaClassFileException(Formatting.format("A method handle that is not of kind InvokeInterface may not reference '%1$s' an instance initializer of '<init>'", referenceIndex));
+			throw new InvalidJavaClassFileException(Formatting.format("A class method handle that is not of kind InvokeInterface may not reference '%1$s' an instance initializer of '<init>'", referenceIndex));
 		}
 
 		if (methodName.equals(StaticInstanceInitializer))
 		{
-			throw new InvalidJavaClassFileException(Formatting.format("A method handle that is not of kind InvokeInterface may not reference '%1$s' a static initializer of '<clinit>'", referenceIndex));
+			throw new InvalidJavaClassFileException(Formatting.format("A class method handle that is not of kind InvokeInterface may not reference '%1$s' a static initializer of '<clinit>'", referenceIndex));
 		}
 	}
 
@@ -79,12 +79,12 @@ public abstract class AbstractInvokeMethodHandleConstant extends AbstractMethodH
 
 		if (methodName.equals(InstanceInitializer))
 		{
-			throw new InvalidJavaClassFileException(Formatting.format("A method handle that is not of kind InvokeInterface may not reference '%1$s' an instance initializer of '<init>'", referenceIndex));
+			throw new InvalidJavaClassFileException(Formatting.format("An interface method handle that is not of kind InvokeInterface may not reference '%1$s' an instance initializer of '<init>'", referenceIndex));
 		}
 
 		if (methodName.equals(StaticInstanceInitializer))
 		{
-			throw new InvalidJavaClassFileException(Formatting.format("A method handle that is not of kind InvokeInterface may not reference '%1$s' a static initializer of '<clinit>'", referenceIndex));
+			throw new InvalidJavaClassFileException(Formatting.format("An interface method handle that is not of kind InvokeInterface may not reference '%1$s' a static initializer of '<clinit>'", referenceIndex));
 		}
 	}
 }

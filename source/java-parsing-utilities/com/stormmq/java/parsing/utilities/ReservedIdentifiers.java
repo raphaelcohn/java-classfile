@@ -47,6 +47,9 @@ public final class ReservedIdentifiers
 	@NotNull @NonNls public static final String _byte = "byte";
 	@NotNull @NonNls public static final String _char = "char";
 	@NotNull @NonNls public static final String _short = "short";
+	@NotNull @NonNls public static final String _true = "true";
+	@NotNull @NonNls public static final String _false = "false";
+	@NotNull @NonNls public static final String _class = StringConstants._class;
 
 	@NotNull
 	private static Set<String> reservedIdentifiers()
@@ -143,8 +146,7 @@ public final class ReservedIdentifiers
 		return unqualifiedName;
 	}
 
-	@NotNull @NonNls
-	public static String validateIsJavaIdentifier(@NotNull @NonNls final String javaIdentifier, final boolean canBeInitializerMethodName, final boolean isClassLikeIdentifier) throws InvalidJavaIdentifierException
+	public static void validateIsJavaIdentifier(@NotNull @NonNls final String javaIdentifier, final boolean canBeInitializerMethodName, final boolean isClassLikeIdentifier) throws InvalidJavaIdentifierException
 	{
 		if (canBeInitializerMethodName && isClassLikeIdentifier)
 		{
@@ -155,12 +157,12 @@ public final class ReservedIdentifiers
 
 		if (isValidInitializerMethodName(javaIdentifier, canBeInitializerMethodName, javaIdentifierDescription))
 		{
-			return javaIdentifier;
+			return;
 		}
 
 		if (isClassLikeIdentifier && javaIdentifier.equals("package-info"))
 		{
-			return javaIdentifier;
+			return;
 		}
 
 		if (isClassLikeIdentifier)
@@ -192,7 +194,6 @@ public final class ReservedIdentifiers
 		{
 			throw newInvalidUtf16String(e, javaIdentifierDescription);
 		}
-		return javaIdentifier;
 	}
 
 	private static void validateIsNotEmpty(@NotNull @NonNls final String javaIdentifier, @NonNls @NotNull final String whatIsIt)

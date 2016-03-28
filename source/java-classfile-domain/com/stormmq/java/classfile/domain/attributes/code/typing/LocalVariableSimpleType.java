@@ -27,16 +27,16 @@ import org.jetbrains.annotations.NotNull;
 
 public enum LocalVariableSimpleType
 {
-	_boolean(ComputationalCategory._int, 1),
-	_byte(ComputationalCategory._int, 1),
-	_char(ComputationalCategory._int, 1),
-	_short(ComputationalCategory._int, 1),
+	@SuppressWarnings("unused")_boolean(ComputationalCategory._int, 1),
+	@SuppressWarnings("unused")_byte(ComputationalCategory._int, 1),
+	@SuppressWarnings("unused")_char(ComputationalCategory._int, 1),
+	@SuppressWarnings("unused")_short(ComputationalCategory._int, 1),
 	_int(ComputationalCategory._int, 1),
-	_float(ComputationalCategory._float, 1),
+	@SuppressWarnings("unused")_float(ComputationalCategory._float, 1),
 	reference(ComputationalCategory.reference, 1),
-	returnAddress(ComputationalCategory.returnAddress, 1),
-	_long(ComputationalCategory._long, 2),
-	_double(ComputationalCategory._double, 2),
+	@SuppressWarnings("unused")returnAddress(ComputationalCategory.returnAddress, 1),
+	@SuppressWarnings("unused")_long(ComputationalCategory._long, 2),
+	@SuppressWarnings("unused")_double(ComputationalCategory._double, 2),
 	;
 
 	@NotNull private final ComputationalCategory computationalCategory;
@@ -55,7 +55,7 @@ public enum LocalVariableSimpleType
 
 		if (name.isEmpty())
 		{
-			throw new IllegalStateException("name() should not be empty");
+			throw new IllegalStateException("LocalVariableSimpleType name() should not be empty");
 		}
 
 		final String actualName = name.charAt(0) == '_' ? name.substring(1) : name;

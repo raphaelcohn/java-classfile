@@ -115,9 +115,9 @@ public enum TargetType
 	;
 
 	private final short targetTypeTag;
-	@NotNull public final TargetInfoItem targetInfoItem;
-	@NotNull public final AttributeLocation attributeLocation;
-	public final boolean isInExpressions;
+	@NotNull private final TargetInfoItem targetInfoItem;
+	@NotNull private final AttributeLocation attributeLocation;
+	private final boolean isInExpressions;
 
 	TargetType(final short targetTypeTag, @NotNull @NonNls final String kindOfTarget, @NotNull final TargetInfoItem targetInfoItem, @NotNull final AttributeLocation attributeLocation)
 	{

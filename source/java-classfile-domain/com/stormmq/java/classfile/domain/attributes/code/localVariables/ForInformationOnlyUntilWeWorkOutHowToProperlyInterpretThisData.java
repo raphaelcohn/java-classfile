@@ -22,10 +22,30 @@
 
 package com.stormmq.java.classfile.domain.attributes.code.localVariables;
 
-import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.*;
 
 import java.util.Set;
 
-public interface LocalVariableAtProgramCounter
+public final class ForInformationOnlyUntilWeWorkOutHowToProperlyInterpretThisData implements LocalVariableAtProgramCounter
 {
+	@NotNull
+	public static LocalVariableAtProgramCounter forInformationOnlyUntilWeWorkOutHowToProperlyInterpretThisData(@NotNull final Set<LocalVariableAtProgramCounter> localVariablesAtProgramCounter, final char localVariableIndex)
+	{
+		return new ForInformationOnlyUntilWeWorkOutHowToProperlyInterpretThisData(localVariablesAtProgramCounter, localVariableIndex);
+	}
+
+	@NotNull private final Set<LocalVariableAtProgramCounter> localVariablesAtProgramCounter;
+	private final char localVariableIndex;
+
+	private ForInformationOnlyUntilWeWorkOutHowToProperlyInterpretThisData(@NotNull final Set<LocalVariableAtProgramCounter> localVariablesAtProgramCounter, final char localVariableIndex)
+	{
+		this.localVariablesAtProgramCounter = localVariablesAtProgramCounter;
+		this.localVariableIndex = localVariableIndex;
+	}
+
+	@Override
+	public String toString()
+	{
+		return "ForInformationOnlyUntilWeWorkOutHowToProperlyInterpretThisData{" + "localVariablesAtProgramCounter=" + localVariablesAtProgramCounter + ", localVariableIndex=" + localVariableIndex + '}';
+	}
 }

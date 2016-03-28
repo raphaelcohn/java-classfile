@@ -41,6 +41,7 @@ public enum Visibility
 	},
 	;
 
+	@SuppressWarnings("WeakerAccess")
 	public void validateIsNotPrivateIfIsAbstract(final boolean isAbstract)
 	{
 	}

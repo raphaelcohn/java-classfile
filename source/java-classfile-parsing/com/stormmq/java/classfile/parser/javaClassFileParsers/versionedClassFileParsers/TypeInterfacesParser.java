@@ -47,7 +47,7 @@ public final class TypeInterfacesParser
 	@NotNull
 	private static Map<KnownReferenceTypeName, TypeKind> initialiseMismatchedThisClassTypeNames()
 	{
-		final HashMap<KnownReferenceTypeName, TypeKind> mismatchedThisClassTypeNames = new HashMap<>(3);
+		final Map<KnownReferenceTypeName, TypeKind> mismatchedThisClassTypeNames = new HashMap<>(3);
 
 		mismatchedThisClassTypeNames.put(JavaLangObject, Class);
 		mismatchedThisClassTypeNames.put(JavaLangEnum, Class);

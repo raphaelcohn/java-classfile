@@ -221,6 +221,7 @@ public final class ConstantPool implements RuntimeConstantPool
 		return (LongConstant) constant;
 	}
 
+	@SuppressWarnings("TypeMayBeWeakened")
 	@NotNull
 	private DoubleConstant validateReferenceIndexIsDouble(@NotNull final ConstantPoolIndex referenceIndex) throws InvalidJavaClassFileException
 	{

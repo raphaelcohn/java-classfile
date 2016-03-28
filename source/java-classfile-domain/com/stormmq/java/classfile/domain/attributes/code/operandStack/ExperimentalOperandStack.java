@@ -28,10 +28,8 @@ import com.stormmq.java.classfile.domain.attributes.code.operandStackItems.Opera
 import com.stormmq.java.classfile.domain.attributes.code.operandStackItems.numericOperandStackItems.NumericOperandStackItem;
 import com.stormmq.java.classfile.domain.attributes.code.operandStackItems.referenceOperandStackItems.ReferenceOperandStackItem;
 import com.stormmq.java.classfile.domain.attributes.code.typing.ComputationalCategory;
-import com.stormmq.string.Formatting;
 import org.jetbrains.annotations.NotNull;
 
-import static com.stormmq.string.Formatting.format;
 import static com.stormmq.string.Formatting.formatPrintLineAndFlushWhilstSynchronized;
 import static java.lang.System.out;
 

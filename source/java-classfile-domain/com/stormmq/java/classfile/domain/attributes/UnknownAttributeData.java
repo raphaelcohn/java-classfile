@@ -28,7 +28,7 @@ import java.nio.ByteBuffer;
 
 public final class UnknownAttributeData
 {
-	@NotNull private final ByteBuffer[] dataItems;
+	@SuppressWarnings("WeakerAccess") @NotNull public final ByteBuffer[] dataItems;
 
 	public UnknownAttributeData(@NotNull final ByteBuffer... dataItems)
 	{

@@ -72,7 +72,7 @@ public enum ComputationalCategory
 
 		if (name.isEmpty())
 		{
-			throw new IllegalStateException("name() should not be empty");
+			throw new IllegalStateException("ComputationalCategory name() should not be empty");
 		}
 
 		return name.charAt(0) == '_' ? name.substring(1) : name;

@@ -22,6 +22,7 @@
 
 package com.stormmq.java.classfile.domain.attributes;
 
+import com.stormmq.string.Api;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
@@ -39,12 +40,14 @@ public final class UnknownAttributes
 		this.attributes = attributes;
 	}
 
+	@SuppressWarnings("unused")
 	@NotNull
 	public Set<String> unknownAttributeNames()
 	{
 		return unmodifiableSet(attributes.keySet());
 	}
 
+	@SuppressWarnings("unused")
 	@NotNull
 	public List<UnknownAttributeData> attributeValues(@NotNull final String attributeName)
 	{

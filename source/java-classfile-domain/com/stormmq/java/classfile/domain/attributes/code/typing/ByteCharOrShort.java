@@ -22,9 +22,6 @@
 
 package com.stormmq.java.classfile.domain.attributes.code.typing;
 
-import org.jetbrains.annotations.NonNls;
-import org.jetbrains.annotations.NotNull;
-
 public enum ByteCharOrShort
 {
 	_byte,

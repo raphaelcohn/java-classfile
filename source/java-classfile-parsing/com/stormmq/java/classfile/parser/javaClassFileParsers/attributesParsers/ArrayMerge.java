@@ -24,7 +24,6 @@ package com.stormmq.java.classfile.parser.javaClassFileParsers.attributesParsers
 
 import org.jetbrains.annotations.NotNull;
 
-import java.util.List;
 import java.util.function.IntFunction;
 
 import static java.lang.System.arraycopy;

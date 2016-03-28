@@ -58,7 +58,7 @@ public final class UnaryOperationOpcodeParser extends AbstractOneOpcodeParser
 	}
 
 	@Override
-	public void parse(@NotNull final OperandStack operandStack, @NotNull final CodeReader codeReader, @NotNull final Set<Character> lineNumbers, @NotNull final Set<LocalVariableAtProgramCounter> localVariablesAtProgramCounter, @NotNull final RuntimeConstantPool runtimeConstantPool) throws InvalidOpcodeException, UnderflowInvalidOperandStackException, MismatchedTypeInvalidOperandStackException
+	public void parse(@NotNull final OperandStack operandStack, @NotNull final CodeReader codeReader, @NotNull final Set<Character> lineNumbers, @NotNull final Set<LocalVariableAtProgramCounter> localVariablesAtProgramCounter, @NotNull final RuntimeConstantPool runtimeConstantPool) throws UnderflowInvalidOperandStackException, MismatchedTypeInvalidOperandStackException
 	{
 		final NumericOperandStackItem<Integer> value = operandStack.popNumeric(computationalCategory);
 		final NumericOperandStackItem<Integer> result = value.unaryOperation(unaryOperation);
