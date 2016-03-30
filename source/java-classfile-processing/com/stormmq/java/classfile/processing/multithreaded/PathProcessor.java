@@ -20,58 +20,31 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-package com.stormmq.java.classfile.domain.names;
+package com.stormmq.java.classfile.processing.multithreaded;
 
+import com.stormmq.java.classfile.processing.files.JarOrZipParsableFile;
+import com.stormmq.java.classfile.processing.files.ParsableFile;
 import org.jetbrains.annotations.*;
 
-public final class FieldName implements Comparable<FieldName>
+import java.nio.file.Path;
+import java.util.concurrent.ConcurrentLinkedQueue;
+
+public final class PathProcessor
 {
-	@NotNull private final String validatedMethodName;
+	@NotNull private final ConcurrentLinkedQueue<ParsableFile> parsableFileQueue;
 
-	public FieldName(@NotNull @NonNls final String validatedMethodName)
+	public PathProcessor(@NotNull final ConcurrentLinkedQueue<ParsableFile> parsableFileQueue)
 	{
-		this.validatedMethodName = validatedMethodName;
+		this.parsableFileQueue = parsableFileQueue;
 	}
 
-	@Override
-	public int compareTo(@NotNull final FieldName o)
+	public void processJarOrZipFile(@NotNull final Path jarOrZipFilePath, @NotNull final Path relativeRootFolderPath)
 	{
-		return validatedMethodName.compareTo(o.validatedMethodName);
+		parsableFileQueue.add(new JarOrZipParsableFile(jarOrZipFilePath, relativeRootFolderPath, parsableFileQueue));
 	}
 
-	@Override
-	@NotNull
-	public String toString()
+	public void processClassFile(@NotNull final Path javaClassFilePath, @NotNull final Path relativeRootFolderPath, @NotNull final Path relativeJavaClassFilePath)
 	{
-		return validatedMethodName;
-	}
-
-	@SuppressWarnings("RedundantIfStatement")
-	@Override
-	public boolean equals(@Nullable final Object o)
-	{
-		if (this == o)
-		{
-			return true;
-		}
-		if (o == null || getClass() != o.getClass())
-		{
-			return false;
-		}
-
-		final FieldName that = (FieldName) o;
-
-		if (!validatedMethodName.equals(that.validatedMethodName))
-		{
-			return false;
-		}
-
-		return true;
-	}
-
-	@Override
-	public int hashCode()
-	{
-		return validatedMethodName.hashCode();
+		parsableFileQueue.add((fileParser, parseFailureLog) -> fileParser.parseFile(javaClassFilePath, relativeRootFolderPath, relativeJavaClassFilePath));
 	}
 }

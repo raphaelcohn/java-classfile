@@ -20,58 +20,22 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-package com.stormmq.java.classfile.domain.names;
+package com.stormmq.java.classfile.domain.attributes.annotations;
 
-import org.jetbrains.annotations.*;
+import com.stormmq.java.classfile.domain.names.MethodName;
+import org.jetbrains.annotations.NotNull;
 
-public final class FieldName implements Comparable<FieldName>
+import java.lang.annotation.RetentionPolicy;
+import java.util.Map;
+
+public final class RetentionPolicyAndValues
 {
-	@NotNull private final String validatedMethodName;
+	@NotNull private final RetentionPolicy retentionPolicy;
+	@NotNull private final Map<MethodName, Object> values;
 
-	public FieldName(@NotNull @NonNls final String validatedMethodName)
+	public RetentionPolicyAndValues(@NotNull final RetentionPolicy retentionPolicy, @NotNull final Map<MethodName, Object> values)
 	{
-		this.validatedMethodName = validatedMethodName;
-	}
-
-	@Override
-	public int compareTo(@NotNull final FieldName o)
-	{
-		return validatedMethodName.compareTo(o.validatedMethodName);
-	}
-
-	@Override
-	@NotNull
-	public String toString()
-	{
-		return validatedMethodName;
-	}
-
-	@SuppressWarnings("RedundantIfStatement")
-	@Override
-	public boolean equals(@Nullable final Object o)
-	{
-		if (this == o)
-		{
-			return true;
-		}
-		if (o == null || getClass() != o.getClass())
-		{
-			return false;
-		}
-
-		final FieldName that = (FieldName) o;
-
-		if (!validatedMethodName.equals(that.validatedMethodName))
-		{
-			return false;
-		}
-
-		return true;
-	}
-
-	@Override
-	public int hashCode()
-	{
-		return validatedMethodName.hashCode();
+		this.retentionPolicy = retentionPolicy;
+		this.values = values;
 	}
 }

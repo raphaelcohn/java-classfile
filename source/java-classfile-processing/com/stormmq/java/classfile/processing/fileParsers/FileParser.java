@@ -20,58 +20,18 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-package com.stormmq.java.classfile.domain.names;
+package com.stormmq.java.classfile.processing.fileParsers;
 
-import org.jetbrains.annotations.*;
+import org.jetbrains.annotations.NotNull;
 
-public final class FieldName implements Comparable<FieldName>
+import java.nio.file.Path;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
+
+public interface FileParser
 {
-	@NotNull private final String validatedMethodName;
+	void parseFile(@NotNull final Path javaClassFilePath, @NotNull final Path relativeRootFolderPath, @NotNull final Path relativeJavaClassFilePath);
 
-	public FieldName(@NotNull @NonNls final String validatedMethodName)
-	{
-		this.validatedMethodName = validatedMethodName;
-	}
-
-	@Override
-	public int compareTo(@NotNull final FieldName o)
-	{
-		return validatedMethodName.compareTo(o.validatedMethodName);
-	}
-
-	@Override
-	@NotNull
-	public String toString()
-	{
-		return validatedMethodName;
-	}
-
-	@SuppressWarnings("RedundantIfStatement")
-	@Override
-	public boolean equals(@Nullable final Object o)
-	{
-		if (this == o)
-		{
-			return true;
-		}
-		if (o == null || getClass() != o.getClass())
-		{
-			return false;
-		}
-
-		final FieldName that = (FieldName) o;
-
-		if (!validatedMethodName.equals(that.validatedMethodName))
-		{
-			return false;
-		}
-
-		return true;
-	}
-
-	@Override
-	public int hashCode()
-	{
-		return validatedMethodName.hashCode();
-	}
+	@SuppressWarnings("MethodCanBeVariableArityMethod")
+	void parseFile(@NotNull final ZipFile zipFile, @NotNull final ZipEntry zipEntry, @NotNull final Path relativeRootPath, @NotNull final byte[] fileData);
 }

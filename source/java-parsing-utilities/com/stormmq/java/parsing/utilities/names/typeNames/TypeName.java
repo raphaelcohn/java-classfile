@@ -22,9 +22,30 @@
 
 package com.stormmq.java.parsing.utilities.names.typeNames;
 
-public interface TypeName
+import org.jetbrains.annotations.NonNls;
+import org.jetbrains.annotations.NotNull;
+
+public interface TypeName extends Comparable<TypeName>
 {
+	static int compareTo(final int leftSizeInBitsOnASixtyFourBitCpu, @NotNull @NonNls final String leftName, @NotNull final TypeName right)
+	{
+		final int rightSizeInBitsOnASixtyFourBitCpu = right.sizeInBitsOnASixtyFourBitCpu();
+		if (leftSizeInBitsOnASixtyFourBitCpu == rightSizeInBitsOnASixtyFourBitCpu)
+		{
+			return leftName.compareTo(right.name());
+		}
+		return leftSizeInBitsOnASixtyFourBitCpu < rightSizeInBitsOnASixtyFourBitCpu ? -1 : 1;
+	}
+
 	boolean isVoid();
 
 	boolean isPrimitive();
+
+	int sizeInBitsOnASixtyFourBitCpu();
+
+	@NotNull
+	String name();
+
+	@NotNull
+	TypeNameCategory category();
 }

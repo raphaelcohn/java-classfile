@@ -22,21 +22,69 @@
 
 package com.stormmq.java.parsing.utilities.names.typeNames;
 
+import com.stormmq.java.parsing.utilities.ReservedIdentifiers;
+import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 
-public enum VoidTypeName implements TypeName
+import static com.stormmq.java.parsing.utilities.names.typeNames.TypeNameCategory.Void;
+
+public final class VoidTypeName implements TypeName
 {
-	_void,
-	;
+	@NotNull public static final VoidTypeName _void = new VoidTypeName(ReservedIdentifiers._void, 0);
 
-	@NotNull
-	private final String name;
+	@NotNull private final String name;
+	@SuppressWarnings("FieldNotUsedInToString") private final int sizeInBitsOnASixtyFourBitCpu;
 
-	VoidTypeName()
+	private VoidTypeName(@NotNull @NonNls final String name, final int sizeInBitsOnASixtyFourBitCpu)
 	{
-		name = name().substring(1);
+		this.name = name;
+		this.sizeInBitsOnASixtyFourBitCpu = sizeInBitsOnASixtyFourBitCpu;
 	}
 
+	@Override
+	public int sizeInBitsOnASixtyFourBitCpu()
+	{
+		return sizeInBitsOnASixtyFourBitCpu;
+	}
+
+	@NotNull
+	@Override
+	public String name()
+	{
+		return name;
+	}
+
+	@NotNull
+	@Override
+	public TypeNameCategory category()
+	{
+		return Void;
+	}
+
+	@Override
+	public boolean equals(final Object o)
+	{
+		if (this == o)
+		{
+			return true;
+		}
+		if (o == null || getClass() != o.getClass())
+		{
+			return false;
+		}
+
+		final VoidTypeName that = (VoidTypeName) o;
+
+		return sizeInBitsOnASixtyFourBitCpu == that.sizeInBitsOnASixtyFourBitCpu && name.equals(that.name);
+	}
+
+	@Override
+	public int hashCode()
+	{
+		int result = name.hashCode();
+		result = 31 * result + sizeInBitsOnASixtyFourBitCpu;
+		return result;
+	}
 	@Override
 	public boolean isVoid()
 	{
@@ -53,5 +101,11 @@ public enum VoidTypeName implements TypeName
 	public String toString()
 	{
 		return name;
+	}
+
+	@Override
+	public int compareTo(@NotNull final TypeName o)
+	{
+		return TypeName.compareTo(sizeInBitsOnASixtyFourBitCpu, name, o);
 	}
 }

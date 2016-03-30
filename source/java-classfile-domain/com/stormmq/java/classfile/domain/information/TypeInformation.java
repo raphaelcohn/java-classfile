@@ -24,8 +24,7 @@ package com.stormmq.java.classfile.domain.information;
 
 import com.stormmq.java.classfile.domain.*;
 import com.stormmq.java.classfile.domain.attributes.UnknownAttributes;
-import com.stormmq.java.classfile.domain.attributes.annotations.AnnotationValue;
-import com.stormmq.java.classfile.domain.attributes.annotations.TypeAnnotation;
+import com.stormmq.java.classfile.domain.attributes.annotations.*;
 import com.stormmq.java.classfile.domain.attributes.type.BootstrapMethod;
 import com.stormmq.java.classfile.domain.attributes.type.enclosingMethods.EnclosingMethod;
 import com.stormmq.java.classfile.domain.signatures.Signature;
@@ -55,8 +54,7 @@ public final class TypeInformation
 	@SuppressWarnings("WeakerAccess") public final boolean isSyntheticAttribute;
 	@SuppressWarnings("WeakerAccess") public final boolean isDeprecated;
 	@SuppressWarnings("WeakerAccess") @Nullable public final Signature signature;
-	@SuppressWarnings("WeakerAccess") @NotNull public final AnnotationValue[] visibleAnnotations;
-	@SuppressWarnings("WeakerAccess") @NotNull public final AnnotationValue[] invisibleAnnotations;
+	@SuppressWarnings("WeakerAccess") @NotNull public final AnnotationValues runtimeAnnotationValues;
 	@SuppressWarnings("WeakerAccess") @NotNull public final TypeAnnotation[] typeAnnotations;
 	@SuppressWarnings("WeakerAccess") @NotNull public final TypeAnnotation[] visibleTypeAnnotations;
 	@SuppressWarnings("WeakerAccess") @NotNull public final UnknownAttributes unknownAttributes;
@@ -65,7 +63,7 @@ public final class TypeInformation
 	@SuppressWarnings("WeakerAccess") @Nullable public final String sourceDebugExtension;
 	@SuppressWarnings("WeakerAccess") @NotNull public final BootstrapMethod[] bootstrapMethods;
 
-	public TypeInformation(@NotNull final TypeKind typeKind, @NotNull final Visibility visibility, @NotNull final Completeness completeness, final boolean isSynthetic, final boolean hasLegacySuperFlagSetting, @NotNull final KnownReferenceTypeName thisClassTypeName, @Nullable final KnownReferenceTypeName superClassTypeName, @NotNull final Set<KnownReferenceTypeName> interfaces, @NotNull final Map<FieldUniqueness, FieldInformation> fields, @NotNull final Map<MethodUniqueness, MethodInformation> methods, final boolean isSyntheticAttribute, final boolean isDeprecated, @Nullable final Signature signature, @NotNull final AnnotationValue[] visibleAnnotations, @NotNull final AnnotationValue[] invisibleAnnotations, @NotNull final TypeAnnotation[] typeAnnotations, @NotNull final TypeAnnotation[] visibleTypeAnnotations, @NotNull final UnknownAttributes unknownAttributes, @Nullable final String sourceFile, @Nullable final EnclosingMethod enclosingMethod, @Nullable final String sourceDebugExtension, @NotNull final BootstrapMethod[] bootstrapMethods)
+	public TypeInformation(@NotNull final TypeKind typeKind, @NotNull final Visibility visibility, @NotNull final Completeness completeness, final boolean isSynthetic, final boolean hasLegacySuperFlagSetting, @NotNull final KnownReferenceTypeName thisClassTypeName, @Nullable final KnownReferenceTypeName superClassTypeName, @NotNull final Set<KnownReferenceTypeName> interfaces, @NotNull final Map<FieldUniqueness, FieldInformation> fields, @NotNull final Map<MethodUniqueness, MethodInformation> methods, final boolean isSyntheticAttribute, final boolean isDeprecated, @Nullable final Signature signature, @NotNull final AnnotationValues runtimeAnnotationValues, @NotNull final TypeAnnotation[] typeAnnotations, @NotNull final TypeAnnotation[] visibleTypeAnnotations, @NotNull final UnknownAttributes unknownAttributes, @Nullable final String sourceFile, @Nullable final EnclosingMethod enclosingMethod, @Nullable final String sourceDebugExtension, @NotNull final BootstrapMethod[] bootstrapMethods)
 	{
 		this.typeKind = typeKind;
 		this.visibility = visibility;
@@ -80,8 +78,7 @@ public final class TypeInformation
 		this.isSyntheticAttribute = isSyntheticAttribute;
 		this.isDeprecated = isDeprecated;
 		this.signature = signature;
-		this.visibleAnnotations = visibleAnnotations;
-		this.invisibleAnnotations = invisibleAnnotations;
+		this.runtimeAnnotationValues = runtimeAnnotationValues;
 		this.typeAnnotations = typeAnnotations;
 		this.visibleTypeAnnotations = visibleTypeAnnotations;
 		this.unknownAttributes = unknownAttributes;
@@ -89,5 +86,10 @@ public final class TypeInformation
 		this.enclosingMethod = enclosingMethod;
 		this.sourceDebugExtension = sourceDebugExtension;
 		this.bootstrapMethods = bootstrapMethods;
+	}
+
+	public boolean hasAnnotation(@NotNull final KnownReferenceTypeName annotationTypeName)
+	{
+		return runtimeAnnotationValues.hasAnnotation(annotationTypeName);
 	}
 }

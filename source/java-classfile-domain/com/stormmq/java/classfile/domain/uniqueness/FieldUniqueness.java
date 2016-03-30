@@ -27,7 +27,7 @@ import com.stormmq.java.classfile.domain.names.FieldName;
 import com.stormmq.string.Formatting;
 import org.jetbrains.annotations.*;
 
-public final class FieldUniqueness
+public final class FieldUniqueness implements Comparable<FieldUniqueness>
 {
 	@NotNull public final FieldName fieldName;
 	@NotNull public final FieldDescriptor fieldDescriptor;
@@ -36,6 +36,17 @@ public final class FieldUniqueness
 	{
 		this.fieldName = fieldName;
 		this.fieldDescriptor = fieldDescriptor;
+	}
+
+	@Override
+	public int compareTo(@NotNull final FieldUniqueness o)
+	{
+		final int fieldNameComparison = fieldName.compareTo(o.fieldName);
+		if (fieldNameComparison != 0)
+		{
+			return fieldNameComparison;
+		}
+		return fieldDescriptor.compareTo(o.fieldDescriptor);
 	}
 
 	@NonNls

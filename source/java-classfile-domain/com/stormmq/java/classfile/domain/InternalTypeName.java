@@ -27,9 +27,11 @@ import com.stormmq.java.parsing.utilities.names.typeNames.referenceTypeNames.Kno
 import com.stormmq.string.Formatting;
 import org.jetbrains.annotations.*;
 
+import java.util.Objects;
+
 import static com.stormmq.java.parsing.utilities.names.typeNames.VoidTypeName._void;
 
-public final class InternalTypeName
+public final class InternalTypeName implements Comparable<InternalTypeName>
 {
 	public static final int MaximumArrayDimensions = 255;
 	@NotNull public static final InternalTypeName[] EmptyInternalTypeNames = new InternalTypeName[0];
@@ -50,13 +52,23 @@ public final class InternalTypeName
 			throw new IllegalArgumentException(Formatting.format("arrayDimensions can not exceed '%1$s'; they can not be '%2$s'", MaximumArrayDimensions, arrayDimensions));
 		}
 
-		if (typeName == _void && arrayDimensions != 0)
+		if (Objects.equals(typeName, _void) && arrayDimensions != 0)
 		{
 			throw new IllegalArgumentException(Formatting.format("void can not have arrayDimensions other than zero (and certainly not '%1$s')", arrayDimensions));
 		}
 
 		this.typeName = typeName;
 		this.arrayDimensions = arrayDimensions;
+	}
+
+	@Override
+	public int compareTo(@NotNull final InternalTypeName o)
+	{
+		if (arrayDimensions != o.arrayDimensions)
+		{
+			return arrayDimensions < o.arrayDimensions ? -1 : 1;
+		}
+		return typeName.compareTo(typeName);
 	}
 
 	public boolean isArray()

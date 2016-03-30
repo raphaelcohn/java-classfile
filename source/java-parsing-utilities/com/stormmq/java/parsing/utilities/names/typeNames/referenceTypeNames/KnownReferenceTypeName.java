@@ -23,6 +23,8 @@
 package com.stormmq.java.parsing.utilities.names.typeNames.referenceTypeNames;
 
 import com.stormmq.java.parsing.utilities.names.parentNames.AbstractParentName;
+import com.stormmq.java.parsing.utilities.names.typeNames.TypeName;
+import com.stormmq.java.parsing.utilities.names.typeNames.TypeNameCategory;
 import org.jetbrains.annotations.*;
 
 import java.io.*;
@@ -32,6 +34,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 import static com.stormmq.java.parsing.utilities.StringConstants.*;
+import static com.stormmq.java.parsing.utilities.names.typeNames.TypeNameCategory.Reference;
 import static com.stormmq.string.StringUtilities.maximumUtf16ToUtf8EncodingSize;
 import static java.util.Collections.singleton;
 
@@ -53,6 +56,7 @@ public final class KnownReferenceTypeName extends AbstractParentName implements 
 	@NotNull public static final KnownReferenceTypeName[] AnnotationKnownReferenceTypeNames = {JavaLangAnnotationAnnotation};
 	@NotNull public static final Set<KnownReferenceTypeName> AnnotationKnownReferenceTypeNamesSet = singleton(JavaLangAnnotationAnnotation);
 	private static final int MaximumSizeOfModifiedUtf8EncodingWithTwoBytePrecedingSize = 65535 + 2;
+	private static final int SizeInBitsOnASixtyFourBitCpu = 64;
 
 	@NotNull
 	public static KnownReferenceTypeName knownReferenceTypeName(@NonNls @NotNull final String fullyQualifiedNameUsingDotsAndDollarSigns)
@@ -137,10 +141,29 @@ public final class KnownReferenceTypeName extends AbstractParentName implements 
 		return new IllegalStateException(Should_not_be_possible, e);
 	}
 
-
 	private KnownReferenceTypeName(@NotNull final String fullyQualifiedNameUsingDotsAndDollarSigns)
 	{
 		super(fullyQualifiedNameUsingDotsAndDollarSigns, true);
+	}
+
+	@Override
+	public int compareTo(@NotNull final TypeName o)
+	{
+		return TypeName.compareTo(SizeInBitsOnASixtyFourBitCpu, fullyQualifiedNameUsingDotsAndDollarSigns, o);
+	}
+
+	@NotNull
+	@Override
+	public String name()
+	{
+		return fullyQualifiedNameUsingDotsAndDollarSigns;
+	}
+
+	@NotNull
+	@Override
+	public TypeNameCategory category()
+	{
+		return Reference;
 	}
 
 	@Override
@@ -181,6 +204,12 @@ public final class KnownReferenceTypeName extends AbstractParentName implements 
 	public boolean isPrimitive()
 	{
 		return false;
+	}
+
+	@Override
+	public int sizeInBitsOnASixtyFourBitCpu()
+	{
+		return SizeInBitsOnASixtyFourBitCpu;
 	}
 
 	@NotNull

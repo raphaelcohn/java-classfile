@@ -23,21 +23,28 @@
 package com.stormmq.java.classfile.domain.descriptors;
 
 import com.stormmq.java.classfile.domain.InternalTypeName;
+import com.stormmq.java.classfile.domain.InvalidInternalTypeNameException;
+import com.stormmq.java.parsing.utilities.names.typeNames.referenceTypeNames.KnownReferenceTypeName;
 import com.stormmq.string.Formatting;
 import org.jetbrains.annotations.*;
 
-public final class FieldDescriptor
+public final class FieldDescriptor implements Comparable<FieldDescriptor>
 {
-	@NotNull
-	public final InternalTypeName internalTypeName;
+	@NotNull public final InternalTypeName internalTypeName;
 
 	public FieldDescriptor(@NotNull final InternalTypeName internalTypeName)
 	{
 		if (internalTypeName.isVoid())
 		{
-			throw new IllegalArgumentException("A field methodDescriptor can not be void");
+			throw new IllegalArgumentException("A fieldDescriptor can not be void");
 		}
 		this.internalTypeName = internalTypeName;
+	}
+
+	@Override
+	public int compareTo(@NotNull final FieldDescriptor o)
+	{
+		return internalTypeName.compareTo(o.internalTypeName);
 	}
 
 	@Override
@@ -74,5 +81,16 @@ public final class FieldDescriptor
 	public int hashCode()
 	{
 		return internalTypeName.hashCode();
+	}
+
+	public boolean is(@NotNull final InternalTypeName internalTypeName)
+	{
+		return this.internalTypeName.equals(internalTypeName);
+	}
+
+	@NotNull
+	public KnownReferenceTypeName knownReferenceTypeName() throws InvalidInternalTypeNameException
+	{
+		return internalTypeName.toKnownReferenceTypeName();
 	}
 }

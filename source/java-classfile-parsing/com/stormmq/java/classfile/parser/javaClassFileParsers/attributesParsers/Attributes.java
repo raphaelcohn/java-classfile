@@ -22,10 +22,10 @@
 
 package com.stormmq.java.classfile.parser.javaClassFileParsers.attributesParsers;
 
+import com.stormmq.java.classfile.domain.InvalidInternalTypeNameException;
 import com.stormmq.java.classfile.domain.attributes.UnknownAttributeData;
 import com.stormmq.java.classfile.domain.attributes.UnknownAttributes;
-import com.stormmq.java.classfile.domain.attributes.annotations.AnnotationValue;
-import com.stormmq.java.classfile.domain.attributes.annotations.TypeAnnotation;
+import com.stormmq.java.classfile.domain.attributes.annotations.*;
 import com.stormmq.java.classfile.domain.attributes.code.LineNumberEntry;
 import com.stormmq.java.classfile.domain.attributes.code.localVariables.*;
 import com.stormmq.java.classfile.domain.attributes.code.stackMapFrames.StackMapFrame;
@@ -37,16 +37,20 @@ import com.stormmq.java.classfile.parser.javaClassFileParsers.exceptions.Invalid
 import com.stormmq.java.parsing.utilities.names.typeNames.referenceTypeNames.KnownReferenceTypeName;
 import org.jetbrains.annotations.*;
 
+import java.lang.annotation.RetentionPolicy;
 import java.util.*;
 import java.util.function.IntFunction;
 
-import static com.stormmq.java.classfile.domain.attributes.annotations.AnnotationValue.EmptyAnnotationValues;
 import static com.stormmq.java.classfile.domain.attributes.annotations.AnnotationValue.EmptyParameterAnnotations;
+import static com.stormmq.java.classfile.domain.attributes.annotations.AnnotationValues.NoAnnotationValues;
+import static com.stormmq.java.classfile.domain.attributes.annotations.AnnotationValues.convertAnnotationValues;
 import static com.stormmq.java.classfile.domain.attributes.annotations.TypeAnnotation.EmptyTypeAnnotations;
 import static com.stormmq.java.classfile.domain.attributes.code.stackMapFrames.StackMapFrame.ImplicitStackMap;
 import static com.stormmq.java.classfile.domain.attributes.method.MethodParameter.EmptyMethodParameters;
 import static com.stormmq.java.classfile.domain.attributes.type.BootstrapMethod.EmptyBootstrapMethods;
 import static com.stormmq.java.classfile.parser.javaClassFileParsers.attributesParsers.ArrayMerge.arrayMerge;
+import static java.lang.annotation.RetentionPolicy.CLASS;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
 import static java.util.Collections.*;
 
 public final class Attributes
@@ -179,83 +183,71 @@ public final class Attributes
 	}
 
 	@NotNull
-	private <V extends AbstractLocalVariable> List<V> variablesByVariableIndex(final char maximumLocals, final long codeLength, @NotNull final String attributeName) throws InvalidJavaClassFileException
-	{
-		@SuppressWarnings("unchecked") @Nullable final List<V[]> variableTables = (List<V[]>) attributes.get(attributeName);
-		if (variableTables == null)
-		{
-			return emptyList();
-		}
-
-		if (variableTables.size() > maximumLocals)
-		{
-			if (variableTables.size() == 1)
-			{
-				if (variableTables.get(0).length == 0)
-				{
-					return emptyList();
-				}
-			}
-			throw new InvalidJavaClassFileException("There may be no more than one " + attributeName + " attribute per local variable in the attributes table of a Code attribute.");
-		}
-
-		final List<V> variables = new ArrayList<>(maximumLocals);
-
-		for (final V[] variableTable : variableTables)
-		{
-			for (final V localVariable : variableTable)
-			{
-				try
-				{
-					localVariable.validateNotAfterEndOfCode(codeLength);
-					localVariable.validateDoesNotHaveALocalVariableIndexWhichIsTooLarge(maximumLocals);
-				}
-				catch (final MismatchedLocalVariableLengthException e)
-				{
-					throw new InvalidJavaClassFileException("Invalid local variable", e);
-				}
-
-				variables.add(localVariable);
-			}
-		}
-
-		return variables;
-	}
-
-	@NotNull
 	public MethodParameter[] methodParameters(final boolean isAnnotation, final int methodDescriptorParameterCount) throws InvalidJavaClassFileException
 	{
 		return parameterLike(isAnnotation, methodDescriptorParameterCount, MethodParameters, EmptyMethodParameters);
 	}
 
 	@NotNull
-	public AnnotationValue[] runtimeInvisibleAnnotations()
+	public AnnotationValues runtimeAnnotations() throws InvalidJavaClassFileException
 	{
-		return getAttributeValueNotNull(RuntimeInvisibleAnnotations, EmptyAnnotationValues);
+		// In theory, the JVM spec does not prevent the same annotation being in both sections but it is likely to represent a compilation bug
+		final Map<KnownReferenceTypeName, RetentionPolicyAndValues> invisible = annotations(RuntimeInvisibleAnnotations, CLASS);
+		final Map<KnownReferenceTypeName, RetentionPolicyAndValues> visible = annotations(RuntimeVisibleAnnotations, RUNTIME);
+		return mergeInvisibleAndVisibleAnnotations(invisible, visible);
 	}
 
 	@NotNull
-	public AnnotationValue[][] runtimeInvisibleParameterAnnotations(final boolean isAnnotation, final int methodParameterCount) throws InvalidJavaClassFileException
+	public AnnotationValues[] runtimeParameterAnnotations(final boolean isAnnotation, final int methodParameterCount) throws InvalidJavaClassFileException
 	{
-		return parameterLike(isAnnotation, methodParameterCount, RuntimeInvisibleParameterAnnotations, EmptyParameterAnnotations);
+		final Map<KnownReferenceTypeName, RetentionPolicyAndValues>[] invisible = parameterAnnotations(isAnnotation, methodParameterCount, RuntimeInvisibleParameterAnnotations, CLASS);
+		final Map<KnownReferenceTypeName, RetentionPolicyAndValues>[] visible = parameterAnnotations(isAnnotation, methodParameterCount, RuntimeVisibleParameterAnnotations, RUNTIME);
+
+		// Lengths may not match up
+		final int invisibleLength = invisible.length;
+		final int visibleLength = visible.length;
+		if (invisibleLength == 0)
+		{
+			if (visibleLength == 0)
+			{
+				return NoAnnotationValues;
+			}
+			return runtimeParameterAnnotationsOneSided(visible, visibleLength);
+		}
+
+		if (visibleLength == 0)
+		{
+			return runtimeParameterAnnotationsOneSided(invisible, invisibleLength);
+		}
+
+		if (invisibleLength != visibleLength)
+		{
+			throw new IllegalStateException("visible and invisible parameter attribute lengths must match if neither are zero length");
+		}
+
+		final AnnotationValues[] result = new AnnotationValues[invisibleLength];
+		for (int index = 0; index < invisibleLength; index++)
+		{
+			result[index] = mergeInvisibleAndVisibleAnnotations(invisible[index], visible[index]);
+		}
+		return result;
+	}
+
+	@NotNull
+	private static AnnotationValues[] runtimeParameterAnnotationsOneSided(@NotNull final Map<KnownReferenceTypeName, RetentionPolicyAndValues>[] maps, final int length)
+	{
+		final AnnotationValues[] result = new AnnotationValues[length];
+		for(int index = 0; index < length; index++)
+		{
+			result[index] = new AnnotationValues(maps[index]);
+		}
+		return result;
 	}
 
 	@NotNull
 	public TypeAnnotation[] runtimeInvisibleTypeAnnotations()
 	{
 		return getAttributeValueNotNull(RuntimeInvisibleTypeAnnotations, EmptyTypeAnnotations);
-	}
-
-	@NotNull
-	public AnnotationValue[] runtimeVisibleAnnotations()
-	{
-		return getAttributeValueNotNull(RuntimeVisibleAnnotations, EmptyAnnotationValues);
-	}
-
-	@NotNull
-	public AnnotationValue[][] runtimeVisibleParameterAnnotations(final boolean isAnnotation, final int methodParameterCount) throws InvalidJavaClassFileException
-	{
-		return parameterLike(isAnnotation, methodParameterCount, RuntimeVisibleParameterAnnotations, EmptyParameterAnnotations);
 	}
 
 	@NotNull
@@ -354,12 +346,121 @@ public final class Attributes
 			{
 				if (length != methodParameterCount)
 				{
-					// It's an inner class with a synthetic / whatever first parameter
 					throw new InvalidJavaClassFileException(attributeName + " length must match method descriptor parameter count");
 				}
 			}
 		}
 		return values;
+	}
+
+	@NotNull
+	private static AnnotationValues mergeInvisibleAndVisibleAnnotations(@NotNull final Map<KnownReferenceTypeName, RetentionPolicyAndValues> invisible, @NotNull final Map<KnownReferenceTypeName, RetentionPolicyAndValues> visible) throws InvalidJavaClassFileException
+	{
+		final int invisibleSize = invisible.size();
+		final int visibleSize = visible.size();
+		if (invisibleSize == 0)
+		{
+			if (visibleSize == 0)
+			{
+				return AnnotationValues.EmptyAnnotationValues;
+			}
+			return new AnnotationValues(visible);
+		}
+		if (visibleSize == 0)
+		{
+			return new AnnotationValues(invisible);
+		}
+
+		// An annotation can be present in both invisible and visible; if the values differ, too bad
+		final HashMap<KnownReferenceTypeName, RetentionPolicyAndValues> merged = new HashMap<>(invisibleSize + visibleSize);
+		merged.putAll(invisible);
+		merged.putAll(visible);
+		return new AnnotationValues(merged);
+	}
+
+	@NotNull
+	private Map<KnownReferenceTypeName, RetentionPolicyAndValues> annotations(@NotNull @NonNls final String attributeName, @NotNull final RetentionPolicy ofRetentionPolicy) throws InvalidJavaClassFileException
+	{
+		@Nullable final Object value = attributes.get(attributeName);
+		if (value == null)
+		{
+			return AnnotationValues.Empty;
+		}
+		return newAnnotationValues(ofRetentionPolicy, (AnnotationValue[]) value);
+	}
+
+	@NotNull
+	private static Map<KnownReferenceTypeName, RetentionPolicyAndValues> newAnnotationValues(@NotNull final RetentionPolicy ofRetentionPolicy, @NotNull final AnnotationValue[] value) throws InvalidJavaClassFileException
+	{
+		try
+		{
+			return convertAnnotationValues(ofRetentionPolicy, (AnnotationValue[]) value);
+		}
+		catch (final InvalidInternalTypeNameException e)
+		{
+			throw new InvalidJavaClassFileException("Annotation Value with non-Annotation type", e);
+		}
+		catch (final DuplicateAnnotationValueException e)
+		{
+			throw new InvalidJavaClassFileException("Duplicate annotation value", e);
+		}
+	}
+
+	@NotNull
+	private Map<KnownReferenceTypeName, RetentionPolicyAndValues>[] parameterAnnotations(final boolean isAnnotation, final int methodParameterCount, @NotNull @NonNls final String attributeName, @NotNull final RetentionPolicy ofRetentionPolicy) throws InvalidJavaClassFileException
+	{
+		final AnnotationValue[][] annotationValuesValues = parameterLike(isAnnotation, methodParameterCount, attributeName, EmptyParameterAnnotations);
+		final int length = annotationValuesValues.length;
+		@SuppressWarnings("unchecked") final Map<KnownReferenceTypeName, RetentionPolicyAndValues>[] annotationValues = new Map[length];
+		for (int index = 0; index < length; index++)
+		{
+			annotationValues[index] = newAnnotationValues(ofRetentionPolicy, annotationValuesValues[index]);
+		}
+		return annotationValues;
+	}
+
+	@NotNull
+	private <V extends AbstractLocalVariable> List<V> variablesByVariableIndex(final char maximumLocals, final long codeLength, @NotNull final String attributeName) throws InvalidJavaClassFileException
+	{
+		@SuppressWarnings("unchecked") @Nullable final List<V[]> variableTables = (List<V[]>) attributes.get(attributeName);
+		if (variableTables == null)
+		{
+			return emptyList();
+		}
+
+		if (variableTables.size() > maximumLocals)
+		{
+			if (variableTables.size() == 1)
+			{
+				if (variableTables.get(0).length == 0)
+				{
+					return emptyList();
+				}
+			}
+			throw new InvalidJavaClassFileException("There may be no more than one " + attributeName + " attribute per local variable in the attributes table of a Code attribute.");
+		}
+
+		final List<V> variables = new ArrayList<>(maximumLocals);
+
+		for (final V[] variableTable : variableTables)
+		{
+			for (final V localVariable : variableTable)
+			{
+				try
+				{
+					localVariable.validateNotAfterEndOfCode(codeLength);
+					localVariable.validateDoesNotHaveALocalVariableIndexWhichIsTooLarge(maximumLocals);
+				}
+				catch (final MismatchedLocalVariableLengthException e)
+				{
+					throw new InvalidJavaClassFileException("Invalid local variable", e);
+				}
+
+				variables.add(localVariable);
+			}
+		}
+
+		return variables;
 	}
 
 	@SuppressWarnings("unchecked")

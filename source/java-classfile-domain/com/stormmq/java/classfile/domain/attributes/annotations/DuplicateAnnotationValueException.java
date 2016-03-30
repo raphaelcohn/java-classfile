@@ -20,58 +20,17 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-package com.stormmq.java.classfile.domain.names;
+package com.stormmq.java.classfile.domain.attributes.annotations;
 
-import org.jetbrains.annotations.*;
+import com.stormmq.java.parsing.utilities.names.typeNames.referenceTypeNames.KnownReferenceTypeName;
+import org.jetbrains.annotations.NotNull;
 
-public final class FieldName implements Comparable<FieldName>
+import static com.stormmq.string.Formatting.format;
+
+public final class DuplicateAnnotationValueException extends Exception
 {
-	@NotNull private final String validatedMethodName;
-
-	public FieldName(@NotNull @NonNls final String validatedMethodName)
+	public DuplicateAnnotationValueException(@NotNull final KnownReferenceTypeName knownReferenceTypeName)
 	{
-		this.validatedMethodName = validatedMethodName;
-	}
-
-	@Override
-	public int compareTo(@NotNull final FieldName o)
-	{
-		return validatedMethodName.compareTo(o.validatedMethodName);
-	}
-
-	@Override
-	@NotNull
-	public String toString()
-	{
-		return validatedMethodName;
-	}
-
-	@SuppressWarnings("RedundantIfStatement")
-	@Override
-	public boolean equals(@Nullable final Object o)
-	{
-		if (this == o)
-		{
-			return true;
-		}
-		if (o == null || getClass() != o.getClass())
-		{
-			return false;
-		}
-
-		final FieldName that = (FieldName) o;
-
-		if (!validatedMethodName.equals(that.validatedMethodName))
-		{
-			return false;
-		}
-
-		return true;
-	}
-
-	@Override
-	public int hashCode()
-	{
-		return validatedMethodName.hashCode();
+		super(format("Duplicate annotation value '%1$s'", knownReferenceTypeName));
 	}
 }

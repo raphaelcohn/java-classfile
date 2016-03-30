@@ -25,8 +25,7 @@ package com.stormmq.java.classfile.parser.javaClassFileParsers.versionedClassFil
 import com.stormmq.java.classfile.domain.*;
 import com.stormmq.java.classfile.domain.attributes.AttributeLocation;
 import com.stormmq.java.classfile.domain.attributes.UnknownAttributes;
-import com.stormmq.java.classfile.domain.attributes.annotations.AnnotationValue;
-import com.stormmq.java.classfile.domain.attributes.annotations.TypeAnnotation;
+import com.stormmq.java.classfile.domain.attributes.annotations.*;
 import com.stormmq.java.classfile.domain.attributes.code.Code;
 import com.stormmq.java.classfile.domain.attributes.method.MethodParameter;
 import com.stormmq.java.classfile.domain.attributes.type.BootstrapMethod;
@@ -58,6 +57,8 @@ import org.jetbrains.annotations.Nullable;
 import java.util.*;
 
 import static com.stormmq.java.classfile.domain.TypeKind.*;
+import static com.stormmq.java.classfile.domain.TypeKind.Class;
+import static com.stormmq.java.classfile.domain.TypeKind.Enum;
 import static com.stormmq.java.classfile.domain.attributes.AttributeLocation.*;
 import static com.stormmq.java.classfile.domain.names.MethodName.InstanceInitializer;
 import static com.stormmq.java.classfile.domain.names.MethodName.StaticInstanceInitializer;
@@ -149,8 +150,7 @@ public final class ModernClassFileVersionedClassFileParser implements VersionedC
 		final boolean isSyntheticAttribute = attributes.isSynthetic();
 		final boolean isDeprecated = attributes.isDeprecated();
 		@Nullable final Signature signature = attributes.signature(thisClassTypeName, superClassTypeName, interfaces);
-		@NotNull final AnnotationValue[] visibleAnnotations = attributes.runtimeVisibleAnnotations();
-		@NotNull final AnnotationValue[] invisibleAnnotations = attributes.runtimeInvisibleAnnotations();
+		@NotNull final AnnotationValues runtimeAnnotationValues = attributes.runtimeAnnotations();
 		@NotNull final TypeAnnotation[] visibleTypeAnnotations = attributes.runtimeVisibleTypeAnnotations();
 		@NotNull final TypeAnnotation[] invisibleTypeAnnotations = attributes.runtimeInvisibleTypeAnnotations();
 		final UnknownAttributes unknownAttributes = attributes.unknownAttributes();
@@ -162,7 +162,7 @@ public final class ModernClassFileVersionedClassFileParser implements VersionedC
 		// TODO: There must be exactly one BootstrapMethods attribute in the attributes table of a ClassFile structure if the constant_pool table of the ClassFile structure has at least one CONSTANT_InvokeDynamic_info entry (§4.4.10).
 		// TODO: The value of the bootstrap_method_attr_index item must be a valid index into the bootstrap_methods array of the bootstrap method table (§4.7.23) of this class file.
 
-		return new TypeInformation(typeKind, typeVisibility, typeCompleteness, isTypeSynthetic, hasLegacySuperFlagSetting, thisClassTypeName, superClassTypeName, interfaces, fields, methods, isSyntheticAttribute, isDeprecated, signature, visibleAnnotations, invisibleAnnotations, visibleTypeAnnotations, invisibleTypeAnnotations, unknownAttributes, sourceFile, enclosingMethod, sourceDebugExtension, bootstrapMethods);
+		return new TypeInformation(typeKind, typeVisibility, typeCompleteness, isTypeSynthetic, hasLegacySuperFlagSetting, thisClassTypeName, superClassTypeName, interfaces, fields, methods, isSyntheticAttribute, isDeprecated, signature, runtimeAnnotationValues, visibleTypeAnnotations, invisibleTypeAnnotations, unknownAttributes, sourceFile, enclosingMethod, sourceDebugExtension, bootstrapMethods);
 	}
 
 	private static boolean isInnerClass(@NotNull final Map<FieldUniqueness, FieldInformation> fields, @NotNull final ParentName thisClassTypeName)
@@ -259,13 +259,12 @@ public final class ModernClassFileVersionedClassFileParser implements VersionedC
 			final boolean isSyntheticAttribute = attributes.isSynthetic();
 			final boolean isDeprecated = attributes.isDeprecated();
 			@Nullable final Signature signature = attributes.signature(fieldDescriptor);
-			@NotNull final AnnotationValue[] visibleAnnotations = attributes.runtimeVisibleAnnotations();
-			@NotNull final AnnotationValue[] invisibleAnnotations = attributes.runtimeInvisibleAnnotations();
+			@NotNull final AnnotationValues runtimeAnnotationValues = attributes.runtimeAnnotations();
 			@NotNull final TypeAnnotation[] visibleTypeAnnotations = attributes.runtimeVisibleTypeAnnotations();
 			@NotNull final TypeAnnotation[] invisibleTypeAnnotations = attributes.runtimeInvisibleTypeAnnotations();
 			@Nullable final Object constantValue = attributes.constantValue(!isStatic, permitConstantsInInstanceFields);
 
-			fields.put(fieldUniqueness, new FieldInformation(fieldUniqueness, isSynthetic, fieldVisibility, fieldFinality, isTransient, isFinal, isStatic, isDeprecated, isSyntheticAttribute, signature, constantValue, visibleAnnotations, invisibleAnnotations, visibleTypeAnnotations, invisibleTypeAnnotations));
+			fields.put(fieldUniqueness, new FieldInformation(fieldUniqueness, isSynthetic, fieldVisibility, fieldFinality, isTransient, isFinal, isStatic, isDeprecated, isSyntheticAttribute, signature, constantValue, runtimeAnnotationValues, visibleTypeAnnotations, invisibleTypeAnnotations));
 		});
 	}
 
@@ -320,8 +319,7 @@ public final class ModernClassFileVersionedClassFileParser implements VersionedC
 				final boolean isSyntheticAttribute = attributes.isSynthetic();
 				final boolean isDeprecated = attributes.isDeprecated();
 				@Nullable final Signature signature = attributes.signature(methodDescriptor);
-				final AnnotationValue[] visibleAnnotations = attributes.runtimeVisibleAnnotations();
-				final AnnotationValue[] invisibleAnnotations = attributes.runtimeInvisibleAnnotations();
+				final AnnotationValues runtimeAnnotationValues = attributes.runtimeAnnotations();
 
 				// Weirdness for Enum constructors
 				final int correction;
@@ -339,8 +337,7 @@ public final class ModernClassFileVersionedClassFileParser implements VersionedC
 				}
 				final int methodParameterCount = methodDescriptor.parameterCount() - correction;
 
-				final AnnotationValue[][] visibleParameterAnnotations = attributes.runtimeVisibleParameterAnnotations(isAnnotation, methodParameterCount);
-				final AnnotationValue[][] invisibleParameterAnnotations = attributes.runtimeInvisibleParameterAnnotations(isAnnotation, methodParameterCount);
+				final AnnotationValues[] parameterAnnotations = attributes.runtimeParameterAnnotations(isAnnotation, methodParameterCount);
 				final TypeAnnotation[] visibleTypeAnnotations = attributes.runtimeVisibleTypeAnnotations();
 				final TypeAnnotation[] invisibleTypeAnnotations = attributes.runtimeInvisibleTypeAnnotations();
 
@@ -376,7 +373,6 @@ public final class ModernClassFileVersionedClassFileParser implements VersionedC
 					}
 				}
 
-
 				final MethodInformation methodInformation;
 				if (methodName.equals(StaticInstanceInitializer))
 				{
@@ -397,11 +393,11 @@ public final class ModernClassFileVersionedClassFileParser implements VersionedC
 					staticInitializerEncountered = true;
 
 					// Class and interface initialization methods are called implicitly by the Java Virtual Machine. The value of their access_flags item is ignored except for the setting of the ACC_STRICT flag.
-					methodInformation = new MethodInformation(methodUniqueness, Public, isSynthetic, isBridge, false, Final, false, false, true, isStrictFloatingPoint, isSyntheticAttribute, isDeprecated, signature, visibleAnnotations, invisibleAnnotations, visibleParameterAnnotations, invisibleParameterAnnotations, visibleTypeAnnotations, invisibleTypeAnnotations, exceptions, methodParameters, code, annotationDefault, unknownAttributes);
+					methodInformation = new MethodInformation(methodUniqueness, Public, isSynthetic, isBridge, false, Final, false, false, true, isStrictFloatingPoint, isSyntheticAttribute, isDeprecated, signature, runtimeAnnotationValues, parameterAnnotations, visibleTypeAnnotations, invisibleTypeAnnotations, exceptions, methodParameters, code, annotationDefault, unknownAttributes);
 				}
 				else
 				{
-					methodInformation = new MethodInformation(methodUniqueness, methodVisibility, isSynthetic, isBridge, isVarArgs, methodCompleteness, isSynchronized, isNative, isStatic, isStrictFloatingPoint, isSyntheticAttribute, isDeprecated, signature, visibleAnnotations, invisibleAnnotations, visibleParameterAnnotations, invisibleParameterAnnotations, visibleTypeAnnotations, invisibleTypeAnnotations, exceptions, methodParameters, code, annotationDefault, unknownAttributes);
+					methodInformation = new MethodInformation(methodUniqueness, methodVisibility, isSynthetic, isBridge, isVarArgs, methodCompleteness, isSynchronized, isNative, isStatic, isStrictFloatingPoint, isSyntheticAttribute, isDeprecated, signature, runtimeAnnotationValues, parameterAnnotations, visibleTypeAnnotations, invisibleTypeAnnotations, exceptions, methodParameters, code, annotationDefault, unknownAttributes);
 				}
 				methods.put(methodUniqueness, methodInformation);
 			}

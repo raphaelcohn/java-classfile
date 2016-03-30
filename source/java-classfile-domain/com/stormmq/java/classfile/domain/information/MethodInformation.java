@@ -23,8 +23,7 @@
 package com.stormmq.java.classfile.domain.information;
 
 import com.stormmq.java.classfile.domain.attributes.UnknownAttributes;
-import com.stormmq.java.classfile.domain.attributes.annotations.AnnotationValue;
-import com.stormmq.java.classfile.domain.attributes.annotations.TypeAnnotation;
+import com.stormmq.java.classfile.domain.attributes.annotations.*;
 import com.stormmq.java.classfile.domain.attributes.code.Code;
 import com.stormmq.java.classfile.domain.attributes.code.invalidOperandStackExceptions.*;
 import com.stormmq.java.classfile.domain.attributes.code.opcodeParsers.InvalidOpcodeException;
@@ -54,10 +53,8 @@ public final class MethodInformation
 	private final boolean isSyntheticAttribute;
 	private final boolean isDeprecated;
 	@Nullable private final Signature signature;
-	@NotNull private final AnnotationValue[] visibleAnnotations;
-	@NotNull private final AnnotationValue[] invisibleAnnotations;
-	@NotNull private final AnnotationValue[][] visibleParameterAnnotations;
-	@NotNull private final AnnotationValue[][] invisibleParameterAnnotations;
+	@NotNull private final AnnotationValues runtimeAnnotationValues;
+	@NotNull private final AnnotationValues[] parameterAnnotations;
 	@NotNull private final TypeAnnotation[] visibleTypeAnnotations;
 	@NotNull private final TypeAnnotation[] invisibleTypeAnnotations;
 	@NotNull private final Set<KnownReferenceTypeName> exceptions;
@@ -66,7 +63,7 @@ public final class MethodInformation
 	@NotNull private final UnknownAttributes unknownAttributes;
 	@Nullable private final Code code;
 
-	public MethodInformation(@NotNull final MethodUniqueness methodUniqueness, @NotNull final Visibility visibility, final boolean isSynthetic, final boolean isBridge, final boolean isVarArgs, @NotNull final Completeness completeness, final boolean isSynchronized, final boolean isNative, final boolean isStatic, final boolean isStrictFloatingPoint, final boolean isSyntheticAttribute, final boolean isDeprecated, @Nullable final Signature signature, @NotNull final AnnotationValue[] visibleAnnotations, @NotNull final AnnotationValue[] invisibleAnnotations, @NotNull final AnnotationValue[][] visibleParameterAnnotations, @NotNull final AnnotationValue[][] invisibleParameterAnnotations, @NotNull final TypeAnnotation[] visibleTypeAnnotations, @NotNull final TypeAnnotation[] invisibleTypeAnnotations, @NotNull final Set<KnownReferenceTypeName> exceptions, @NotNull final MethodParameter[] methodParameters, @Nullable final Code code, @Nullable final Object annotationDefault, @NotNull final UnknownAttributes unknownAttributes)
+	public MethodInformation(@NotNull final MethodUniqueness methodUniqueness, @NotNull final Visibility visibility, final boolean isSynthetic, final boolean isBridge, final boolean isVarArgs, @NotNull final Completeness completeness, final boolean isSynchronized, final boolean isNative, final boolean isStatic, final boolean isStrictFloatingPoint, final boolean isSyntheticAttribute, final boolean isDeprecated, @Nullable final Signature signature, @NotNull final AnnotationValues runtimeAnnotationValues, @NotNull final AnnotationValues[] parameterAnnotations, @NotNull final TypeAnnotation[] visibleTypeAnnotations, @NotNull final TypeAnnotation[] invisibleTypeAnnotations, @NotNull final Set<KnownReferenceTypeName> exceptions, @NotNull final MethodParameter[] methodParameters, @Nullable final Code code, @Nullable final Object annotationDefault, @NotNull final UnknownAttributes unknownAttributes)
 	{
 		this.methodUniqueness = methodUniqueness;
 		this.code = code;
@@ -82,10 +79,8 @@ public final class MethodInformation
 		this.isSyntheticAttribute = isSyntheticAttribute;
 		this.isDeprecated = isDeprecated;
 		this.signature = signature;
-		this.visibleAnnotations = visibleAnnotations;
-		this.invisibleAnnotations = invisibleAnnotations;
-		this.visibleParameterAnnotations = visibleParameterAnnotations;
-		this.invisibleParameterAnnotations = invisibleParameterAnnotations;
+		this.runtimeAnnotationValues = runtimeAnnotationValues;
+		this.parameterAnnotations = parameterAnnotations;
 		this.visibleTypeAnnotations = visibleTypeAnnotations;
 		this.invisibleTypeAnnotations = invisibleTypeAnnotations;
 		this.exceptions = exceptions;

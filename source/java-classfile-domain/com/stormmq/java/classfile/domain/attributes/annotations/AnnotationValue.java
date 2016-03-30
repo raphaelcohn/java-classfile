@@ -22,12 +22,16 @@
 
 package com.stormmq.java.classfile.domain.attributes.annotations;
 
+import com.stormmq.java.classfile.domain.InternalTypeName;
+import com.stormmq.java.classfile.domain.InvalidInternalTypeNameException;
 import com.stormmq.java.classfile.domain.descriptors.FieldDescriptor;
 import com.stormmq.java.classfile.domain.names.MethodName;
-import com.stormmq.string.Formatting;
+import com.stormmq.java.parsing.utilities.names.typeNames.referenceTypeNames.KnownReferenceTypeName;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
+
+import static com.stormmq.string.Formatting.format;
 
 public final class AnnotationValue
 {
@@ -43,10 +47,27 @@ public final class AnnotationValue
 		this.fieldValues = fieldValues;
 	}
 
+	public boolean is(@NotNull final InternalTypeName annotationInternalTypeName)
+	{
+		return typeIndexFieldDescriptor.is(annotationInternalTypeName);
+	}
+
 	@Override
 	@NotNull
 	public String toString()
 	{
-		return Formatting.format("%1$s(%2$s, %3$s)", getClass().getSimpleName(), typeIndexFieldDescriptor, fieldValues);
+		return format("%1$s(%2$s, %3$s)", getClass().getSimpleName(), typeIndexFieldDescriptor, fieldValues);
+	}
+
+	@NotNull
+	public KnownReferenceTypeName knownReferenceTypeName() throws InvalidInternalTypeNameException
+	{
+		return typeIndexFieldDescriptor.knownReferenceTypeName();
+	}
+
+	@NotNull
+	public Map<MethodName, Object> values()
+	{
+		return fieldValues;
 	}
 }

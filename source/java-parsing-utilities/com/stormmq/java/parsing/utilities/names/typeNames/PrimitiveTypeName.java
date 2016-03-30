@@ -22,26 +22,79 @@
 
 package com.stormmq.java.parsing.utilities.names.typeNames;
 
+import com.stormmq.java.parsing.utilities.ReservedIdentifiers;
+import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 
-public enum PrimitiveTypeName implements TypeName
+import static com.stormmq.java.parsing.utilities.names.typeNames.TypeNameCategory.FloatingPoint;
+import static com.stormmq.java.parsing.utilities.names.typeNames.TypeNameCategory.SignedInteger;
+import static com.stormmq.java.parsing.utilities.names.typeNames.TypeNameCategory.UnsignedInteger;
+
+public final class PrimitiveTypeName implements TypeName
 {
-	_boolean,
-	_byte,
-	_short,
-	_char,
-	_int,
-	_long,
-	_float,
-	_double,
-	;
+	@NotNull public static final PrimitiveTypeName _boolean = new PrimitiveTypeName(ReservedIdentifiers._boolean, 1, SignedInteger);
+	@NotNull public static final PrimitiveTypeName _byte = new PrimitiveTypeName(ReservedIdentifiers._byte, 8, SignedInteger);
+	@NotNull public static final PrimitiveTypeName _short = new PrimitiveTypeName(ReservedIdentifiers._short, 16, SignedInteger);
+	@NotNull public static final PrimitiveTypeName _char = new PrimitiveTypeName(ReservedIdentifiers._char, 16, UnsignedInteger);
+	@NotNull public static final PrimitiveTypeName _int = new PrimitiveTypeName(ReservedIdentifiers._int, 32, SignedInteger);
+	@NotNull public static final PrimitiveTypeName _long = new PrimitiveTypeName(ReservedIdentifiers._long, 64, SignedInteger);
+	@NotNull public static final PrimitiveTypeName _float = new PrimitiveTypeName(ReservedIdentifiers._float, 32, FloatingPoint);
+	@NotNull public static final PrimitiveTypeName _double = new PrimitiveTypeName(ReservedIdentifiers._double, 64, FloatingPoint);
+
+	@NotNull private final String name;
+	@SuppressWarnings("FieldNotUsedInToString") private final int sizeInBitsOnASixtyFourBitCpu;
+	@SuppressWarnings("FieldNotUsedInToString") @NotNull private final TypeNameCategory typeNameCategory;
+
+	private PrimitiveTypeName(@NotNull @NonNls final String name, final int sizeInBitsOnASixtyFourBitCpu, @NotNull final TypeNameCategory typeNameCategory)
+	{
+		this.name = name;
+		this.sizeInBitsOnASixtyFourBitCpu = sizeInBitsOnASixtyFourBitCpu;
+		this.typeNameCategory = typeNameCategory;
+	}
+
+	@Override
+	public int sizeInBitsOnASixtyFourBitCpu()
+	{
+		return sizeInBitsOnASixtyFourBitCpu;
+	}
 
 	@NotNull
-	private final String name;
-
-	PrimitiveTypeName()
+	@Override
+	public String name()
 	{
-		name = name().substring(1);
+		return name;
+	}
+
+	@NotNull
+	@Override
+	public TypeNameCategory category()
+	{
+		return typeNameCategory;
+	}
+
+	@Override
+	public boolean equals(final Object o)
+	{
+		if (this == o)
+		{
+			return true;
+		}
+		if (o == null || getClass() != o.getClass())
+		{
+			return false;
+		}
+
+		final PrimitiveTypeName that = (PrimitiveTypeName) o;
+
+		return sizeInBitsOnASixtyFourBitCpu == that.sizeInBitsOnASixtyFourBitCpu && name.equals(that.name);
+	}
+
+	@Override
+	public int hashCode()
+	{
+		int result = name.hashCode();
+		result = 31 * result + sizeInBitsOnASixtyFourBitCpu;
+		return result;
 	}
 
 	@Override
@@ -62,4 +115,9 @@ public enum PrimitiveTypeName implements TypeName
 		return name;
 	}
 
+	@Override
+	public int compareTo(@NotNull final TypeName o)
+	{
+		return TypeName.compareTo(sizeInBitsOnASixtyFourBitCpu, name, o);
+	}
 }
