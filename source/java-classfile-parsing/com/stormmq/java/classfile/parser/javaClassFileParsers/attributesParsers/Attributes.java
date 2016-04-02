@@ -33,6 +33,7 @@ import com.stormmq.java.classfile.domain.attributes.method.MethodParameter;
 import com.stormmq.java.classfile.domain.attributes.type.BootstrapMethod;
 import com.stormmq.java.classfile.domain.descriptors.FieldDescriptor;
 import com.stormmq.java.classfile.domain.descriptors.MethodDescriptor;
+import com.stormmq.java.classfile.domain.fieldConstants.FieldConstant;
 import com.stormmq.java.classfile.parser.javaClassFileParsers.exceptions.InvalidJavaClassFileException;
 import com.stormmq.java.parsing.utilities.names.typeNames.referenceTypeNames.KnownReferenceTypeName;
 import org.jetbrains.annotations.*;
@@ -42,6 +43,7 @@ import java.util.*;
 import java.util.function.IntFunction;
 
 import static com.stormmq.java.classfile.domain.attributes.annotations.AnnotationValue.EmptyParameterAnnotations;
+import static com.stormmq.java.classfile.domain.attributes.annotations.AnnotationValues.EmptyAnnotationValues;
 import static com.stormmq.java.classfile.domain.attributes.annotations.AnnotationValues.NoAnnotationValues;
 import static com.stormmq.java.classfile.domain.attributes.annotations.AnnotationValues.convertAnnotationValues;
 import static com.stormmq.java.classfile.domain.attributes.annotations.TypeAnnotation.EmptyTypeAnnotations;
@@ -113,7 +115,7 @@ public final class Attributes
 	}
 
 	@Nullable
-	public Object constantValue(final boolean isInstance, final boolean permitConstantsInInstanceFields) throws InvalidJavaClassFileException
+	public FieldConstant constantValue(final boolean isInstance, final boolean permitConstantsInInstanceFields) throws InvalidJavaClassFileException
 	{
 		if (isInstance)
 		{
@@ -354,7 +356,7 @@ public final class Attributes
 	}
 
 	@NotNull
-	private static AnnotationValues mergeInvisibleAndVisibleAnnotations(@NotNull final Map<KnownReferenceTypeName, RetentionPolicyAndValues> invisible, @NotNull final Map<KnownReferenceTypeName, RetentionPolicyAndValues> visible) throws InvalidJavaClassFileException
+	private static AnnotationValues mergeInvisibleAndVisibleAnnotations(@NotNull final Map<KnownReferenceTypeName, RetentionPolicyAndValues> invisible, @NotNull final Map<KnownReferenceTypeName, RetentionPolicyAndValues> visible)
 	{
 		final int invisibleSize = invisible.size();
 		final int visibleSize = visible.size();
@@ -362,7 +364,7 @@ public final class Attributes
 		{
 			if (visibleSize == 0)
 			{
-				return AnnotationValues.EmptyAnnotationValues;
+				return EmptyAnnotationValues;
 			}
 			return new AnnotationValues(visible);
 		}

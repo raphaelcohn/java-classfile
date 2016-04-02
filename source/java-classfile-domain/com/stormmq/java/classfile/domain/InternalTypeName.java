@@ -154,4 +154,11 @@ public final class InternalTypeName implements Comparable<InternalTypeName>
 	{
 		return typeName;
 	}
+
+	@NotNull
+	@NonNls
+	public String canonicalName()
+	{
+		return typeName.name() + '-' + arrayDimensions;
+	}
 }

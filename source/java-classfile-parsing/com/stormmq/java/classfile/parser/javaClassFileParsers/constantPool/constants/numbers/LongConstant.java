@@ -23,6 +23,7 @@
 package com.stormmq.java.classfile.parser.javaClassFileParsers.constantPool.constants.numbers;
 
 import com.stormmq.java.classfile.domain.attributes.code.constants.DoubleWidthConstantForLoadUser;
+import com.stormmq.java.classfile.domain.fieldConstants.FieldConstantUser;
 import com.stormmq.java.classfile.parser.javaClassFileParsers.constantPool.constants.AbstractDoubleWidthConstant;
 import org.jetbrains.annotations.NotNull;
 
@@ -53,5 +54,12 @@ public final class LongConstant extends AbstractDoubleWidthConstant
 	public <T> T visit(@NotNull final DoubleWidthConstantForLoadUser<T> doubleWidthConstantForLoadUser)
 	{
 		return doubleWidthConstantForLoadUser.useLong(signed64BitIntegerValue);
+	}
+
+	@NotNull
+	@Override
+	public <T> T use(@NotNull final FieldConstantUser<T> fieldConstantUser)
+	{
+		return fieldConstantUser.useLong(signed64BitIntegerValue);
 	}
 }

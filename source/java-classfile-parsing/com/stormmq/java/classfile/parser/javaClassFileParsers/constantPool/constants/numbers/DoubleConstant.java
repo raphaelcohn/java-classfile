@@ -24,6 +24,7 @@ package com.stormmq.java.classfile.parser.javaClassFileParsers.constantPool.cons
 
 import com.stormmq.java.classfile.domain.RawDouble;
 import com.stormmq.java.classfile.domain.attributes.code.constants.DoubleWidthConstantForLoadUser;
+import com.stormmq.java.classfile.domain.fieldConstants.FieldConstantUser;
 import com.stormmq.java.classfile.parser.javaClassFileParsers.constantPool.constants.AbstractDoubleWidthConstant;
 import org.jetbrains.annotations.NotNull;
 
@@ -36,8 +37,8 @@ public final class DoubleConstant extends AbstractDoubleWidthConstant
 		this.doubleValueAsRawLongBitsAsJavaLosesNaNInformationOnConversion = doubleValueAsRawLongBitsAsJavaLosesNaNInformationOnConversion;
 	}
 
-	@NotNull
 	@Override
+	@NotNull
 	public RawDouble value()
 	{
 		return new RawDouble(doubleValueAsRawLongBitsAsJavaLosesNaNInformationOnConversion);
@@ -54,5 +55,12 @@ public final class DoubleConstant extends AbstractDoubleWidthConstant
 	public <T> T visit(@NotNull final DoubleWidthConstantForLoadUser<T> doubleWidthConstantForLoadUser)
 	{
 		return doubleWidthConstantForLoadUser.useDouble(value());
+	}
+
+	@NotNull
+	@Override
+	public <T> T use(@NotNull final FieldConstantUser<T> fieldConstantUser)
+	{
+		return fieldConstantUser.useDouble(value());
 	}
 }

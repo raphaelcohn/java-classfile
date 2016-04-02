@@ -20,27 +20,16 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-package com.stormmq.java.classfile.domain;
+package com.stormmq.java.classfile.domain.fieldConstants;
 
-import static java.lang.Double.longBitsToDouble;
+import com.stormmq.java.classfile.domain.attributes.code.constants.BootstrapMethodArgument;
+import org.jetbrains.annotations.NotNull;
 
-// This class exists because Double.longBitsToDouble() loses signalling NaN information that needs to be preserved
-public final class RawDouble
+public interface FieldConstant extends BootstrapMethodArgument
 {
-	private final long doubleValueAsRawLongBitsAsJavaLosesNaNInformationOnConversion;
+	@NotNull
+	Object value();
 
-	public RawDouble(final long doubleValueAsRawLongBitsAsJavaLosesNaNInformationOnConversion)
-	{
-		this.doubleValueAsRawLongBitsAsJavaLosesNaNInformationOnConversion = doubleValueAsRawLongBitsAsJavaLosesNaNInformationOnConversion;
-	}
-
-	public double asDouble()
-	{
-		return longBitsToDouble(doubleValueAsRawLongBitsAsJavaLosesNaNInformationOnConversion);
-	}
-
-	public long asLong()
-	{
-		return doubleValueAsRawLongBitsAsJavaLosesNaNInformationOnConversion;
-	}
+	@NotNull
+	<T> T use(@NotNull final FieldConstantUser<T> fieldConstantUser);
 }

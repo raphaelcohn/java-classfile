@@ -74,7 +74,7 @@ public final class Records
 				return true;
 			}
 
-			@Nullable final KnownReferenceTypeName superClassTypeName = instance.typeInformation.superClassTypeName;
+			@Nullable final KnownReferenceTypeName superClassTypeName = instance.superClassTypeName();
 			if (superClassTypeName == null)
 			{
 				return false;
@@ -92,6 +92,6 @@ public final class Records
 
 	public boolean hasInheritedAnnotation(@NotNull final TypeInformationTriplet self, @NotNull final KnownReferenceTypeName annotationTypeName)
 	{
-		return loopOverSelfAndParents(self, value -> value.typeInformation.hasAnnotation(annotationTypeName));
+		return loopOverSelfAndParents(self, value -> value.hasAnnotation(annotationTypeName));
 	}
 }

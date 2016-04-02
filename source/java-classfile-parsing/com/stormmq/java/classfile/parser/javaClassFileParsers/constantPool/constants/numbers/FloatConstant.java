@@ -24,7 +24,9 @@ package com.stormmq.java.classfile.parser.javaClassFileParsers.constantPool.cons
 
 import com.stormmq.java.classfile.domain.attributes.code.constants.SingleWidthConstantForLoad;
 import com.stormmq.java.classfile.domain.attributes.code.constants.SingleWidthConstantForLoadUser;
-import com.stormmq.java.classfile.parser.javaClassFileParsers.constantPool.constants.*;
+import com.stormmq.java.classfile.domain.fieldConstants.FieldConstantUser;
+import com.stormmq.java.classfile.domain.fieldConstants.FieldConstant;
+import com.stormmq.java.classfile.parser.javaClassFileParsers.constantPool.constants.AbstractSingleWidthConstant;
 import org.jetbrains.annotations.NotNull;
 
 public final class FloatConstant extends AbstractSingleWidthConstant implements FieldConstant, SingleWidthConstantForLoad
@@ -65,5 +67,12 @@ public final class FloatConstant extends AbstractSingleWidthConstant implements 
 	public <T> T visit(@NotNull final SingleWidthConstantForLoadUser<T> singleWidthConstantForLoadUser)
 	{
 		return singleWidthConstantForLoadUser.useFloat(floatValue);
+	}
+
+	@NotNull
+	@Override
+	public <T> T use(@NotNull final FieldConstantUser<T> fieldConstantUser)
+	{
+		return fieldConstantUser.useFloat(floatValue);
 	}
 }

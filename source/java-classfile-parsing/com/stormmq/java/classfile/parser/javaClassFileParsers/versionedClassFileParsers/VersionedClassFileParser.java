@@ -22,7 +22,7 @@
 
 package com.stormmq.java.classfile.parser.javaClassFileParsers.versionedClassFileParsers;
 
-import com.stormmq.java.classfile.domain.information.TypeInformation;
+import com.stormmq.java.classfile.domain.information.ConcreteTypeInformation;
 import com.stormmq.java.classfile.parser.javaClassFileParsers.exceptions.InvalidJavaClassFileException;
 import com.stormmq.java.classfile.parser.javaClassFileParsers.exceptions.JavaClassFileContainsDataTooLongToReadException;
 import org.jetbrains.annotations.NotNull;
@@ -31,5 +31,5 @@ import org.jetbrains.annotations.NotNull;
 public interface VersionedClassFileParser
 {
 	@NotNull
-	TypeInformation parse() throws InvalidJavaClassFileException, JavaClassFileContainsDataTooLongToReadException;
+	ConcreteTypeInformation parse() throws InvalidJavaClassFileException, JavaClassFileContainsDataTooLongToReadException;
 }

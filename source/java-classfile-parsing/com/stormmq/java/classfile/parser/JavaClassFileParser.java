@@ -23,7 +23,7 @@
 package com.stormmq.java.classfile.parser;
 
 import com.stormmq.java.classfile.domain.JavaClassFileVersion;
-import com.stormmq.java.classfile.domain.information.TypeInformation;
+import com.stormmq.java.classfile.domain.information.ConcreteTypeInformation;
 import com.stormmq.java.classfile.parser.byteReaders.ByteReader;
 import com.stormmq.java.classfile.parser.javaClassFileParsers.VersionedClassFileParserChooser;
 import com.stormmq.java.classfile.parser.javaClassFileParsers.exceptions.*;
@@ -42,13 +42,13 @@ import static com.stormmq.java.classfile.parser.javaClassFileParsers.exceptions.
 public final class JavaClassFileParser
 {
 	@NotNull
-	public static TypeInformation parseJavaClassFile(@NotNull final ByteReader byteReader, final boolean permitConstantsInInstanceFields) throws InvalidJavaClassFileException, JavaClassFileContainsDataTooLongToReadException, NotAJavaClassFileException
+	public static ConcreteTypeInformation parseJavaClassFile(@NotNull final ByteReader byteReader, final boolean permitConstantsInInstanceFields) throws InvalidJavaClassFileException, JavaClassFileContainsDataTooLongToReadException, NotAJavaClassFileException
 	{
 		return parseJavaClassFile(new SimpleJavaClassFileReader(byteReader), permitConstantsInInstanceFields ? Lax : Strict);
 	}
 
 	@NotNull
-	private static TypeInformation parseJavaClassFile(@NotNull final JavaClassFileReader javaClassFileReader, @NotNull final VersionedClassFileParserChooser versionedClassFileParserChooser) throws InvalidJavaClassFileException, JavaClassFileContainsDataTooLongToReadException, NotAJavaClassFileException
+	private static ConcreteTypeInformation parseJavaClassFile(@NotNull final JavaClassFileReader javaClassFileReader, @NotNull final VersionedClassFileParserChooser versionedClassFileParserChooser) throws InvalidJavaClassFileException, JavaClassFileContainsDataTooLongToReadException, NotAJavaClassFileException
 	{
 		final int magicNumber;
 		try

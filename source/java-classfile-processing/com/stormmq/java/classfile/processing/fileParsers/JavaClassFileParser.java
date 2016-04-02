@@ -22,7 +22,7 @@
 
 package com.stormmq.java.classfile.processing.fileParsers;
 
-import com.stormmq.java.classfile.domain.information.TypeInformation;
+import com.stormmq.java.classfile.domain.information.ConcreteTypeInformation;
 import com.stormmq.java.classfile.parser.byteReaders.ByteArrayByteReader;
 import com.stormmq.java.classfile.parser.javaClassFileParsers.exceptions.*;
 import com.stormmq.java.classfile.processing.processLogs.ProcessLog;
@@ -81,7 +81,7 @@ public final class JavaClassFileParser implements FileParser
 
 	private void useFileData(@NotNull final String javaClassFilePath, @NotNull final String relativeFilePath, @NotNull final Path relativeRootFolderPath, @NotNull final byte[] fileData)
 	{
-		final TypeInformation typeInformation;
+		final ConcreteTypeInformation typeInformation;
 		try(final ByteArrayByteReader byteReader = new ByteArrayByteReader(fileData))
 		{
 			try

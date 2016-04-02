@@ -26,24 +26,30 @@ import org.jetbrains.annotations.*;
 
 public final class FieldName implements Comparable<FieldName>
 {
-	@NotNull private final String validatedMethodName;
+	@NotNull private final String validatedFieldName;
 
-	public FieldName(@NotNull @NonNls final String validatedMethodName)
+	public FieldName(@NotNull @NonNls final String validatedFieldName)
 	{
-		this.validatedMethodName = validatedMethodName;
+		this.validatedFieldName = validatedFieldName;
 	}
 
 	@Override
 	public int compareTo(@NotNull final FieldName o)
 	{
-		return validatedMethodName.compareTo(o.validatedMethodName);
+		return validatedFieldName.compareTo(o.validatedFieldName);
+	}
+
+	@NotNull
+	public String name()
+	{
+		return validatedFieldName;
 	}
 
 	@Override
 	@NotNull
 	public String toString()
 	{
-		return validatedMethodName;
+		return validatedFieldName;
 	}
 
 	@SuppressWarnings("RedundantIfStatement")
@@ -61,7 +67,7 @@ public final class FieldName implements Comparable<FieldName>
 
 		final FieldName that = (FieldName) o;
 
-		if (!validatedMethodName.equals(that.validatedMethodName))
+		if (!validatedFieldName.equals(that.validatedFieldName))
 		{
 			return false;
 		}
@@ -72,6 +78,6 @@ public final class FieldName implements Comparable<FieldName>
 	@Override
 	public int hashCode()
 	{
-		return validatedMethodName.hashCode();
+		return validatedFieldName.hashCode();
 	}
 }

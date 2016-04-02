@@ -22,7 +22,7 @@
 
 package com.stormmq.java.classfile.processing.typeInformationUsers;
 
-import com.stormmq.java.classfile.domain.information.TypeInformation;
+import com.stormmq.java.classfile.domain.information.ConcreteTypeInformation;
 import com.stormmq.java.classfile.processing.processLogs.ProcessLog;
 import com.stormmq.java.parsing.utilities.names.typeNames.referenceTypeNames.KnownReferenceTypeName;
 import org.jetbrains.annotations.NotNull;
@@ -43,7 +43,7 @@ public final class RecordingTypeInformationUser implements TypeInformationUser
 	}
 
 	@Override
-	public void use(@NotNull final TypeInformation typeInformation, @NotNull final String relativeFilePath, @NotNull final Path relativeRootFolderPath)
+	public void use(@NotNull final ConcreteTypeInformation typeInformation, @NotNull final String relativeFilePath, @NotNull final Path relativeRootFolderPath)
 	{
 		final TypeInformationTriplet typeInformationTriplet = new TypeInformationTriplet(typeInformation, relativeFilePath, relativeRootFolderPath);
 		@Nullable final TypeInformationTriplet extant = records.put(typeInformation.thisClassTypeName, typeInformationTriplet);

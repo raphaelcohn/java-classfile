@@ -32,6 +32,7 @@ import com.stormmq.java.classfile.domain.attributes.type.BootstrapMethod;
 import com.stormmq.java.classfile.domain.attributes.type.enclosingMethods.EnclosingMethod;
 import com.stormmq.java.classfile.domain.descriptors.FieldDescriptor;
 import com.stormmq.java.classfile.domain.descriptors.MethodDescriptor;
+import com.stormmq.java.classfile.domain.fieldConstants.FieldConstant;
 import com.stormmq.java.classfile.domain.information.*;
 import com.stormmq.java.classfile.domain.names.FieldName;
 import com.stormmq.java.classfile.domain.names.MethodName;
@@ -122,7 +123,7 @@ public final class ModernClassFileVersionedClassFileParser implements VersionedC
 
 	@Override
 	@NotNull
-	public TypeInformation parse() throws InvalidJavaClassFileException, JavaClassFileContainsDataTooLongToReadException
+	public ConcreteTypeInformation parse() throws InvalidJavaClassFileException, JavaClassFileContainsDataTooLongToReadException
 	{
 		final ConstantPool constantPool = newConstantPool();
 		final ConstantPoolJavaClassFileReader constantPoolJavaClassFileReader = parseConstantPool(constantPool);
@@ -162,7 +163,7 @@ public final class ModernClassFileVersionedClassFileParser implements VersionedC
 		// TODO: There must be exactly one BootstrapMethods attribute in the attributes table of a ClassFile structure if the constant_pool table of the ClassFile structure has at least one CONSTANT_InvokeDynamic_info entry (§4.4.10).
 		// TODO: The value of the bootstrap_method_attr_index item must be a valid index into the bootstrap_methods array of the bootstrap method table (§4.7.23) of this class file.
 
-		return new TypeInformation(typeKind, typeVisibility, typeCompleteness, isTypeSynthetic, hasLegacySuperFlagSetting, thisClassTypeName, superClassTypeName, interfaces, fields, methods, isSyntheticAttribute, isDeprecated, signature, runtimeAnnotationValues, visibleTypeAnnotations, invisibleTypeAnnotations, unknownAttributes, sourceFile, enclosingMethod, sourceDebugExtension, bootstrapMethods);
+		return new ConcreteTypeInformation(typeKind, typeVisibility, typeCompleteness, isTypeSynthetic, hasLegacySuperFlagSetting, thisClassTypeName, superClassTypeName, interfaces, fields, methods, isSyntheticAttribute, isDeprecated, signature, runtimeAnnotationValues, visibleTypeAnnotations, invisibleTypeAnnotations, unknownAttributes, sourceFile, enclosingMethod, sourceDebugExtension, bootstrapMethods);
 	}
 
 	private static boolean isInnerClass(@NotNull final Map<FieldUniqueness, FieldInformation> fields, @NotNull final ParentName thisClassTypeName)
@@ -262,7 +263,7 @@ public final class ModernClassFileVersionedClassFileParser implements VersionedC
 			@NotNull final AnnotationValues runtimeAnnotationValues = attributes.runtimeAnnotations();
 			@NotNull final TypeAnnotation[] visibleTypeAnnotations = attributes.runtimeVisibleTypeAnnotations();
 			@NotNull final TypeAnnotation[] invisibleTypeAnnotations = attributes.runtimeInvisibleTypeAnnotations();
-			@Nullable final Object constantValue = attributes.constantValue(!isStatic, permitConstantsInInstanceFields);
+			@Nullable final FieldConstant constantValue = attributes.constantValue(!isStatic, permitConstantsInInstanceFields);
 
 			fields.put(fieldUniqueness, new FieldInformation(fieldUniqueness, isSynthetic, fieldVisibility, fieldFinality, isTransient, isFinal, isStatic, isDeprecated, isSyntheticAttribute, signature, constantValue, runtimeAnnotationValues, visibleTypeAnnotations, invisibleTypeAnnotations));
 		});

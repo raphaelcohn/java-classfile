@@ -22,10 +22,12 @@
 
 package com.stormmq.java.classfile.parser.javaClassFileParsers.constantPool.constants.referenceIndexConstants.singles;
 
-import com.stormmq.java.classfile.domain.attributes.code.constants.*;
+import com.stormmq.java.classfile.domain.attributes.code.constants.SingleWidthConstantForLoad;
+import com.stormmq.java.classfile.domain.attributes.code.constants.SingleWidthConstantForLoadUser;
+import com.stormmq.java.classfile.domain.fieldConstants.FieldConstantUser;
+import com.stormmq.java.classfile.domain.fieldConstants.FieldConstant;
 import com.stormmq.java.classfile.parser.javaClassFileParsers.constantPool.ConstantPool;
 import com.stormmq.java.classfile.parser.javaClassFileParsers.constantPool.ConstantPoolIndex;
-import com.stormmq.java.classfile.parser.javaClassFileParsers.constantPool.constants.FieldConstant;
 import org.jetbrains.annotations.NotNull;
 
 public final class StringReferenceIndexConstant extends AbstractSingleReferenceIndexConstant implements FieldConstant, SingleWidthConstantForLoad
@@ -59,5 +61,12 @@ public final class StringReferenceIndexConstant extends AbstractSingleReferenceI
 	public <T> T visit(@NotNull final SingleWidthConstantForLoadUser<T> singleWidthConstantForLoadUser)
 	{
 		return singleWidthConstantForLoadUser.usePotentiallyInvalidString(potentiallyInvalidValue());
+	}
+
+	@NotNull
+	@Override
+	public <T> T use(@NotNull final FieldConstantUser<T> fieldConstantUser)
+	{
+		return fieldConstantUser.useString(value());
 	}
 }

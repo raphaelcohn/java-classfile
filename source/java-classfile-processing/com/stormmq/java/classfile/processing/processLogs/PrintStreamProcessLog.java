@@ -136,7 +136,7 @@ public final class PrintStreamProcessLog implements ProcessLog
 	{
 		if (isAtLeastVerbose)
 		{
-			formatPrintLineAndFlushWhilstSynchronized(printStream, "Duplicate type information for '%1$s' found at '%2$s' in '%3$s' overrides '%4$s' in '%5$s", replacement.typeInformation.thisClassTypeName, replacement.relativeFilePath, replacement.relativeRootFolderPath, extant.relativeFilePath, extant.relativeRootFolderPath);
+			formatPrintLineAndFlushWhilstSynchronized(printStream, "Duplicate type information for '%1$s' found at '%2$s' in '%3$s' overrides '%4$s' in '%5$s", replacement.thisClassTypeName(), replacement.relativeFilePath, replacement.relativeRootFolderPath, extant.relativeFilePath, extant.relativeRootFolderPath);
 		}
 	}
 

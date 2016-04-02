@@ -24,8 +24,8 @@ package com.stormmq.java.classfile.parser.javaClassFileParsers.constantPool;
 
 import com.stormmq.java.classfile.domain.*;
 import com.stormmq.java.classfile.domain.attributes.code.constants.*;
+import com.stormmq.java.classfile.domain.fieldConstants.FieldConstant;
 import com.stormmq.java.classfile.parser.javaClassFileParsers.constantPool.constants.Constant;
-import com.stormmq.java.classfile.parser.javaClassFileParsers.constantPool.constants.FieldConstant;
 import com.stormmq.java.classfile.parser.javaClassFileParsers.constantPool.constants.miscellaneous.ModifiedUtf8StringConstant;
 import com.stormmq.java.classfile.parser.javaClassFileParsers.constantPool.constants.miscellaneous.PhantomConstant;
 import com.stormmq.java.classfile.parser.javaClassFileParsers.constantPool.constants.numbers.*;
@@ -272,9 +272,9 @@ public final class ConstantPool implements RuntimeConstantPool
 	}
 
 	@NotNull
-	public Object retrieveFieldConstant(@NotNull final ConstantPoolIndex referenceIndex) throws InvalidJavaClassFileException
+	public FieldConstant retrieveFieldConstant(@NotNull final ConstantPoolIndex referenceIndex) throws InvalidJavaClassFileException
 	{
-		return validateReferenceIndexIsFieldConstant(referenceIndex).value();
+		return validateReferenceIndexIsFieldConstant(referenceIndex);
 	}
 
 	@NotNull

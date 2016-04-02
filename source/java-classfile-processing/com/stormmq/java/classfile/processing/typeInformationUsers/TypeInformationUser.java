@@ -22,7 +22,7 @@
 
 package com.stormmq.java.classfile.processing.typeInformationUsers;
 
-import com.stormmq.java.classfile.domain.information.TypeInformation;
+import com.stormmq.java.classfile.domain.information.ConcreteTypeInformation;
 import org.jetbrains.annotations.NotNull;
 
 import java.nio.file.Path;
@@ -30,5 +30,5 @@ import java.nio.file.Path;
 @FunctionalInterface
 public interface TypeInformationUser
 {
-	void use(@NotNull final TypeInformation typeInformation, @NotNull final String relativeFilePath, @NotNull final Path relativeRootFolderPath);
+	void use(@NotNull final ConcreteTypeInformation typeInformation, @NotNull final String relativeFilePath, @NotNull final Path relativeRootFolderPath);
 }

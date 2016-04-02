@@ -38,6 +38,13 @@ public final class FieldUniqueness implements Comparable<FieldUniqueness>
 		this.fieldDescriptor = fieldDescriptor;
 	}
 
+	@NonNls
+	@NotNull
+	public String uniqueName()
+	{
+		return fieldName.name() + '-' + fieldDescriptor.canonicalName();
+	}
+
 	@Override
 	public int compareTo(@NotNull final FieldUniqueness o)
 	{

@@ -25,8 +25,9 @@ package com.stormmq.java.classfile.domain.descriptors;
 import com.stormmq.java.classfile.domain.InternalTypeName;
 import com.stormmq.java.classfile.domain.InvalidInternalTypeNameException;
 import com.stormmq.java.parsing.utilities.names.typeNames.referenceTypeNames.KnownReferenceTypeName;
-import com.stormmq.string.Formatting;
 import org.jetbrains.annotations.*;
+
+import static com.stormmq.string.Formatting.format;
 
 public final class FieldDescriptor implements Comparable<FieldDescriptor>
 {
@@ -51,7 +52,7 @@ public final class FieldDescriptor implements Comparable<FieldDescriptor>
 	@NotNull
 	public String toString()
 	{
-		return Formatting.format("%1$s(%2$s)", getClass().getSimpleName(), internalTypeName);
+		return format("%1$s(%2$s)", getClass().getSimpleName(), internalTypeName);
 	}
 
 	@SuppressWarnings("RedundantIfStatement")
@@ -92,5 +93,12 @@ public final class FieldDescriptor implements Comparable<FieldDescriptor>
 	public KnownReferenceTypeName knownReferenceTypeName() throws InvalidInternalTypeNameException
 	{
 		return internalTypeName.toKnownReferenceTypeName();
+	}
+
+	@NotNull
+	@NonNls
+	public String canonicalName()
+	{
+		return internalTypeName.canonicalName();
 	}
 }

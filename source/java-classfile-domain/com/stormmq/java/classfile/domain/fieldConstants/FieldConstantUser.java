@@ -20,13 +20,25 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-package com.stormmq.java.classfile.parser.javaClassFileParsers.constantPool.constants;
+package com.stormmq.java.classfile.domain.fieldConstants;
 
-import com.stormmq.java.classfile.domain.attributes.code.constants.BootstrapMethodArgument;
+import com.stormmq.java.classfile.domain.RawDouble;
 import org.jetbrains.annotations.NotNull;
 
-public interface FieldConstant extends Constant, BootstrapMethodArgument
+public interface FieldConstantUser<T>
 {
 	@NotNull
-	Object value();
+	T useString(@NotNull final String value);
+
+	@NotNull
+	T useFloat(final float value);
+
+	@NotNull
+	T useDouble(@NotNull final RawDouble value);
+
+	@NotNull
+	T useInteger(final int value);
+
+	@NotNull
+	T useLong(final long value);
 }

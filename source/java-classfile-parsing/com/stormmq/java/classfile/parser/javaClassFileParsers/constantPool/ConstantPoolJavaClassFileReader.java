@@ -30,6 +30,7 @@ import com.stormmq.java.classfile.domain.attributes.code.constants.BootstrapMeth
 import com.stormmq.java.classfile.domain.attributes.code.constants.RuntimeConstantPool;
 import com.stormmq.java.classfile.domain.descriptors.FieldDescriptor;
 import com.stormmq.java.classfile.domain.descriptors.MethodDescriptor;
+import com.stormmq.java.classfile.domain.fieldConstants.FieldConstant;
 import com.stormmq.java.classfile.domain.names.FieldName;
 import com.stormmq.java.classfile.domain.names.MethodName;
 import com.stormmq.java.classfile.parser.JavaClassFileReader;
@@ -147,7 +148,7 @@ public final class ConstantPoolJavaClassFileReader implements JavaClassFileReade
 	@NotNull private final InvalidExceptionFunction<ConstantPoolIndex, String> retrieveModifiedUtf8String;
 	@NotNull private final InvalidExceptionFunction<ConstantPoolIndex, InternalTypeName> retrieveInternalTypeName;
 	@NotNull private final InvalidExceptionFunction<ConstantPoolIndex, MethodHandle> retrieveMethodHandle;
-	@NotNull private final InvalidExceptionFunction<ConstantPoolIndex, Object> retrieveFieldConstant;
+	@NotNull private final InvalidExceptionFunction<ConstantPoolIndex, FieldConstant> retrieveFieldConstant;
 	@NotNull private final InvalidExceptionFunction<ConstantPoolIndex, BootstrapMethodArgument> retrieveBootstrapMethodArgument;
 	@NotNull private final InvalidExceptionFunction<ConstantPoolIndex, NameAndTypeReferenceIndexConstant> retrieveNameAndTypeReference;
 	@NotNull private final InvalidExceptionFunction<ConstantPoolIndex, Integer> retrieveInteger;

@@ -22,14 +22,17 @@
 
 package com.stormmq.java.classfile.processing.typeInformationUsers;
 
-import com.stormmq.java.classfile.domain.information.TypeInformation;
+import com.stormmq.java.classfile.domain.information.*;
+import com.stormmq.java.classfile.domain.uniqueness.FieldUniqueness;
+import com.stormmq.java.parsing.utilities.names.typeNames.referenceTypeNames.KnownReferenceTypeName;
 import org.jetbrains.annotations.NotNull;
 
 import java.nio.file.Path;
+import java.util.function.BiConsumer;
 
-public final class TypeInformationTriplet
+public final class TypeInformationTriplet implements TypeInformation
 {
-	@NotNull public final TypeInformation typeInformation;
+	@NotNull private final TypeInformation typeInformation;
 	@NotNull public final String relativeFilePath;
 	@NotNull public final Path relativeRootFolderPath;
 
@@ -38,5 +41,43 @@ public final class TypeInformationTriplet
 		this.typeInformation = typeInformation;
 		this.relativeFilePath = relativeFilePath;
 		this.relativeRootFolderPath = relativeRootFolderPath;
+	}
+
+	@Override
+	public boolean hasAnnotation(@NotNull final KnownReferenceTypeName annotationTypeName)
+	{
+		return typeInformation.hasAnnotation(annotationTypeName);
+	}
+
+	@Override
+	public int numberOfStaticAndInstanceFields()
+	{
+		return typeInformation.numberOfStaticAndInstanceFields();
+	}
+
+	@Override
+	public void forEachStaticFieldInReverseOrder(@NotNull final BiConsumer<FieldUniqueness, FieldInformation> action)
+	{
+		typeInformation.forEachStaticFieldInReverseOrder(action);
+	}
+
+	@Override
+	public void forEachInstanceFieldInReverseOrder(@NotNull final BiConsumer<FieldUniqueness, FieldInformation> action)
+	{
+		typeInformation.forEachInstanceFieldInReverseOrder(action);
+	}
+
+	@Override
+	@NotNull
+	public KnownReferenceTypeName thisClassTypeName()
+	{
+		return typeInformation.thisClassTypeName();
+	}
+
+	@NotNull
+	@Override
+	public KnownReferenceTypeName superClassTypeName()
+	{
+		return typeInformation.superClassTypeName();
 	}
 }

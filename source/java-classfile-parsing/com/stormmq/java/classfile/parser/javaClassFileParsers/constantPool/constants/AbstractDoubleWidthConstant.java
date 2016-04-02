@@ -23,8 +23,9 @@
 package com.stormmq.java.classfile.parser.javaClassFileParsers.constantPool.constants;
 
 import com.stormmq.java.classfile.domain.attributes.code.constants.DoubleWidthConstantForLoad;
+import com.stormmq.java.classfile.domain.fieldConstants.FieldConstant;
 
-public abstract class AbstractDoubleWidthConstant implements FieldConstant, DoubleWidthConstantForLoad
+public abstract class AbstractDoubleWidthConstant implements FieldConstant, DoubleWidthConstantForLoad, Constant
 {
 	@Override
 	public final boolean doesConstantOccupyDoubleWidthSlot()
