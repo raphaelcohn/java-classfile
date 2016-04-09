@@ -28,12 +28,19 @@ import com.stormmq.java.classfile.domain.signatures.Signature;
 import com.stormmq.java.classfile.domain.uniqueness.FieldUniqueness;
 import com.stormmq.java.parsing.utilities.FieldFinality;
 import com.stormmq.java.parsing.utilities.Visibility;
+import com.stormmq.java.parsing.utilities.names.typeNames.referenceTypeNames.KnownReferenceTypeName;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.lang.annotation.Annotation;
+import java.util.Comparator;
+
+import static com.stormmq.java.parsing.utilities.Visibility.Private;
+import static com.stormmq.java.parsing.utilities.names.typeNames.referenceTypeNames.KnownReferenceTypeName.knownReferenceTypeName;
+
 public final class FieldInformation
 {
-	@NotNull private final FieldUniqueness fieldUniqueness;
+	@NotNull public final FieldUniqueness fieldUniqueness;
 	private final boolean isSynthetic;
 	@NotNull private final Visibility fieldVisibility;
 	@NotNull private final FieldFinality fieldFinality;
@@ -69,5 +76,16 @@ public final class FieldInformation
 	public boolean isInstance()
 	{
 		return !isStatic;
+	}
+
+	public boolean isPrivate()
+	{
+		return fieldVisibility == Private;
+	}
+
+	@NotNull
+	public <T> T annotationValue(@NotNull final Class<? extends Annotation> annotationClass, @NotNull final T defaultValue)
+	{
+		return runtimeAnnotationValues.annotationValue(knownReferenceTypeName(annotationClass.getName()), defaultValue);
 	}
 }

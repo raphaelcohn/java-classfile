@@ -22,12 +22,11 @@
 
 package com.stormmq.java.classfile.parser.javaClassFileParsers.functions;
 
+import com.stormmq.functions.ExceptionFunction;
 import com.stormmq.java.classfile.parser.javaClassFileParsers.exceptions.InvalidJavaClassFileException;
-import com.stormmq.java.classfile.parser.javaClassFileParsers.exceptions.JavaClassFileContainsDataTooLongToReadException;
 import org.jetbrains.annotations.NotNull;
 
 @FunctionalInterface
-public interface InvalidExceptionBiIntConsumer<T>
+public interface InvalidJavaClassFileExceptionFunction<T, R> extends ExceptionFunction<T, R, InvalidJavaClassFileException>
 {
-	void accept(@NotNull final T t, final int index) throws InvalidJavaClassFileException, JavaClassFileContainsDataTooLongToReadException;
 }

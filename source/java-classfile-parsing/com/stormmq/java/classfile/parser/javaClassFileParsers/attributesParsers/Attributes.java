@@ -22,6 +22,7 @@
 
 package com.stormmq.java.classfile.parser.javaClassFileParsers.attributesParsers;
 
+import com.stormmq.functions.*;
 import com.stormmq.java.classfile.domain.InvalidInternalTypeNameException;
 import com.stormmq.java.classfile.domain.attributes.UnknownAttributeData;
 import com.stormmq.java.classfile.domain.attributes.UnknownAttributes;
@@ -40,12 +41,13 @@ import org.jetbrains.annotations.*;
 
 import java.lang.annotation.RetentionPolicy;
 import java.util.*;
-import java.util.function.IntFunction;
+import java.util.function.*;
 
+import static com.stormmq.functions.ListHelper.newArrayListExceptionally;
+import static com.stormmq.functions.MapHelper.useMapValue;
+import static com.stormmq.functions.MapHelper.useMapValueExceptionallyWithDefault;
 import static com.stormmq.java.classfile.domain.attributes.annotations.AnnotationValue.EmptyParameterAnnotations;
-import static com.stormmq.java.classfile.domain.attributes.annotations.AnnotationValues.EmptyAnnotationValues;
-import static com.stormmq.java.classfile.domain.attributes.annotations.AnnotationValues.NoAnnotationValues;
-import static com.stormmq.java.classfile.domain.attributes.annotations.AnnotationValues.convertAnnotationValues;
+import static com.stormmq.java.classfile.domain.attributes.annotations.AnnotationValues.*;
 import static com.stormmq.java.classfile.domain.attributes.annotations.TypeAnnotation.EmptyTypeAnnotations;
 import static com.stormmq.java.classfile.domain.attributes.code.stackMapFrames.StackMapFrame.ImplicitStackMap;
 import static com.stormmq.java.classfile.domain.attributes.method.MethodParameter.EmptyMethodParameters;
@@ -383,12 +385,8 @@ public final class Attributes
 	@NotNull
 	private Map<KnownReferenceTypeName, RetentionPolicyAndValues> annotations(@NotNull @NonNls final String attributeName, @NotNull final RetentionPolicy ofRetentionPolicy) throws InvalidJavaClassFileException
 	{
-		@Nullable final Object value = attributes.get(attributeName);
-		if (value == null)
-		{
-			return AnnotationValues.Empty;
-		}
-		return newAnnotationValues(ofRetentionPolicy, (AnnotationValue[]) value);
+		final ExceptionFunction<Object, Map<KnownReferenceTypeName, RetentionPolicyAndValues>, InvalidJavaClassFileException> ifPresent = value -> newAnnotationValues(ofRetentionPolicy, (AnnotationValue[]) value);
+		return useMapValueExceptionallyWithDefault(attributes, attributeName, Empty, ifPresent);
 	}
 
 	@NotNull
@@ -424,80 +422,65 @@ public final class Attributes
 	@NotNull
 	private <V extends AbstractLocalVariable> List<V> variablesByVariableIndex(final char maximumLocals, final long codeLength, @NotNull final String attributeName) throws InvalidJavaClassFileException
 	{
-		@SuppressWarnings("unchecked") @Nullable final List<V[]> variableTables = (List<V[]>) attributes.get(attributeName);
-		if (variableTables == null)
+		final ExceptionSupplier<List<V>, InvalidJavaClassFileException> ifAbsent = Collections::emptyList;
+		return MapHelper.useMapValueExceptionally(attributes, attributeName, ifAbsent, (ExceptionFunction<Object, List<V>, InvalidJavaClassFileException>) value ->
 		{
-			return emptyList();
-		}
+			@SuppressWarnings("unchecked") final List<V[]> variableTables = (List<V[]>) value;
 
-		if (variableTables.size() > maximumLocals)
-		{
-			if (variableTables.size() == 1)
+			if (variableTables.size() > maximumLocals)
 			{
-				if (variableTables.get(0).length == 0)
+				if (variableTables.size() == 1)
 				{
-					return emptyList();
+					if (variableTables.get(0).length == 0)
+					{
+						return emptyList();
+					}
 				}
+				throw new InvalidJavaClassFileException("There may be no more than one " + attributeName + " attribute per local variable in the attributes table of a Code attribute.");
 			}
-			throw new InvalidJavaClassFileException("There may be no more than one " + attributeName + " attribute per local variable in the attributes table of a Code attribute.");
-		}
 
-		final List<V> variables = new ArrayList<>(maximumLocals);
-
-		for (final V[] variableTable : variableTables)
-		{
-			for (final V localVariable : variableTable)
+			return newArrayListExceptionally(maximumLocals, variables ->
 			{
-				try
+				for (final V[] variableTable : variableTables)
 				{
-					localVariable.validateNotAfterEndOfCode(codeLength);
-					localVariable.validateDoesNotHaveALocalVariableIndexWhichIsTooLarge(maximumLocals);
-				}
-				catch (final MismatchedLocalVariableLengthException e)
-				{
-					throw new InvalidJavaClassFileException("Invalid local variable", e);
-				}
+					for (final V localVariable : variableTable)
+					{
+						try
+						{
+							localVariable.validateNotAfterEndOfCode(codeLength);
+							localVariable.validateDoesNotHaveALocalVariableIndexWhichIsTooLarge(maximumLocals);
+						}
+						catch (final MismatchedLocalVariableLengthException e)
+						{
+							throw new InvalidJavaClassFileException("Invalid local variable", e);
+						}
 
-				variables.add(localVariable);
-			}
-		}
-
-		return variables;
+						variables.add(localVariable);
+					}
+				}
+			});
+		});
 	}
 
 	@SuppressWarnings("unchecked")
 	@NotNull
 	private <V> V[] getArrayMerged(@NotNull final IntFunction<V[]> arrayCreator, @NotNull @NonNls final String attributeName, @NotNull final V[] empty)
 	{
-		@Nullable final Object value = attributes.get(attributeName);
-		if (value == null)
-		{
-			return empty;
-		}
-		return arrayMerge(arrayCreator, (List<V[]>) value);
+		@SuppressWarnings("RedundantCast") final Function<Object, V[]> ifPresent = value -> arrayMerge(arrayCreator, (List<V[]>) value);
+		return useMapValue(attributes, attributeName, empty, ifPresent);
 	}
 
 	@SuppressWarnings("unchecked")
 	@NotNull
 	private <V> V getAttributeValueNotNull(@NotNull @NonNls final String attributeName, @NotNull final V defaultValue)
 	{
-		@Nullable final Object value = attributes.get(attributeName);
-		if (value == null)
-		{
-			return defaultValue;
-		}
-		return (V) value;
+		return (V) attributes.getOrDefault(attributeName, defaultValue);
 	}
 
 	@SuppressWarnings("unchecked")
 	@Nullable
 	private<V> V getAttributeValueNullable(@NotNull @NonNls final String attributeName, @Nullable final V defaultValue)
 	{
-		@Nullable final Object value = attributes.get(attributeName);
-		if (value == null)
-		{
-			return defaultValue;
-		}
-		return (V) value;
+		return (V) attributes.getOrDefault(attributeName, defaultValue);
 	}
 }

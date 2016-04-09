@@ -33,6 +33,7 @@ import org.jetbrains.annotations.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.stormmq.functions.ListHelper.listToArray;
 import static com.stormmq.java.classfile.domain.InternalTypeName.EmptyInternalTypeNames;
 import static com.stormmq.java.classfile.domain.InternalTypeName.MaximumArrayDimensions;
 import static com.stormmq.java.classfile.domain.InternalTypeName.VoidInternalTypeName;
@@ -101,7 +102,9 @@ public final class MethodDescriptorParser
 				{
 					return new ParameterDescriptorsResult(EmptyInternalTypeNames, 0, initialIndex);
 				}
-				return new ParameterDescriptorsResult(parameterDescriptors.toArray(new InternalTypeName[size]), methodParametersLengthExcludingThisButIncludingReturnType, initialIndex);
+
+				final InternalTypeName[] internalTypeNames = listToArray(parameterDescriptors, InternalTypeName[]::new, EmptyInternalTypeNames);
+				return new ParameterDescriptorsResult(internalTypeNames, methodParametersLengthExcludingThisButIncludingReturnType, initialIndex);
 			}
 
 			final ParsedTypeDescriptorResult parsedTypeDescriptorResult = processTypeDescriptor(index, length, rawMethodDescriptor, false);

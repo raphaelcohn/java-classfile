@@ -20,13 +20,12 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-package com.stormmq.java.classfile.processing;
+package com.stormmq.java.classfile.parser.javaClassFileParsers.functions;
 
-import org.jetbrains.annotations.NotNull;
+import com.stormmq.functions.ExceptionIntSupplier;
+import com.stormmq.java.classfile.parser.javaClassFileParsers.exceptions.InvalidJavaClassFileException;
 
 @FunctionalInterface
-public interface ToBooleanFunction<T>
+public interface InvalidJavaClassFileExceptionIntSupplier extends ExceptionIntSupplier<InvalidJavaClassFileException>
 {
-	@SuppressWarnings("BooleanMethodNameMustStartWithQuestion")
-	boolean applyAsBoolean(@NotNull final T value);
 }

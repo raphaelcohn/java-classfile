@@ -22,15 +22,20 @@
 
 package com.stormmq.java.classfile.domain.attributes.annotations;
 
+import com.stormmq.functions.*;
 import com.stormmq.java.classfile.domain.InvalidInternalTypeNameException;
 import com.stormmq.java.classfile.domain.names.MethodName;
+import com.stormmq.java.parsing.utilities.ReservedIdentifiers;
 import com.stormmq.java.parsing.utilities.names.typeNames.referenceTypeNames.KnownReferenceTypeName;
 import org.jetbrains.annotations.NotNull;
 
 import java.lang.annotation.RetentionPolicy;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.function.Supplier;
 
+import static com.stormmq.functions.MapHelper.putOnce;
+import static com.stormmq.java.parsing.utilities.ReservedIdentifiers.DefaultAnnotationMemberName;
 import static java.util.Collections.emptyMap;
 
 public final class AnnotationValues
@@ -38,6 +43,7 @@ public final class AnnotationValues
 	@NotNull public static final AnnotationValues[] NoAnnotationValues = {};
 	@NotNull public static final Map<KnownReferenceTypeName, RetentionPolicyAndValues> Empty = emptyMap();
 	@NotNull public static final AnnotationValues EmptyAnnotationValues = new AnnotationValues(Empty);
+	@NotNull private static final MethodName ValueMethodName = new MethodName(DefaultAnnotationMemberName);
 
 	@NotNull
 	public static Map<KnownReferenceTypeName, RetentionPolicyAndValues> convertAnnotationValues(@NotNull final RetentionPolicy ofRetentionPolicy, @NotNull final AnnotationValue... annotationValues) throws InvalidInternalTypeNameException, DuplicateAnnotationValueException
@@ -54,7 +60,11 @@ public final class AnnotationValues
 			final AnnotationValue annotationValue = annotationValues[index];
 			final KnownReferenceTypeName knownReferenceTypeName = annotationValue.knownReferenceTypeName();
 			final Map<MethodName, Object> values = annotationValue.values();
-			if (nameToValues.putIfAbsent(knownReferenceTypeName, new RetentionPolicyAndValues(ofRetentionPolicy, values)) != null)
+			try
+			{
+				putOnce(nameToValues, knownReferenceTypeName, (Supplier<RetentionPolicyAndValues>) () -> new RetentionPolicyAndValues(ofRetentionPolicy, values));
+			}
+			catch (final PutOnceViolationException ignored)
 			{
 				throw new DuplicateAnnotationValueException(knownReferenceTypeName);
 			}
@@ -74,4 +84,16 @@ public final class AnnotationValues
 		return nameToValues.containsKey(annotationTypeName);
 	}
 
+	@NotNull
+	public <T> T annotationValue(@NotNull final KnownReferenceTypeName annotationTypeName, @NotNull final T defaultValue)
+	{
+		return annotationValue(annotationTypeName, ValueMethodName, defaultValue);
+	}
+
+	@NotNull
+	public <T> T annotationValue(@NotNull final KnownReferenceTypeName annotationTypeName, @NotNull final MethodName methodName, @NotNull final T defaultValue)
+	{
+		final RetentionPolicyAndValues retentionPolicyAndValues = nameToValues.get(annotationTypeName);
+		return retentionPolicyAndValues.value(methodName, defaultValue);
+	}
 }

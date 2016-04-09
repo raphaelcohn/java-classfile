@@ -23,7 +23,7 @@
 package com.stormmq.java.classfile.parser;
 
 import com.stormmq.java.classfile.parser.javaClassFileParsers.exceptions.InvalidJavaClassFileException;
-import com.stormmq.java.classfile.parser.byteReaders.*;
+import com.stormmq.byteReaders.*;
 import com.stormmq.java.classfile.parser.javaClassFileParsers.exceptions.JavaClassFileContainsDataTooLongToReadException;
 import com.stormmq.string.Formatting;
 import org.jetbrains.annotations.NonNls;
@@ -33,7 +33,7 @@ import java.io.*;
 import java.nio.ByteBuffer;
 import java.nio.file.Path;
 
-import static com.stormmq.java.classfile.parser.byteReaders.ByteReader.ByteMask;
+import static com.stormmq.byteReaders.ByteReader.ByteMask;
 import static java.lang.Float.intBitsToFloat;
 import static java.lang.Integer.MAX_VALUE;
 import static java.nio.file.Files.readAllBytes;
@@ -125,7 +125,7 @@ public final class SimpleJavaClassFileReader implements JavaClassFileReader
 
 	@NotNull
 	@Override
-	public ByteBuffer readBytes(@NotNull @NonNls final String what, final long length) throws JavaClassFileContainsDataTooLongToReadException, InvalidJavaClassFileException
+	public ByteBuffer readBytes(@NotNull @NonNls final String what, final long length) throws InvalidJavaClassFileException
 	{
 		if (length > MAX_VALUE)
 		{
@@ -147,7 +147,7 @@ public final class SimpleJavaClassFileReader implements JavaClassFileReader
 	@Override
 	@SuppressWarnings("NumericCastThatLosesPrecision")
 	@NotNull
-	public String readModifiedUtf8String(@NotNull @NonNls final String what, final long length) throws JavaClassFileContainsDataTooLongToReadException, InvalidJavaClassFileException
+	public String readModifiedUtf8String(@NotNull @NonNls final String what, final long length) throws InvalidJavaClassFileException
 	{
 		if (length > MAX_VALUE)
 		{

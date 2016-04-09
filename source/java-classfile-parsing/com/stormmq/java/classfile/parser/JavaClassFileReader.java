@@ -65,8 +65,8 @@ public interface JavaClassFileReader
 	long readBigEndianRawDouble(@NotNull @NonNls final String what) throws InvalidJavaClassFileException;
 
 	@NotNull
-	ByteBuffer readBytes(@NotNull @NonNls final String what, final long length) throws JavaClassFileContainsDataTooLongToReadException, InvalidJavaClassFileException;
+	ByteBuffer readBytes(@NotNull @NonNls final String what, final long length) throws InvalidJavaClassFileException;
 
 	@NotNull
-	String readModifiedUtf8String(@NotNull @NonNls final String what, final long length) throws JavaClassFileContainsDataTooLongToReadException, InvalidJavaClassFileException;
+	String readModifiedUtf8String(@NotNull @NonNls final String what, final long length) throws InvalidJavaClassFileException;
 }

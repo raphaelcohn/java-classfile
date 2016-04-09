@@ -31,5 +31,5 @@ import org.jetbrains.annotations.NotNull;
 public interface VersionedClassFileParser
 {
 	@NotNull
-	ConcreteTypeInformation parse() throws InvalidJavaClassFileException, JavaClassFileContainsDataTooLongToReadException;
+	ConcreteTypeInformation parse() throws InvalidJavaClassFileException;
 }

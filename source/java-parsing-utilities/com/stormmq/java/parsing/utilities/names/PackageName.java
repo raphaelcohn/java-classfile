@@ -28,13 +28,20 @@ import org.jetbrains.annotations.*;
 
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.function.*;
 
+import static com.stormmq.functions.MapHelper.useMapValue;
+import static com.stormmq.functions.MapHelper.useMapValueOrGetDefault;
 import static com.stormmq.java.parsing.utilities.StringConstants.ExternalTypeNameSeparator;
 import static com.stormmq.java.parsing.utilities.StringConstants.ExternalTypeNameSeparatorString;
+import static com.stormmq.java.parsing.utilities.names.parentNames.AbstractParentName.namespaceSplitter;
 import static com.stormmq.java.parsing.utilities.names.typeNames.referenceTypeNames.KnownReferenceTypeName.knownReferenceTypeName;
 
 public final class PackageName extends AbstractParentName
 {
+	@NotNull public static final BiConsumer<PackageName, Consumer<String>> NamespaceSplitter = AbstractParentName.namespaceSplitter();
+	@NotNull public static final BiFunction<PackageName, String, String> NamespaceWithSimpleTypeNameJoiner = (packageName, simpleTypeName) -> packageName.fullyQualifiedNameUsingDotsAndDollarSigns + '.' + simpleTypeName;
+
 	@NotNull private static final ConcurrentMap<String, PackageName> cache = new ConcurrentHashMap<>(4096);
 	@NotNull public static final PackageName NoPackageName = cache("");
 	@NotNull public static final PackageName JavaLangPackageName = cache("java.lang");
@@ -42,25 +49,14 @@ public final class PackageName extends AbstractParentName
 	@NotNull
 	private static PackageName cache(@NonNls @NotNull final String fullyQualifiedNameUsingDotsAndDollarSigns)
 	{
-		final PackageName potentialDuplicate = new PackageName(fullyQualifiedNameUsingDotsAndDollarSigns);
-		@Nullable final PackageName previous = cache.putIfAbsent(fullyQualifiedNameUsingDotsAndDollarSigns, potentialDuplicate);
-		if (previous == null)
-		{
-			return potentialDuplicate;
-		}
-		return previous;
+		return cache.computeIfAbsent(fullyQualifiedNameUsingDotsAndDollarSigns, PackageName::new);
 	}
 
 	@NotNull
 	public static PackageName packageName(@NonNls @NotNull final String fullyQualifiedNameUsingDotsAndDollarSigns)
 	{
-		@Nullable final PackageName packageName = cache.get(fullyQualifiedNameUsingDotsAndDollarSigns);
-		if (packageName != null)
-		{
-			return packageName;
-		}
-
-		return cache(fullyQualifiedNameUsingDotsAndDollarSigns);
+		final Supplier<PackageName> ifAbsent = () -> cache(fullyQualifiedNameUsingDotsAndDollarSigns);
+		return useMapValueOrGetDefault(cache, fullyQualifiedNameUsingDotsAndDollarSigns, ifAbsent);
 	}
 
 	private PackageName(@NonNls @NotNull final String fullyQualifiedNameUsingDotsAndDollarSigns)

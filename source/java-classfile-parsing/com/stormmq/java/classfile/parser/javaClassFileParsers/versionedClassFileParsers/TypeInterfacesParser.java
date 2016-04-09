@@ -22,21 +22,24 @@
 
 package com.stormmq.java.classfile.parser.javaClassFileParsers.versionedClassFileParsers;
 
+import com.stormmq.functions.AddOnceViolationException;
 import com.stormmq.java.classfile.domain.TypeKind;
 import com.stormmq.java.classfile.parser.javaClassFileParsers.exceptions.InvalidJavaClassFileException;
 import com.stormmq.java.classfile.parser.javaClassFileParsers.constantPool.ConstantPoolJavaClassFileReader;
 import com.stormmq.java.classfile.parser.javaClassFileParsers.exceptions.JavaClassFileContainsDataTooLongToReadException;
 import com.stormmq.java.parsing.utilities.names.typeNames.referenceTypeNames.KnownReferenceTypeName;
-import com.stormmq.string.Formatting;
 import org.jetbrains.annotations.*;
 
 import java.util.*;
 
+import static com.stormmq.functions.MapHelper.putOnce;
+import static com.stormmq.functions.CollectionHelper.addOnce;
 import static com.stormmq.java.classfile.domain.TypeKind.Annotation;
 import static com.stormmq.java.classfile.domain.TypeKind.Class;
 import static com.stormmq.java.classfile.domain.TypeKind.Interface;
 import static com.stormmq.java.parsing.utilities.StringConstants.Should_be_impossible;
 import static com.stormmq.java.parsing.utilities.names.typeNames.referenceTypeNames.KnownReferenceTypeName.*;
+import static com.stormmq.string.Formatting.format;
 import static com.stormmq.string.StringUtilities.aOrAn;
 
 public final class TypeInterfacesParser
@@ -48,9 +51,9 @@ public final class TypeInterfacesParser
 	{
 		final Map<KnownReferenceTypeName, TypeKind> mismatchedThisClassTypeNames = new HashMap<>(3);
 
-		mismatchedThisClassTypeNames.put(JavaLangObject, Class);
-		mismatchedThisClassTypeNames.put(JavaLangEnum, Class);
-		mismatchedThisClassTypeNames.put(JavaLangAnnotationAnnotation, Interface);
+		putOnce(mismatchedThisClassTypeNames, JavaLangObject, Class);
+		putOnce(mismatchedThisClassTypeNames, JavaLangEnum, Class);
+		putOnce(mismatchedThisClassTypeNames, JavaLangAnnotationAnnotation, Interface);
 
 		return mismatchedThisClassTypeNames;
 	}
@@ -142,33 +145,35 @@ public final class TypeInterfacesParser
 
 				if (interfaceTypeName.equals(thisClassTypeName))
 				{
-					throw new InvalidJavaClassFileException(Formatting.format("Interface name '%1$s' is thisClass", interfaceTypeName));
+					throw new InvalidJavaClassFileException(format("Interface name '%1$s' is thisClass", interfaceTypeName));
 				}
 
 				if (superClassTypeName == null)
 				{
-					throw new InvalidJavaClassFileException(Formatting.format("'%1$s' can not implement interfaces", thisClassTypeName));
+					throw new InvalidJavaClassFileException(format("'%1$s' can not implement interfaces", thisClassTypeName));
 				}
 
 				if (interfaceTypeName.equals(thisClassTypeName))
 				{
-					throw new InvalidJavaClassFileException(Formatting.format("Interface name '%1$s' is superClass", interfaceTypeName));
+					throw new InvalidJavaClassFileException(format("Interface name '%1$s' is superClass", interfaceTypeName));
 				}
 
 				if (typeKind == Annotation)
 				{
 					if (index > 0)
 					{
-						throw new InvalidJavaClassFileException(Formatting.format("Annotation '%1$s' should not implement more than one interface", thisClassTypeName));
+						throw new InvalidJavaClassFileException(format("Annotation '%1$s' should not implement more than one interface", thisClassTypeName));
 					}
 				}
 
-				if (objects.add(interfaceTypeName))
+				try
 				{
-					return;
+					addOnce(objects, interfaceTypeName);
 				}
-
-				throw new InvalidJavaClassFileException(Formatting.format("Duplicate interface name '%1$s'", interfaceTypeName));
+				catch (final AddOnceViolationException e)
+				{
+					throw new InvalidJavaClassFileException(format("Duplicate interface name '%1$s'", interfaceTypeName), e);
+				}
 			});
 		}
 		catch (final JavaClassFileContainsDataTooLongToReadException e)
@@ -180,12 +185,12 @@ public final class TypeInterfacesParser
 		{
 			if (interfaces.isEmpty())
 			{
-				throw new InvalidJavaClassFileException(Formatting.format("Annotation '%1$s' should implement one interface (implements none)", thisClassTypeName));
+				throw new InvalidJavaClassFileException(format("Annotation '%1$s' should implement one interface (implements none)", thisClassTypeName));
 			}
 
 			if (!interfaces.contains(JavaLangAnnotationAnnotation))
 			{
-				throw new InvalidJavaClassFileException(Formatting.format("Annotation '%1$s' should implement the interface '%2$s'", thisClassTypeName, JavaLangAnnotationAnnotation));
+				throw new InvalidJavaClassFileException(format("Annotation '%1$s' should implement the interface '%2$s'", thisClassTypeName, JavaLangAnnotationAnnotation));
 			}
 
 			return AnnotationKnownReferenceTypeNamesSet;
@@ -200,7 +205,7 @@ public final class TypeInterfacesParser
 		{
 			if (interfaceTypeName.equals(prohibitedInterfaceTypeName))
 			{
-				throw new InvalidJavaClassFileException(Formatting.format("Interface name '%1$s' is '%2$s' which is not an interface", interfaceTypeName, prohibitedInterfaceTypeName));
+				throw new InvalidJavaClassFileException(format("Interface name '%1$s' is '%2$s' which is not an interface", interfaceTypeName, prohibitedInterfaceTypeName));
 			}
 		}
 	}

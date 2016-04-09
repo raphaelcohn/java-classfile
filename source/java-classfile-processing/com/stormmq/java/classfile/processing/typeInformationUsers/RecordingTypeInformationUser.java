@@ -30,6 +30,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.nio.file.Path;
 import java.util.concurrent.ConcurrentMap;
+import java.util.function.BiFunction;
 
 public final class RecordingTypeInformationUser implements TypeInformationUser
 {
@@ -46,10 +47,18 @@ public final class RecordingTypeInformationUser implements TypeInformationUser
 	public void use(@NotNull final ConcreteTypeInformation typeInformation, @NotNull final String relativeFilePath, @NotNull final Path relativeRootFolderPath)
 	{
 		final TypeInformationTriplet typeInformationTriplet = new TypeInformationTriplet(typeInformation, relativeFilePath, relativeRootFolderPath);
-		@Nullable final TypeInformationTriplet extant = records.put(typeInformation.thisClassTypeName, typeInformationTriplet);
-		if (extant != null)
+
+		records.compute(typeInformation.thisClassTypeName, new BiFunction<KnownReferenceTypeName, TypeInformationTriplet, TypeInformationTriplet>()
 		{
-			processLog.duplicateTypeInformationWarning(extant, typeInformationTriplet);
-		}
+			@Override
+			public TypeInformationTriplet apply(final KnownReferenceTypeName knownReferenceTypeName, @Nullable final TypeInformationTriplet value)
+			{
+				if (value != null)
+				{
+					processLog.duplicateTypeInformationWarning(value, typeInformationTriplet);
+				}
+				return typeInformationTriplet;
+			}
+		});
 	}
 }

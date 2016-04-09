@@ -38,4 +38,17 @@ public final class RetentionPolicyAndValues
 		this.retentionPolicy = retentionPolicy;
 		this.values = values;
 	}
+
+	@NotNull
+	public RetentionPolicy retentionPolicy()
+	{
+		return retentionPolicy;
+	}
+
+	@SuppressWarnings("unchecked")
+	@NotNull
+	public <T> T value(@NotNull final MethodName methodName, @NotNull final T defaultValue)
+	{
+		return (T) values.getOrDefault(methodName, defaultValue);
+	}
 }

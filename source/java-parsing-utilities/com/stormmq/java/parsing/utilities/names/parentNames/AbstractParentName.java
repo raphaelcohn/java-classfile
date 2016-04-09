@@ -23,15 +23,32 @@
 package com.stormmq.java.parsing.utilities.names.parentNames;
 
 import com.stormmq.java.parsing.utilities.InvalidJavaIdentifierException;
+import com.stormmq.java.parsing.utilities.names.PackageName;
+import com.stormmq.string.StringUtilities;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 
 import static com.stormmq.java.parsing.utilities.ReservedIdentifiers.validateIsJavaIdentifier;
 import static com.stormmq.java.parsing.utilities.StringConstants.ExternalTypeNameSeparator;
 import static com.stormmq.java.parsing.utilities.StringConstants.InternalTypeNameSeparatorString;
+import static com.stormmq.java.parsing.utilities.names.PackageName.packageName;
 
 public abstract class AbstractParentName implements ParentName
 {
+	@NotNull
+	protected static <P extends AbstractParentName> BiConsumer<P, Consumer<String>> namespaceSplitter()
+	{
+		return (namespace, stringConsumer) -> StringUtilities.split(namespace.fullyQualifiedNameUsingDotsAndDollarSigns, '.', stringConsumer);
+	}
+
+	public static void split(@NotNull final String fullyQualifiedNameUsingDotsAndDollarSigns, @NotNull final Consumer<String> user)
+	{
+		StringUtilities.split(fullyQualifiedNameUsingDotsAndDollarSigns, '.', user);
+	}
+
 	@NotNull protected final String fullyQualifiedNameUsingDotsAndDollarSigns;
 
 	protected AbstractParentName(@NotNull final String fullyQualifiedNameUsingDotsAndDollarSigns, final boolean isClassLikeName)
@@ -71,6 +88,11 @@ public abstract class AbstractParentName implements ParentName
 			}
 		}
 		this.fullyQualifiedNameUsingDotsAndDollarSigns = fullyQualifiedNameUsingDotsAndDollarSigns;
+	}
+
+	public final void split(@NotNull final Consumer<String> user)
+	{
+		split(fullyQualifiedNameUsingDotsAndDollarSigns, user);
 	}
 
 	@NotNull
@@ -142,4 +164,10 @@ public abstract class AbstractParentName implements ParentName
 		return fullyQualifiedNameUsingDotsAndDollarSigns.hashCode();
 	}
 
+	@SuppressWarnings("ClassReferencesSubclass")
+	@NotNull
+	public final PackageName parent()
+	{
+		return packageName(allParents());
+	}
 }

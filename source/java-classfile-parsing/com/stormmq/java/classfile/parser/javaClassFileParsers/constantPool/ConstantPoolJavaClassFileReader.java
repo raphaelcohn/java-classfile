@@ -22,6 +22,8 @@
 
 package com.stormmq.java.classfile.parser.javaClassFileParsers.constantPool;
 
+import com.stormmq.functions.MapHelper;
+import com.stormmq.functions.PutOnceViolationException;
 import com.stormmq.java.classfile.domain.*;
 import com.stormmq.java.classfile.domain.attributes.annotations.*;
 import com.stormmq.java.classfile.domain.attributes.annotations.targetInformations.*;
@@ -36,16 +38,16 @@ import com.stormmq.java.classfile.domain.names.MethodName;
 import com.stormmq.java.classfile.parser.JavaClassFileReader;
 import com.stormmq.java.classfile.parser.javaClassFileParsers.constantPool.constants.referenceIndexConstants.NameAndTypeReferenceIndexConstant;
 import com.stormmq.java.classfile.parser.javaClassFileParsers.exceptions.InvalidJavaClassFileException;
-import com.stormmq.java.classfile.parser.javaClassFileParsers.exceptions.JavaClassFileContainsDataTooLongToReadException;
 import com.stormmq.java.classfile.parser.javaClassFileParsers.functions.*;
 import com.stormmq.java.parsing.utilities.names.typeNames.referenceTypeNames.KnownReferenceTypeName;
-import com.stormmq.string.Formatting;
 import org.jetbrains.annotations.*;
 
 import java.nio.ByteBuffer;
 import java.util.*;
 import java.util.function.IntFunction;
 
+import static com.stormmq.functions.MapHelper.getGuarded;
+import static com.stormmq.functions.MapHelper.putOnce;
 import static com.stormmq.java.classfile.domain.attributes.annotations.AnnotationValue.EmptyAnnotationValues;
 import static com.stormmq.java.classfile.domain.attributes.annotations.AnnotationValue.EmptyParameterAnnotations;
 import static com.stormmq.java.classfile.domain.attributes.annotations.TargetInfoItem.*;
@@ -77,16 +79,17 @@ import static java.util.Collections.emptySet;
 public final class ConstantPoolJavaClassFileReader implements JavaClassFileReader
 {
 	@NotNull private static final Object[] EmptyArrayValues = new Object[0];
-	@NotNull private static final Map<TargetInfoItem, InvalidExceptionFunction<ConstantPoolJavaClassFileReader, TargetInformation>> TargetInfoItemsParsingMap = targetInfoItemsParsingMap();
+	@NotNull private static final Map<TargetInfoItem, InvalidJavaClassFileExceptionFunction<ConstantPoolJavaClassFileReader, TargetInformation>> TargetInfoItemsParsingMap = targetInfoItemsParsingMap();
 
 	@NotNull
-	private static Map<TargetInfoItem, InvalidExceptionFunction<ConstantPoolJavaClassFileReader, TargetInformation>> targetInfoItemsParsingMap()
+	private static Map<TargetInfoItem, InvalidJavaClassFileExceptionFunction<ConstantPoolJavaClassFileReader, TargetInformation>> targetInfoItemsParsingMap()
 	{
-		final Map<TargetInfoItem, InvalidExceptionFunction<ConstantPoolJavaClassFileReader, TargetInformation>> targetInfoItemsParsingMap = new EnumMap<>(TargetInfoItem.class);
+		final Map<TargetInfoItem, InvalidJavaClassFileExceptionFunction<ConstantPoolJavaClassFileReader, TargetInformation>> targetInfoItemsParsingMap = new EnumMap<>(TargetInfoItem.class);
 
-		targetInfoItemsParsingMap.put(type_parameter_target, constantPoolJavaClassFileReader -> typeParameter(constantPoolJavaClassFileReader.readUnsigned8BitInteger("type parameter target")));
+		final InvalidJavaClassFileExceptionFunction<ConstantPoolJavaClassFileReader, TargetInformation> value9 = constantPoolJavaClassFileReader -> typeParameter(constantPoolJavaClassFileReader.readUnsigned8BitInteger("type parameter target"));
+		putOnce(targetInfoItemsParsingMap, type_parameter_target, value9);
 
-		targetInfoItemsParsingMap.put(supertype_target, constantPoolJavaClassFileReader ->
+		final InvalidJavaClassFileExceptionFunction<ConstantPoolJavaClassFileReader, TargetInformation> value8 = constantPoolJavaClassFileReader ->
 		{
 			final char index = constantPoolJavaClassFileReader.readBigEndianUnsigned16BitInteger("super type index");
 			if (index == 0)
@@ -94,17 +97,22 @@ public final class ConstantPoolJavaClassFileReader implements JavaClassFileReade
 				return SuperType;
 			}
 			return extendsInterface(index);
-		});
+		};
+		putOnce(targetInfoItemsParsingMap, supertype_target, value8);
 
-		targetInfoItemsParsingMap.put(type_parameter_bound_target, constantPoolJavaClassFileReader -> new TypeParameterBoundTargetInformation(constantPoolJavaClassFileReader.readUnsigned8BitInteger("type parameter index"), constantPoolJavaClassFileReader.readUnsigned8BitInteger("bound index")));
+		final InvalidJavaClassFileExceptionFunction<ConstantPoolJavaClassFileReader, TargetInformation> value7 = constantPoolJavaClassFileReader -> new TypeParameterBoundTargetInformation(constantPoolJavaClassFileReader.readUnsigned8BitInteger("type parameter index"), constantPoolJavaClassFileReader.readUnsigned8BitInteger("bound index"));
+		putOnce(targetInfoItemsParsingMap, type_parameter_bound_target, value7);
 
-		targetInfoItemsParsingMap.put(empty_target, constantPoolJavaClassFileReader -> EmptyTarget);
+		final InvalidJavaClassFileExceptionFunction<ConstantPoolJavaClassFileReader, TargetInformation> value6 = constantPoolJavaClassFileReader -> EmptyTarget;
+		putOnce(targetInfoItemsParsingMap, empty_target, value6);
 
-		targetInfoItemsParsingMap.put(formal_parameter_target, constantPoolJavaClassFileReader -> formalParameterTargetInformation(constantPoolJavaClassFileReader.readUnsigned8BitInteger("formal parameter index")));
+		final InvalidJavaClassFileExceptionFunction<ConstantPoolJavaClassFileReader, TargetInformation> value5 = constantPoolJavaClassFileReader -> formalParameterTargetInformation(constantPoolJavaClassFileReader.readUnsigned8BitInteger("formal parameter index"));
+		putOnce(targetInfoItemsParsingMap, formal_parameter_target, value5);
 
-		targetInfoItemsParsingMap.put(throws_target, constantPoolJavaClassFileReader -> throwsType(constantPoolJavaClassFileReader.readBigEndianUnsigned16BitInteger("throws type index")));
+		final InvalidJavaClassFileExceptionFunction<ConstantPoolJavaClassFileReader, TargetInformation> value4 = constantPoolJavaClassFileReader -> throwsType(constantPoolJavaClassFileReader.readBigEndianUnsigned16BitInteger("throws type index"));
+		putOnce(targetInfoItemsParsingMap, throws_target, value4);
 
-		targetInfoItemsParsingMap.put(localvar_target, constantPoolJavaClassFileReader ->
+		final InvalidJavaClassFileExceptionFunction<ConstantPoolJavaClassFileReader, TargetInformation> value3 = constantPoolJavaClassFileReader ->
 		{
 			final char tableLength = constantPoolJavaClassFileReader.readBigEndianUnsigned16BitInteger("table length");
 
@@ -123,13 +131,17 @@ public final class ConstantPoolJavaClassFileReader implements JavaClassFileReade
 			}
 
 			return new LocalVariableTargetInformation(localVariableTargetInformationItems);
-		});
+		};
+		putOnce(targetInfoItemsParsingMap, localvar_target, value3);
 
-		targetInfoItemsParsingMap.put(catch_target, constantPoolJavaClassFileReader -> catches(constantPoolJavaClassFileReader.readBigEndianUnsigned16BitInteger("catches type index")));
+		final InvalidJavaClassFileExceptionFunction<ConstantPoolJavaClassFileReader, TargetInformation> value2 = constantPoolJavaClassFileReader -> catches(constantPoolJavaClassFileReader.readBigEndianUnsigned16BitInteger("catches type index"));
+		putOnce(targetInfoItemsParsingMap, catch_target, value2);
 
-		targetInfoItemsParsingMap.put(offset_target, constantPoolJavaClassFileReader -> offset(constantPoolJavaClassFileReader.readBigEndianUnsigned16BitInteger("offset type index")));
+		final InvalidJavaClassFileExceptionFunction<ConstantPoolJavaClassFileReader, TargetInformation> value1 = constantPoolJavaClassFileReader -> offset(constantPoolJavaClassFileReader.readBigEndianUnsigned16BitInteger("offset type index"));
+		putOnce(targetInfoItemsParsingMap, offset_target, value1);
 
-		targetInfoItemsParsingMap.put(type_argument_target, constantPoolJavaClassFileReader -> new TypeArgumentOffsetTargetInformation(constantPoolJavaClassFileReader.readBigEndianUnsigned16BitInteger("type argument offset type index"), constantPoolJavaClassFileReader.readUnsigned8BitInteger("type argument index")));
+		final InvalidJavaClassFileExceptionFunction<ConstantPoolJavaClassFileReader, TargetInformation> value = constantPoolJavaClassFileReader -> new TypeArgumentOffsetTargetInformation(constantPoolJavaClassFileReader.readBigEndianUnsigned16BitInteger("type argument offset type index"), constantPoolJavaClassFileReader.readUnsigned8BitInteger("type argument index"));
+		putOnce(targetInfoItemsParsingMap, type_argument_target, value);
 
 
 		for (final TargetInfoItem targetInfoItem : values())
@@ -145,16 +157,16 @@ public final class ConstantPoolJavaClassFileReader implements JavaClassFileReade
 
 	@NotNull private final JavaClassFileReader delegate;
 	@NotNull private final ConstantPool constantPool;
-	@NotNull private final InvalidExceptionFunction<ConstantPoolIndex, String> retrieveModifiedUtf8String;
-	@NotNull private final InvalidExceptionFunction<ConstantPoolIndex, InternalTypeName> retrieveInternalTypeName;
-	@NotNull private final InvalidExceptionFunction<ConstantPoolIndex, MethodHandle> retrieveMethodHandle;
-	@NotNull private final InvalidExceptionFunction<ConstantPoolIndex, FieldConstant> retrieveFieldConstant;
-	@NotNull private final InvalidExceptionFunction<ConstantPoolIndex, BootstrapMethodArgument> retrieveBootstrapMethodArgument;
-	@NotNull private final InvalidExceptionFunction<ConstantPoolIndex, NameAndTypeReferenceIndexConstant> retrieveNameAndTypeReference;
-	@NotNull private final InvalidExceptionFunction<ConstantPoolIndex, Integer> retrieveInteger;
-	@NotNull private final InvalidExceptionFunction<ConstantPoolIndex, Float> retrieveFloat;
-	@NotNull private final InvalidExceptionFunction<ConstantPoolIndex, Long> retrieveLong;
-	@NotNull private final InvalidExceptionFunction<ConstantPoolIndex, RawDouble> retrieveDouble;
+	@NotNull private final InvalidJavaClassFileExceptionFunction<ConstantPoolIndex, String> retrieveModifiedUtf8String;
+	@NotNull private final InvalidJavaClassFileExceptionFunction<ConstantPoolIndex, InternalTypeName> retrieveInternalTypeName;
+	@NotNull private final InvalidJavaClassFileExceptionFunction<ConstantPoolIndex, MethodHandle> retrieveMethodHandle;
+	@NotNull private final InvalidJavaClassFileExceptionFunction<ConstantPoolIndex, FieldConstant> retrieveFieldConstant;
+	@NotNull private final InvalidJavaClassFileExceptionFunction<ConstantPoolIndex, BootstrapMethodArgument> retrieveBootstrapMethodArgument;
+	@NotNull private final InvalidJavaClassFileExceptionFunction<ConstantPoolIndex, NameAndTypeReferenceIndexConstant> retrieveNameAndTypeReference;
+	@NotNull private final InvalidJavaClassFileExceptionFunction<ConstantPoolIndex, Integer> retrieveInteger;
+	@NotNull private final InvalidJavaClassFileExceptionFunction<ConstantPoolIndex, Float> retrieveFloat;
+	@NotNull private final InvalidJavaClassFileExceptionFunction<ConstantPoolIndex, Long> retrieveLong;
+	@NotNull private final InvalidJavaClassFileExceptionFunction<ConstantPoolIndex, RawDouble> retrieveDouble;
 
 	public ConstantPoolJavaClassFileReader(@NotNull final JavaClassFileReader delegate, @NotNull final ConstantPool constantPool)
 	{
@@ -236,14 +248,14 @@ public final class ConstantPoolJavaClassFileReader implements JavaClassFileReade
 
 	@NotNull
 	@Override
-	public ByteBuffer readBytes(@NotNull @NonNls final String what, final long length) throws JavaClassFileContainsDataTooLongToReadException, InvalidJavaClassFileException
+	public ByteBuffer readBytes(@NotNull @NonNls final String what, final long length) throws InvalidJavaClassFileException
 	{
 		return delegate.readBytes(what, length);
 	}
 
 	@NotNull
 	@Override
-	public String readModifiedUtf8String(@NotNull @NonNls final String what, final long length) throws JavaClassFileContainsDataTooLongToReadException, InvalidJavaClassFileException
+	public String readModifiedUtf8String(@NotNull @NonNls final String what, final long length) throws InvalidJavaClassFileException
 	{
 		return delegate.readModifiedUtf8String(what, length);
 	}
@@ -259,19 +271,19 @@ public final class ConstantPoolJavaClassFileReader implements JavaClassFileReade
 	}
 
 	@NotNull
-	public AnnotationValue[] parseAnnotations() throws InvalidJavaClassFileException, JavaClassFileContainsDataTooLongToReadException
+	public AnnotationValue[] parseAnnotations() throws InvalidJavaClassFileException
 	{
 		return parseTableAsArrayWith16BitLength(AnnotationValue[]::new, EmptyAnnotationValues, this::parseAnnotationValue);
 	}
 
 	@SuppressWarnings("MethodCanBeVariableArityMethod")
 	@NotNull
-	public TypeAnnotation[] parseTypeAnnotations(@NotNull final TargetType[] targetTypesForLocation) throws InvalidJavaClassFileException, JavaClassFileContainsDataTooLongToReadException
+	public TypeAnnotation[] parseTypeAnnotations(@NotNull final TargetType[] targetTypesForLocation) throws InvalidJavaClassFileException
 	{
 		return parseTableAsArrayWith16BitLength(TypeAnnotation[]::new, EmptyTypeAnnotations, () ->
 		{
 			final TargetType targetType = targetType(targetTypesForLocation);
-			final TargetInformation targetInformation = TargetInfoItemsParsingMap.get(targetType.targetInfoItem).apply(this);
+			final TargetInformation targetInformation = getGuarded(TargetInfoItemsParsingMap, targetType.targetInfoItem).apply(this);
 			final TypePathElement[] typePath = parseTargetPath();
 			final AnnotationValue annotationValue = parseAnnotationValue();
 
@@ -280,28 +292,32 @@ public final class ConstantPoolJavaClassFileReader implements JavaClassFileReade
 	}
 
 	@NotNull
-	public AnnotationValue[][] parseParameterAnnotations() throws InvalidJavaClassFileException, JavaClassFileContainsDataTooLongToReadException
+	public AnnotationValue[][] parseParameterAnnotations() throws InvalidJavaClassFileException
 	{
 		return parseTableAsArrayWith8BitLength(AnnotationValue[][]::new, EmptyParameterAnnotations, this::parseAnnotations);
 	}
 
 	@NotNull
-	private Map<MethodName, Object> parseAnnotationElementValuePairs() throws InvalidJavaClassFileException, JavaClassFileContainsDataTooLongToReadException
+	private Map<MethodName, Object> parseAnnotationElementValuePairs() throws InvalidJavaClassFileException
 	{
 		return parseTableAsMapWith16BitLength((table, index) ->
 		{
 			final MethodName elementName = readMethodName("element name");
 			final Object elementValue = parseAnnotationElementValue();
-			if (table.put(elementName, elementValue) != null)
+			try
 			{
-				throw new InvalidJavaClassFileException(format("Duplicate annotation element key '%1$s'", elementName));
+				putOnce(table, elementName, elementValue);
+			}
+			catch (final PutOnceViolationException e)
+			{
+				throw new InvalidJavaClassFileException(format("Duplicate annotation element key '%1$s'", elementName), e);
 			}
 		});
 	}
 
 	@NotNull
 	@NonNls
-	private TypePathElement[] parseTargetPath() throws InvalidJavaClassFileException, JavaClassFileContainsDataTooLongToReadException
+	private TypePathElement[] parseTargetPath() throws InvalidJavaClassFileException
 	{
 		return parseTableAsArrayWith8BitLength(TypePathElement[]::new, EmptyTypePathElements, () ->
 		{
@@ -346,7 +362,7 @@ public final class ConstantPoolJavaClassFileReader implements JavaClassFileReade
 	}
 
 	@NotNull
-	public Object parseAnnotationElementValue() throws InvalidJavaClassFileException, JavaClassFileContainsDataTooLongToReadException
+	public Object parseAnnotationElementValue() throws InvalidJavaClassFileException
 	{
 		// element_value
 		final char tag = (char) readUnsigned8BitInteger("annotation default tag value");
@@ -423,7 +439,7 @@ public final class ConstantPoolJavaClassFileReader implements JavaClassFileReade
 	}
 
 	@NotNull
-	private AnnotationValue parseAnnotationValue() throws InvalidJavaClassFileException, JavaClassFileContainsDataTooLongToReadException
+	private AnnotationValue parseAnnotationValue() throws InvalidJavaClassFileException
 	{
 		final FieldDescriptor typeIndexFieldDescriptor = readFieldDescriptor("annotation type index");
 		final Map<MethodName, Object> fieldValues = parseAnnotationElementValuePairs();
@@ -607,7 +623,7 @@ public final class ConstantPoolJavaClassFileReader implements JavaClassFileReade
 	}
 
 	@NotNull
-	private <V> V readReferenceAndResolveConstant(@NotNull @NonNls final String what, @NotNull final InvalidExceptionFunction<ConstantPoolIndex, V> retrieve) throws InvalidJavaClassFileException
+	private <V> V readReferenceAndResolveConstant(@NotNull @NonNls final String what, @NotNull final InvalidJavaClassFileExceptionFunction<ConstantPoolIndex, V> retrieve) throws InvalidJavaClassFileException
 	{
 		final ConstantPoolIndex referenceIndex = readReferenceIndex(what);
 		return retrieve.apply(referenceIndex);
@@ -621,7 +637,7 @@ public final class ConstantPoolJavaClassFileReader implements JavaClassFileReade
 	}
 
 	@Nullable
-	private <V> V readPotentiallyNullReference(@NotNull @NonNls final String what, @NotNull final InvalidExceptionFunction<ConstantPoolIndex, V> retrieve) throws InvalidJavaClassFileException
+	private <V> V readPotentiallyNullReference(@NotNull @NonNls final String what, @NotNull final InvalidJavaClassFileExceptionFunction<ConstantPoolIndex, V> retrieve) throws InvalidJavaClassFileException
 	{
 		final char referenceIndex = readBigEndianUnsigned16BitInteger(what);
 		if (referenceIndex == 0)
@@ -644,25 +660,25 @@ public final class ConstantPoolJavaClassFileReader implements JavaClassFileReade
 	}
 
 	@NotNull
-	private <V> V[] parseTableAsArrayWith8BitLength(@NotNull final IntFunction<V[]> arrayCreator, @NotNull final V[] empty, @NotNull final InvalidExceptionNullaryFunction<V> parse) throws InvalidJavaClassFileException, JavaClassFileContainsDataTooLongToReadException
+	private <V> V[] parseTableAsArrayWith8BitLength(@NotNull final IntFunction<V[]> arrayCreator, @NotNull final V[] empty, @NotNull final InvalidJavaClassFileExceptionSupplier<V> parse) throws InvalidJavaClassFileException
 	{
 		return parseTableAsArray(arrayCreator, empty, parse, this::getTableLength8Bit);
 	}
 
 	@NotNull
-	public <Value> Value[] parseTableAsArrayWith16BitLength(@NotNull final IntFunction<Value[]> arrayCreator, @NotNull final Value[] empty, @NotNull final InvalidExceptionNullaryFunction<Value> parse) throws InvalidJavaClassFileException, JavaClassFileContainsDataTooLongToReadException
+	public <Value> Value[] parseTableAsArrayWith16BitLength(@NotNull final IntFunction<Value[]> arrayCreator, @NotNull final Value[] empty, @NotNull final InvalidJavaClassFileExceptionSupplier<Value> parse) throws InvalidJavaClassFileException
 	{
 		return parseTableAsArray(arrayCreator, empty, parse, this::getTableLength16Bit);
 	}
 
 	@NotNull
-	public <Value> Set<Value> parseTableAsSetWith16BitLength(@NotNull final InvalidExceptionBiIntConsumer<Set<Value>> parse) throws InvalidJavaClassFileException, JavaClassFileContainsDataTooLongToReadException
+	public <Value> Set<Value> parseTableAsSetWith16BitLength(@NotNull final InvalidJavaClassFileExceptionBiIntConsumer<Set<Value>> parse) throws InvalidJavaClassFileException
 	{
 		return parseTableAsSet(parse, this::getTableLength16Bit);
 	}
 
 	@NotNull
-	public <Key, Value> Map<Key, Value> parseTableAsMapWith16BitLength(@NotNull final InvalidExceptionBiIntConsumer<Map<Key, Value>> parse) throws InvalidJavaClassFileException, JavaClassFileContainsDataTooLongToReadException
+	public <Key, Value> Map<Key, Value> parseTableAsMapWith16BitLength(@NotNull final InvalidJavaClassFileExceptionBiIntConsumer<Map<Key, Value>> parse) throws InvalidJavaClassFileException
 	{
 		return parseTableAsMap(parse, this::getTableLength16Bit);
 	}
@@ -674,25 +690,25 @@ public final class ConstantPoolJavaClassFileReader implements JavaClassFileReade
 	}
 
 	@NotNull
-	private static <Value> Value[] parseTableAsArray(@NotNull final IntFunction<Value[]> arrayCreator, @NotNull final Value[] empty, @NotNull final InvalidExceptionNullaryFunction<Value> parse, @NotNull final InvalidExceptionIntSupplier length) throws InvalidJavaClassFileException, JavaClassFileContainsDataTooLongToReadException
+	private static <Value> Value[] parseTableAsArray(@NotNull final IntFunction<Value[]> arrayCreator, @NotNull final Value[] empty, @NotNull final InvalidJavaClassFileExceptionSupplier<Value> parse, @NotNull final InvalidJavaClassFileExceptionIntSupplier length) throws InvalidJavaClassFileException
 	{
-		return parseTable(arrayCreator, empty, length, (values, index) -> values[index] = parse.apply());
+		return parseTable(arrayCreator, empty, length, (values, index) -> values[index] = parse.get());
 	}
 
 	@NotNull
-	private static <Value> Set<Value> parseTableAsSet(@NotNull final InvalidExceptionBiIntConsumer<Set<Value>> parse, @NotNull final InvalidExceptionIntSupplier length) throws InvalidJavaClassFileException, JavaClassFileContainsDataTooLongToReadException
+	private static <Value> Set<Value> parseTableAsSet(@NotNull final InvalidJavaClassFileExceptionBiIntConsumer<Set<Value>> parse, @NotNull final InvalidJavaClassFileExceptionIntSupplier length) throws InvalidJavaClassFileException
 	{
 		return parseTable(LinkedHashSet::new, emptySet(), length, parse);
 	}
 
 	@NotNull
-	private static <Key, Value> Map<Key, Value> parseTableAsMap(@NotNull final InvalidExceptionBiIntConsumer<Map<Key, Value>> parse, @NotNull final InvalidExceptionIntSupplier length) throws InvalidJavaClassFileException, JavaClassFileContainsDataTooLongToReadException
+	private static <Key, Value> Map<Key, Value> parseTableAsMap(@NotNull final InvalidJavaClassFileExceptionBiIntConsumer<Map<Key, Value>> parse, @NotNull final InvalidJavaClassFileExceptionIntSupplier length) throws InvalidJavaClassFileException
 	{
 		return parseTable(LinkedHashMap::new, emptyMap(), length, parse);
 	}
 
 	@NotNull
-	private static <Table> Table parseTable(@NotNull final IntFunction<Table> tableCreator, @NotNull final Table empty, @NotNull final InvalidExceptionIntSupplier lengthParser, @NotNull final InvalidExceptionBiIntConsumer<Table> tableUser) throws InvalidJavaClassFileException, JavaClassFileContainsDataTooLongToReadException
+	private static <Table> Table parseTable(@NotNull final IntFunction<Table> tableCreator, @NotNull final Table empty, @NotNull final InvalidJavaClassFileExceptionIntSupplier lengthParser, @NotNull final InvalidJavaClassFileExceptionBiIntConsumer<Table> tableUser) throws InvalidJavaClassFileException
 	{
 		final int length = lengthParser.getAsInt();
 

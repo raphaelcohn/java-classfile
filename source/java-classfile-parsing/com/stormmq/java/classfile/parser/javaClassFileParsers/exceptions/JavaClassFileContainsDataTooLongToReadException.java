@@ -22,7 +22,7 @@
 
 package com.stormmq.java.classfile.parser.javaClassFileParsers.exceptions;
 
-public final class JavaClassFileContainsDataTooLongToReadException extends Exception
+public final class JavaClassFileContainsDataTooLongToReadException extends InvalidJavaClassFileException
 {
 	public JavaClassFileContainsDataTooLongToReadException()
 	{

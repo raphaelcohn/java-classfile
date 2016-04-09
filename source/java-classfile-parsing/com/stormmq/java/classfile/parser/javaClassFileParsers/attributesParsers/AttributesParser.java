@@ -22,6 +22,8 @@
 
 package com.stormmq.java.classfile.parser.javaClassFileParsers.attributesParsers;
 
+import com.stormmq.functions.ExceptionFunction;
+import com.stormmq.functions.MapHelper;
 import com.stormmq.java.classfile.domain.attributes.UnknownAttributeData;
 import com.stormmq.java.classfile.parser.javaClassFileParsers.exceptions.InvalidJavaClassFileException;
 import com.stormmq.java.classfile.parser.javaClassFileParsers.exceptions.JavaClassFileContainsDataTooLongToReadException;
@@ -30,7 +32,10 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
+import java.util.function.BiFunction;
+import java.util.function.Function;
 
+import static com.stormmq.functions.MapHelper.computeExceptionally;
 import static com.stormmq.java.classfile.parser.javaClassFileParsers.attributesParsers.Attributes.LineNumberTable;
 import static com.stormmq.java.classfile.parser.javaClassFileParsers.attributesParsers.Attributes.LocalVariableTable;
 import static com.stormmq.java.classfile.parser.javaClassFileParsers.attributesParsers.Attributes.LocalVariableTypeTable;
@@ -55,7 +60,7 @@ public final class AttributesParser
 	}));
 
 	@NotNull
-	public Attributes parseAttributes(@NotNull final ConstantPoolJavaClassFileReader javaClassFileReader) throws InvalidJavaClassFileException, JavaClassFileContainsDataTooLongToReadException
+	public Attributes parseAttributes(@NotNull final ConstantPoolJavaClassFileReader javaClassFileReader) throws InvalidJavaClassFileException
 	{
 		final Map<String, List<UnknownAttributeData>> unknownAttributes = new HashMap<>(0);
 		final Map<String, Object> attributes = javaClassFileReader.parseTableAsMapWith16BitLength((table, index) ->
@@ -67,33 +72,26 @@ public final class AttributesParser
 
 			if (attributeData instanceof UnknownAttributeData)
 			{
-				@Nullable List<UnknownAttributeData> entries = unknownAttributes.get(attributeName);
-				if (entries == null)
-				{
-					entries = new ArrayList<>(1);
-					unknownAttributes.put(attributeName, entries);
-				}
-				entries.add((UnknownAttributeData) attributeData);
+				unknownAttributes.computeIfAbsent(attributeName, s -> new ArrayList<>(1)).add((UnknownAttributeData) attributeData);
 			}
 			else
 			{
-				@Nullable final Object alreadyEncountered = table.get(attributeName);
-				final Object attributeDataToStore;
-				if (AttributesWhichCanOccurMoreThanOnce.contains(attributeName))
+				computeExceptionally(table, attributeName, alreadyEncountered ->
 				{
-					@SuppressWarnings("unchecked") final List<Object> canOccurMoreThanOnceList = alreadyEncountered == null ? new ArrayList<>(4) : (List<Object>) alreadyEncountered;
-					canOccurMoreThanOnceList.add(attributeData);
-					attributeDataToStore = canOccurMoreThanOnceList;
-				}
-				else
-				{
-					if (alreadyEncountered != null)
+					if (AttributesWhichCanOccurMoreThanOnce.contains(attributeName))
 					{
-						throw new InvalidJavaClassFileException(format("The attribute '%1$s' is only allowed to occur once", attributeName));
+						@SuppressWarnings("unchecked") final List<Object> canOccurMoreThanOnceList = alreadyEncountered == null ? new ArrayList<>(4) : (List<Object>) alreadyEncountered;
+						canOccurMoreThanOnceList.add(attributeData);
+						return canOccurMoreThanOnceList;
 					}
-					attributeDataToStore = attributeData;
-				}
-				table.put(attributeName, attributeDataToStore);
+
+					if (alreadyEncountered == null)
+					{
+						return attributeData;
+					}
+
+					throw new InvalidJavaClassFileException(format("The attribute '%1$s' is only allowed to occur once", attributeName));
+				});
 			}
 		});
 

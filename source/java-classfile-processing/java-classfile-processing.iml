@@ -13,5 +13,7 @@
     <orderEntry type="module" module-name="java-classfile-parsing" />
     <orderEntry type="module" module-name="java-classfile-domain" />
     <orderEntry type="module" module-name="java-parsing-utilities" />
+    <orderEntry type="module" module-name="functions" />
+    <orderEntry type="module" module-name="annotations" />
   </component>
 </module>

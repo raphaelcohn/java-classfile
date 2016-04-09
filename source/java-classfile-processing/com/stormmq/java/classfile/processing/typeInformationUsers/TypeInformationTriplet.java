@@ -23,12 +23,12 @@
 package com.stormmq.java.classfile.processing.typeInformationUsers;
 
 import com.stormmq.java.classfile.domain.information.*;
-import com.stormmq.java.classfile.domain.uniqueness.FieldUniqueness;
 import com.stormmq.java.parsing.utilities.names.typeNames.referenceTypeNames.KnownReferenceTypeName;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.nio.file.Path;
-import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 
 public final class TypeInformationTriplet implements TypeInformation
 {
@@ -50,21 +50,27 @@ public final class TypeInformationTriplet implements TypeInformation
 	}
 
 	@Override
-	public int numberOfStaticAndInstanceFields()
+	public int numberOfStaticFields()
 	{
-		return typeInformation.numberOfStaticAndInstanceFields();
+		return typeInformation.numberOfStaticFields();
 	}
 
 	@Override
-	public void forEachStaticFieldInReverseOrder(@NotNull final BiConsumer<FieldUniqueness, FieldInformation> action)
+	public int numberOfInstanceFields()
 	{
-		typeInformation.forEachStaticFieldInReverseOrder(action);
+		return typeInformation.numberOfInstanceFields();
 	}
 
 	@Override
-	public void forEachInstanceFieldInReverseOrder(@NotNull final BiConsumer<FieldUniqueness, FieldInformation> action)
+	public void forEachStaticField(@NotNull final Consumer<FieldInformation> action)
 	{
-		typeInformation.forEachInstanceFieldInReverseOrder(action);
+		typeInformation.forEachStaticField(action);
+	}
+
+	@Override
+	public void forEachInstanceField(@NotNull final Consumer<FieldInformation> action)
+	{
+		typeInformation.forEachInstanceField(action);
 	}
 
 	@Override
@@ -74,10 +80,17 @@ public final class TypeInformationTriplet implements TypeInformation
 		return typeInformation.thisClassTypeName();
 	}
 
-	@NotNull
+	@Nullable
 	@Override
 	public KnownReferenceTypeName superClassTypeName()
 	{
 		return typeInformation.superClassTypeName();
+	}
+
+	@NotNull
+	@Override
+	public KnownReferenceTypeName packageClass()
+	{
+		return typeInformation.packageClass();
 	}
 }

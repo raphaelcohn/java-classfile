@@ -29,6 +29,9 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import static com.stormmq.functions.MapHelper.putOnce;
+import static com.stormmq.functions.CollectionHelper.addOnce;
+
 public final class PrimitiveTypeHelper
 {
 	private static final int NumberOfTypes = 8;
@@ -64,8 +67,8 @@ public final class PrimitiveTypeHelper
 		{
 			throw new IllegalArgumentException("primitiveType must be primitive");
 		}
-		boxedToUnboxedPrimitiveTypes.put(boxedType, primitiveType);
-		unboxedPrimitiveTypes.add(primitiveType);
+		putOnce(boxedToUnboxedPrimitiveTypes, boxedType, primitiveType);
+		addOnce(unboxedPrimitiveTypes, primitiveType);
 	}
 
 	public static boolean isNotBoxedPrimitiveExcludingVoid(@NotNull final Class<?> potentialBoxedType)

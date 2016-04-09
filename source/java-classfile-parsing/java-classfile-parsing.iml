@@ -10,5 +10,7 @@
     <orderEntry type="library" name="annotations" level="project" />
     <orderEntry type="module" module-name="java-classfile-domain" />
     <orderEntry type="module" module-name="java-parsing-utilities" />
+    <orderEntry type="module" module-name="functions" />
+    <orderEntry type="module" module-name="byteReaders" />
   </component>
 </module>

@@ -25,22 +25,29 @@ package com.stormmq.java.classfile.domain.information;
 import com.stormmq.java.classfile.domain.uniqueness.FieldUniqueness;
 import com.stormmq.java.parsing.utilities.names.typeNames.referenceTypeNames.KnownReferenceTypeName;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 
 public interface TypeInformation
 {
 	boolean hasAnnotation(@NotNull final KnownReferenceTypeName annotationTypeName);
 
-	int numberOfStaticAndInstanceFields();
+	int numberOfStaticFields();
 
-	void forEachStaticFieldInReverseOrder(@NotNull final BiConsumer<FieldUniqueness, FieldInformation> action);
+	int numberOfInstanceFields();
 
-	void forEachInstanceFieldInReverseOrder(@NotNull final BiConsumer<FieldUniqueness, FieldInformation> action);
+	void forEachStaticField(@NotNull final Consumer<FieldInformation> action);
+
+	void forEachInstanceField(@NotNull final Consumer<FieldInformation> action);
 
 	@NotNull
 	KnownReferenceTypeName thisClassTypeName();
 
-	@NotNull
+	@Nullable
 	KnownReferenceTypeName superClassTypeName();
+
+	@NotNull
+	KnownReferenceTypeName packageClass();
 }

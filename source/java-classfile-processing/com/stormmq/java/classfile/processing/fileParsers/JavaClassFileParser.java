@@ -23,7 +23,7 @@
 package com.stormmq.java.classfile.processing.fileParsers;
 
 import com.stormmq.java.classfile.domain.information.ConcreteTypeInformation;
-import com.stormmq.java.classfile.parser.byteReaders.ByteArrayByteReader;
+import com.stormmq.byteReaders.ByteArrayByteReader;
 import com.stormmq.java.classfile.parser.javaClassFileParsers.exceptions.*;
 import com.stormmq.java.classfile.processing.processLogs.ProcessLog;
 import com.stormmq.java.classfile.processing.typeInformationUsers.TypeInformationUser;

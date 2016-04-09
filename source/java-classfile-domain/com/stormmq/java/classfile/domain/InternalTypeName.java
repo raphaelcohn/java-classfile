@@ -34,8 +34,8 @@ import static com.stormmq.java.parsing.utilities.names.typeNames.VoidTypeName._v
 public final class InternalTypeName implements Comparable<InternalTypeName>
 {
 	public static final int MaximumArrayDimensions = 255;
-	@NotNull public static final InternalTypeName[] EmptyInternalTypeNames = new InternalTypeName[0];
 	@NotNull public static final InternalTypeName VoidInternalTypeName = new InternalTypeName(_void, 0);
+	@NotNull public static final InternalTypeName[] EmptyInternalTypeNames = new InternalTypeName[0];
 
 	@NotNull private final TypeName typeName;
 	private final int arrayDimensions;

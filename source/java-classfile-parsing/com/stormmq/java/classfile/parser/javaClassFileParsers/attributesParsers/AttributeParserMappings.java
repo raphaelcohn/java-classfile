@@ -22,6 +22,7 @@
 
 package com.stormmq.java.classfile.parser.javaClassFileParsers.attributesParsers;
 
+import com.stormmq.functions.*;
 import com.stormmq.java.classfile.domain.*;
 import com.stormmq.java.classfile.domain.attributes.*;
 import com.stormmq.java.classfile.domain.attributes.annotations.TargetType;
@@ -45,9 +46,8 @@ import com.stormmq.java.classfile.parser.JavaClassFileReader;
 import com.stormmq.java.classfile.parser.javaClassFileParsers.constantPool.ConstantPoolJavaClassFileReader;
 import com.stormmq.java.classfile.parser.javaClassFileParsers.constantPool.constants.referenceIndexConstants.NameAndTypeReferenceIndexConstant;
 import com.stormmq.java.classfile.parser.javaClassFileParsers.exceptions.InvalidJavaClassFileException;
-import com.stormmq.java.classfile.parser.javaClassFileParsers.exceptions.JavaClassFileContainsDataTooLongToReadException;
-import com.stormmq.java.classfile.parser.javaClassFileParsers.functions.InvalidExceptionBiIntConsumer;
-import com.stormmq.java.classfile.parser.javaClassFileParsers.functions.InvalidExceptionFunction;
+import com.stormmq.java.classfile.parser.javaClassFileParsers.functions.InvalidJavaClassFileExceptionBiIntConsumer;
+import com.stormmq.java.classfile.parser.javaClassFileParsers.functions.InvalidJavaClassFileExceptionFunction;
 import com.stormmq.java.parsing.utilities.Completeness;
 import com.stormmq.java.parsing.utilities.Visibility;
 import com.stormmq.java.parsing.utilities.names.typeNames.referenceTypeNames.KnownReferenceTypeName;
@@ -57,6 +57,9 @@ import java.nio.ByteBuffer;
 import java.util.*;
 import java.util.function.IntFunction;
 
+import static com.stormmq.functions.MapHelper.putOnce;
+import static com.stormmq.functions.MapHelper.useMapValueExceptionally;
+import static com.stormmq.functions.CollectionHelper.addOnce;
 import static com.stormmq.java.classfile.domain.attributes.code.constants.BootstrapMethodArgument.EmptyBootstrapMethodArgumentConstants;
 import static com.stormmq.java.classfile.domain.JavaClassFileVersion.*;
 import static com.stormmq.java.classfile.domain.attributes.AttributeLocation.*;
@@ -167,7 +170,17 @@ public final class AttributeParserMappings
 			return new InsideEnclosingMethod(enclosingTypeName, nameAndTypeReferenceIndexConstant.methodName(), nameAndTypeReferenceIndexConstant.methodDescriptor());
 		});
 
-		tableSetMapping(Exceptions, Java1_0_2, OnlyMethod, (javaClassFileReader, set) -> set.add(javaClassFileReader.readKnownReferenceTypeName("method's exception")));
+		tableSetMapping(Exceptions, Java1_0_2, OnlyMethod, (javaClassFileReader, set) ->
+		{
+			try
+			{
+				addOnce(set, javaClassFileReader.readKnownReferenceTypeName("method's exception"));
+			}
+			catch (final AddOnceViolationException e)
+			{
+				throw new InvalidJavaClassFileException("Same exception defined more than once", e);
+			}
+		});
 
 		tableArrayMapping(InnerClasses, Java1_1, OnlyType, InnerTypeInformation[]::new, (javaClassFileReader) ->
 		{
@@ -249,14 +262,11 @@ public final class AttributeParserMappings
 	}
 
 	@NotNull
-	public Object parseAttribute(@NotNull final String attributeName, final long attributeLengthUnsigned32BitInteger, @NotNull final ConstantPoolJavaClassFileReader javaClassFileReader) throws InvalidJavaClassFileException, JavaClassFileContainsDataTooLongToReadException
+	public Object parseAttribute(@NotNull final String attributeName, final long attributeLengthUnsigned32BitInteger, @NotNull final ConstantPoolJavaClassFileReader javaClassFileReader) throws InvalidJavaClassFileException
 	{
-		@Nullable final AttributeParser attributeParser = map.get(attributeName);
-
 		final long positionBefore = javaClassFileReader.bytesReadSoFar();
 
-		final Object attributeData;
-		if (attributeParser == null)
+		final ExceptionSupplier<Object, InvalidJavaClassFileException> ifAbsent = () ->
 		{
 			if (notValidForThisVersion.contains(attributeName))
 			{
@@ -268,12 +278,10 @@ public final class AttributeParserMappings
 				throw new InvalidJavaClassFileException(format("The attribute '%1$s' is not valid for this location ('%2$s')", attributeName, attributeLocation));
 			}
 
-			attributeData = parseUnknownAttribute(attributeName, attributeLengthUnsigned32BitInteger, javaClassFileReader);
-		}
-		else
-		{
-			attributeData = attributeParser.parse(attributeLengthUnsigned32BitInteger, javaClassFileReader);
-		}
+			return parseUnknownAttribute(attributeName, attributeLengthUnsigned32BitInteger, javaClassFileReader);
+		};
+
+		final Object attributeData = useMapValueExceptionally(map, attributeName, ifAbsent, attributeParser -> attributeParser.parse(attributeLengthUnsigned32BitInteger, javaClassFileReader));
 
 		validateReadAttributeCorrectly(attributeName, attributeLengthUnsigned32BitInteger, javaClassFileReader, positionBefore);
 
@@ -284,7 +292,7 @@ public final class AttributeParserMappings
 	private interface TableArrayParser<T>
 	{
 		@NotNull
-		T parse(@NotNull final ConstantPoolJavaClassFileReader javaClassFileReader) throws InvalidJavaClassFileException, JavaClassFileContainsDataTooLongToReadException;
+		T parse(@NotNull final ConstantPoolJavaClassFileReader javaClassFileReader) throws InvalidJavaClassFileException;
 	}
 
 	@FunctionalInterface
@@ -297,12 +305,12 @@ public final class AttributeParserMappings
 	private interface AttributeParser
 	{
 		@NotNull
-		Object parse(final long attributeLengthUnsigned32BitInteger, @NotNull final ConstantPoolJavaClassFileReader javaClassFileReader) throws InvalidJavaClassFileException, JavaClassFileContainsDataTooLongToReadException;
+		Object parse(final long attributeLengthUnsigned32BitInteger, @NotNull final ConstantPoolJavaClassFileReader javaClassFileReader) throws InvalidJavaClassFileException;
 	}
 
 	private <T> void tableSetMapping(@NotNull @NonNls final String attributeName, @NotNull final JavaClassFileVersion introduced, @NotNull final AttributeLocation[] attributeLocations, @NotNull final TableSetParser<T> parse)
 	{
-		mapping(attributeName, introduced, attributeLocations, (attributeLengthUnsigned32BitInteger, javaClassFileReader) -> javaClassFileReader.parseTableAsSetWith16BitLength((InvalidExceptionBiIntConsumer<Set<T>>) (set, index) -> parse.parse(javaClassFileReader, set)));
+		mapping(attributeName, introduced, attributeLocations, (attributeLengthUnsigned32BitInteger, javaClassFileReader) -> javaClassFileReader.parseTableAsSetWith16BitLength((InvalidJavaClassFileExceptionBiIntConsumer<Set<T>>) (set, index) -> parse.parse(javaClassFileReader, set)));
 	}
 
 	private <T> void tableArrayMapping(@NotNull @NonNls final String attributeName, @NotNull final JavaClassFileVersion introduced, @NotNull final AttributeLocation[] attributeLocations, @NotNull final IntFunction<T[]> arrayCreator, @NotNull final TableArrayParser<T> tableArrayParser)
@@ -315,17 +323,17 @@ public final class AttributeParserMappings
 	{
 		if (introduced.compareTo(javaClassFileVersion) > 0)
 		{
-			notValidForThisVersion.add(attributeName);
+			addOnce(notValidForThisVersion, attributeName);
 			return;
 		}
 
 		if (hasLocation(attributeLocations, attributeLocation))
 		{
-			map.put(attributeName, attributeParser);
+			putOnce(map, attributeName, attributeParser);
 		}
 		else
 		{
-			notValidForThisLocation.add(attributeName);
+			addOnce(notValidForThisLocation, attributeName);
 		}
 	}
 
@@ -341,7 +349,7 @@ public final class AttributeParserMappings
 	}
 
 	@NotNull
-	private static UnknownAttributeData parseUnknownAttribute(@NotNull final String attributeName, final long attributeLengthUnsigned32BitInteger, @NotNull final JavaClassFileReader javaClassFileReader) throws JavaClassFileContainsDataTooLongToReadException, InvalidJavaClassFileException
+	private static UnknownAttributeData parseUnknownAttribute(@NotNull final String attributeName, final long attributeLengthUnsigned32BitInteger, @NotNull final JavaClassFileReader javaClassFileReader) throws InvalidJavaClassFileException
 	{
 		final String what = format("unknown attribute '%1$s' of length '%2$s'", attributeName, attributeLengthUnsigned32BitInteger);
 		return new UnknownAttributeData(javaClassFileReader.readBytes(what, attributeLengthUnsigned32BitInteger));
@@ -371,18 +379,18 @@ public final class AttributeParserMappings
 
 	private static final class StackMapFrameTableArrayParser implements TableArrayParser<StackMapFrame>
 	{
-		@NotNull private static final InvalidExceptionFunction<ConstantPoolJavaClassFileReader, StackMapFrame>[] FrameTypeParsers = initialise();
+		@NotNull private static final InvalidJavaClassFileExceptionFunction<ConstantPoolJavaClassFileReader, StackMapFrame>[] FrameTypeParsers = initialise();
 
 		@SuppressWarnings("MagicNumber")
 		@NotNull
-		private static InvalidExceptionFunction<ConstantPoolJavaClassFileReader, StackMapFrame>[] initialise()
+		private static InvalidJavaClassFileExceptionFunction<ConstantPoolJavaClassFileReader, StackMapFrame>[] initialise()
 		{
 			final short length = 256;
-			@SuppressWarnings("unchecked") final InvalidExceptionFunction<ConstantPoolJavaClassFileReader, StackMapFrame>[] frameTypeParsers = new InvalidExceptionFunction[length];
+			@SuppressWarnings("unchecked") final InvalidJavaClassFileExceptionFunction<ConstantPoolJavaClassFileReader, StackMapFrame>[] frameTypeParsers = new InvalidJavaClassFileExceptionFunction[length];
 			for (short index = 0; index < length; index++)
 			{
 				final short frameType = index;
-				final InvalidExceptionFunction<ConstantPoolJavaClassFileReader, StackMapFrame> function;
+				final InvalidJavaClassFileExceptionFunction<ConstantPoolJavaClassFileReader, StackMapFrame> function;
 
 				//noinspection IfStatementWithTooManyBranches
 				if (frameType >= 0 && frameType <= 63)

@@ -25,7 +25,7 @@ package com.stormmq.java.classfile.parser.javaClassFileParsers.exceptions;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 
-public final class InvalidJavaClassFileException extends Exception
+public class InvalidJavaClassFileException extends Exception
 {
 	public InvalidJavaClassFileException(@NotNull @NonNls final String message)
 	{

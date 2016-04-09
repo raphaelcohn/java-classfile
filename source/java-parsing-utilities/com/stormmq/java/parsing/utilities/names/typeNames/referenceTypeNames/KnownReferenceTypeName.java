@@ -32,6 +32,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.function.*;
 
 import static com.stormmq.java.parsing.utilities.StringConstants.*;
 import static com.stormmq.java.parsing.utilities.names.typeNames.TypeNameCategory.Reference;
@@ -61,19 +62,7 @@ public final class KnownReferenceTypeName extends AbstractParentName implements 
 	@NotNull
 	public static KnownReferenceTypeName knownReferenceTypeName(@NonNls @NotNull final String fullyQualifiedNameUsingDotsAndDollarSigns)
 	{
-		@Nullable final KnownReferenceTypeName referenceTypeName = cache.get(fullyQualifiedNameUsingDotsAndDollarSigns);
-		if (referenceTypeName != null)
-		{
-			return referenceTypeName;
-		}
-
-		final KnownReferenceTypeName newInstance = new KnownReferenceTypeName(fullyQualifiedNameUsingDotsAndDollarSigns);
-		@Nullable final KnownReferenceTypeName previous = cache.putIfAbsent(fullyQualifiedNameUsingDotsAndDollarSigns, newInstance);
-		if (previous == null)
-		{
-			return newInstance;
-		}
-		return previous;
+		return cache.computeIfAbsent(fullyQualifiedNameUsingDotsAndDollarSigns, KnownReferenceTypeName::new);
 	}
 
 	@NotNull
@@ -223,5 +212,16 @@ public final class KnownReferenceTypeName extends AbstractParentName implements 
 	public KnownReferenceTypeName child(@NotNull final String simpleTypeName)
 	{
 		return child(fullyQualifiedNameUsingDotsAndDollarSigns, simpleTypeName, "");
+	}
+
+	@NotNull
+	public KnownReferenceTypeName packageClass()
+	{
+		final int lastIndexOf = fullyQualifiedNameUsingDotsAndDollarSigns.lastIndexOf('.');
+		if (lastIndexOf == -1)
+		{
+			return knownReferenceTypeName("package-info");
+		}
+		return knownReferenceTypeName(fullyQualifiedNameUsingDotsAndDollarSigns.substring(0, lastIndexOf) + '.' + "package-info");
 	}
 }
