@@ -35,11 +35,10 @@ import java.lang.Thread.UncaughtExceptionHandler;
 import java.nio.file.Path;
 import java.util.concurrent.*;
 
-import static com.stormmq.java.classfile.processing.Records.OptimumHashMapSizeWhenRecording;
-
 public final class Processor
 {
 	private static final int OptimumThreads = 16; // consider linking to CPU count and number of entries in sourcePaths
+	private static final int OptimumHashMapSizeWhenRecording = 75_000;
 
 	private final boolean permitConstantsInInstanceFields;
 	@NotNull private final ProcessLog processLog;
@@ -75,7 +74,7 @@ public final class Processor
 			processLog.genericSuccess("Success: %1$s.  Failure: %2$s.  Total: %3$s.", successCount, failureCount, total);
 		}
 
-		return new Records(records);
+		return new ConcreteRecords(records);
 	}
 
 }

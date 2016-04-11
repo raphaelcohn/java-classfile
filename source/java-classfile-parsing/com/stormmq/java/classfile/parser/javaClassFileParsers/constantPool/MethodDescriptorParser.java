@@ -26,6 +26,7 @@ import com.stormmq.java.classfile.domain.InternalTypeName;
 import com.stormmq.java.classfile.parser.javaClassFileParsers.exceptions.InvalidJavaClassFileException;
 import com.stormmq.java.classfile.domain.descriptors.MethodDescriptor;
 import com.stormmq.java.parsing.utilities.InvalidJavaIdentifierException;
+import com.stormmq.java.parsing.utilities.names.typeNames.PrimitiveTypeName;
 import com.stormmq.java.parsing.utilities.names.typeNames.TypeName;
 import com.stormmq.string.Formatting;
 import org.jetbrains.annotations.*;
@@ -38,8 +39,7 @@ import static com.stormmq.java.classfile.domain.InternalTypeName.EmptyInternalTy
 import static com.stormmq.java.classfile.domain.InternalTypeName.MaximumArrayDimensions;
 import static com.stormmq.java.classfile.domain.InternalTypeName.VoidInternalTypeName;
 import static com.stormmq.java.parsing.utilities.ReservedIdentifiers.validateIsJavaIdentifier;
-import static com.stormmq.java.parsing.utilities.StringConstants.*;
-import static com.stormmq.java.parsing.utilities.names.typeNames.PrimitiveTypeName.*;
+import static com.stormmq.string.StringConstants.*;
 import static com.stormmq.java.parsing.utilities.names.typeNames.referenceTypeNames.KnownReferenceTypeName.knownReferenceTypeName;
 
 public final class MethodDescriptorParser
@@ -157,28 +157,28 @@ public final class MethodDescriptorParser
 					throw new InvalidJavaClassFileException("A void is not allowed in a method parameter or field methodDescriptor");
 
 				case 'Z':
-					return new ParsedTypeDescriptorResult(_boolean, index, arrayDimensions);
+					return new ParsedTypeDescriptorResult(PrimitiveTypeName._boolean, index, arrayDimensions);
 
 				case 'C':
-					return new ParsedTypeDescriptorResult(_char, index, arrayDimensions);
+					return new ParsedTypeDescriptorResult(PrimitiveTypeName._char, index, arrayDimensions);
 
 				case 'B':
-					return new ParsedTypeDescriptorResult(_byte, index, arrayDimensions);
+					return new ParsedTypeDescriptorResult(PrimitiveTypeName._byte, index, arrayDimensions);
 
 				case 'S':
-					return new ParsedTypeDescriptorResult(_short, index, arrayDimensions);
+					return new ParsedTypeDescriptorResult(PrimitiveTypeName._short, index, arrayDimensions);
 
 				case 'I':
-					return new ParsedTypeDescriptorResult(_int, index, arrayDimensions);
+					return new ParsedTypeDescriptorResult(PrimitiveTypeName._int, index, arrayDimensions);
 
 				case 'F':
-					return new ParsedTypeDescriptorResult(_float, index, arrayDimensions);
+					return new ParsedTypeDescriptorResult(PrimitiveTypeName._float, index, arrayDimensions);
 
 				case 'J':
-					return new ParsedTypeDescriptorResult(_long, index, arrayDimensions, 2);
+					return new ParsedTypeDescriptorResult(PrimitiveTypeName._long, index, arrayDimensions, 2);
 
 				case 'D':
-					return new ParsedTypeDescriptorResult(_double, index, arrayDimensions, 2);
+					return new ParsedTypeDescriptorResult(PrimitiveTypeName._double, index, arrayDimensions, 2);
 
 				case 'L':
 					return processClassLikeTypeDescriptor(index, length, rawTypeDescriptor, arrayDimensions);

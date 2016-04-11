@@ -48,7 +48,7 @@ public final class MethodInformation
 	@NotNull private final Completeness completeness;
 	private final boolean isSynchronized;
 	private final boolean isNative;
-	private final boolean isStatic;
+	public final boolean isStatic;
 	private final boolean isStrictFloatingPoint;
 	private final boolean isSyntheticAttribute;
 	private final boolean isDeprecated;

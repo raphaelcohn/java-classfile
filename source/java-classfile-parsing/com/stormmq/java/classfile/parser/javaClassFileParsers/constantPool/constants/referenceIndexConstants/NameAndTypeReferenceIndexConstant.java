@@ -32,6 +32,7 @@ import com.stormmq.java.classfile.parser.javaClassFileParsers.constantPool.Const
 import com.stormmq.java.classfile.parser.javaClassFileParsers.constantPool.constants.AbstractSingleWidthConstant;
 import com.stormmq.java.parsing.utilities.InvalidJavaIdentifierException;
 import com.stormmq.string.Formatting;
+import com.stormmq.string.StringConstants;
 import org.jetbrains.annotations.*;
 
 import static com.stormmq.java.classfile.parser.javaClassFileParsers.constantPool.FieldDescriptorParser.parseFieldDescriptor;
@@ -154,7 +155,7 @@ public final class NameAndTypeReferenceIndexConstant extends AbstractSingleWidth
 	{
 		final String rawMethodName = rawName();
 
-		if (rawMethodName.equals(StaticInitializerMethodName))
+		if (rawMethodName.equals(StringConstants.StaticInitializerMethodName))
 		{
 			throw new InvalidJavaClassFileException("methodName can not be <clinit>");
 		}
@@ -172,7 +173,7 @@ public final class NameAndTypeReferenceIndexConstant extends AbstractSingleWidth
 	@NotNull
 	public MethodDescriptor methodDescriptor() throws InvalidJavaClassFileException
 	{
-		final boolean returnTypeMustBeVoid = rawName().equals(InstanceInitializerMethodName);
+		final boolean returnTypeMustBeVoid = rawName().equals(StringConstants.InstanceInitializerMethodName);
 		final String rawMethodDescriptor = constantPool.retrieveModifiedUtf8String(modifiedUtf8StringReferenceIndexForDescriptor);
 		return parseMethodDescriptor(rawMethodDescriptor, returnTypeMustBeVoid);
 	}

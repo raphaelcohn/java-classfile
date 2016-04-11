@@ -22,12 +22,11 @@
 
 package com.stormmq.java.classfile.domain.information;
 
-import com.stormmq.java.classfile.domain.uniqueness.FieldUniqueness;
+import com.stormmq.functions.SizedIterator;
 import com.stormmq.java.parsing.utilities.names.typeNames.referenceTypeNames.KnownReferenceTypeName;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 public interface TypeInformation
@@ -36,11 +35,22 @@ public interface TypeInformation
 
 	int numberOfStaticFields();
 
-	int numberOfInstanceFields();
-
 	void forEachStaticField(@NotNull final Consumer<FieldInformation> action);
 
+	int numberOfInstanceFields();
+
 	void forEachInstanceField(@NotNull final Consumer<FieldInformation> action);
+
+	@NotNull
+	SizedIterator<FieldInformation> instanceFieldsSizedIterator();
+
+	int numberOfStaticMethods();
+
+	void forEachStaticMethod(@NotNull final Consumer<MethodInformation> action);
+
+	int numberOfInstanceMethods();
+
+	void forEachInstanceMethod(@NotNull final Consumer<MethodInformation> action);
 
 	@NotNull
 	KnownReferenceTypeName thisClassTypeName();

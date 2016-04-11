@@ -22,7 +22,7 @@
 
 package com.stormmq.java.classfile.domain.attributes.code.typing;
 
-import com.stormmq.java.parsing.utilities.ReservedIdentifiers;
+import com.stormmq.string.StringConstants;
 import org.jetbrains.annotations.NotNull;
 
 public enum LocalVariableSimpleType
@@ -61,7 +61,7 @@ public enum LocalVariableSimpleType
 		final String actualName = name.charAt(0) == '_' ? name.substring(1) : name;
 		this.computationalCategory = computationalCategory;
 		this.category = category;
-		isByteCharOrShort = actualName.equals(ReservedIdentifiers._byte) || actualName.equals(ReservedIdentifiers._char) || actualName.equals(ReservedIdentifiers._short);
+		isByteCharOrShort = actualName.equals(StringConstants._byte) || actualName.equals(StringConstants._char) || actualName.equals(StringConstants._short);
 		isNotByteCharOrShort = !isByteCharOrShort;
 	}
 }

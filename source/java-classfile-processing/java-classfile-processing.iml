@@ -15,5 +15,6 @@
     <orderEntry type="module" module-name="java-parsing-utilities" />
     <orderEntry type="module" module-name="functions" />
     <orderEntry type="module" module-name="annotations" />
+    <orderEntry type="module" module-name="byteReaders" />
   </component>
 </module>

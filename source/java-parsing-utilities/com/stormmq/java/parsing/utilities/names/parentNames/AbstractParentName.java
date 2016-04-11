@@ -32,8 +32,8 @@ import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 import static com.stormmq.java.parsing.utilities.ReservedIdentifiers.validateIsJavaIdentifier;
-import static com.stormmq.java.parsing.utilities.StringConstants.ExternalTypeNameSeparator;
-import static com.stormmq.java.parsing.utilities.StringConstants.InternalTypeNameSeparatorString;
+import static com.stormmq.string.StringConstants.ExternalTypeNameSeparator;
+import static com.stormmq.string.StringConstants.InternalTypeNameSeparatorString;
 import static com.stormmq.java.parsing.utilities.names.PackageName.packageName;
 
 public abstract class AbstractParentName implements ParentName

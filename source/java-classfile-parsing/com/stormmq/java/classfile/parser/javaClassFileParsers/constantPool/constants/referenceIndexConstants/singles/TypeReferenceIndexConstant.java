@@ -33,7 +33,7 @@ import org.jetbrains.annotations.NotNull;
 
 import static com.stormmq.java.classfile.parser.javaClassFileParsers.constantPool.ClassLikeTypeDescriptorParser.processClassLikeDescriptor;
 import static com.stormmq.java.parsing.utilities.ReservedIdentifiers.validateIsJavaIdentifier;
-import static com.stormmq.java.parsing.utilities.StringConstants.*;
+import static com.stormmq.string.StringConstants.*;
 import static com.stormmq.java.parsing.utilities.names.typeNames.referenceTypeNames.KnownReferenceTypeName.knownReferenceTypeName;
 
 public final class TypeReferenceIndexConstant extends AbstractSingleReferenceIndexConstant implements BootstrapMethodArgument, SingleWidthConstantForLoad

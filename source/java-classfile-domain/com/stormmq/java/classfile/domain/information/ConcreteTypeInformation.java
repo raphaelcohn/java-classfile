@@ -22,6 +22,7 @@
 
 package com.stormmq.java.classfile.domain.information;
 
+import com.stormmq.functions.SizedIterator;
 import com.stormmq.java.classfile.domain.TypeKind;
 import com.stormmq.java.classfile.domain.attributes.UnknownAttributes;
 import com.stormmq.java.classfile.domain.attributes.annotations.AnnotationValues;
@@ -37,13 +38,11 @@ import com.stormmq.java.parsing.utilities.names.typeNames.referenceTypeNames.Kno
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.lang.reflect.Field;
 import java.util.*;
-import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 import static com.stormmq.functions.ListHelper.trimToSizeOrReplaceWithEmptyOrSingleton;
-import static java.util.Comparator.reverseOrder;
+import static com.stormmq.functions.SizedIterator.sizedIteratorFromCollection;
 
 public final class ConcreteTypeInformation implements TypeInformation
 {
@@ -57,7 +56,6 @@ public final class ConcreteTypeInformation implements TypeInformation
 	@SuppressWarnings("WeakerAccess") @NotNull public final KnownReferenceTypeName thisClassTypeName;
 	@SuppressWarnings("WeakerAccess") @Nullable public final KnownReferenceTypeName superClassTypeName;
 	@SuppressWarnings("WeakerAccess") @NotNull public final Set<KnownReferenceTypeName> interfaces;
-	@SuppressWarnings("WeakerAccess") @NotNull public final Map<MethodUniqueness, MethodInformation> methods;
 	@SuppressWarnings("WeakerAccess") public final boolean isSyntheticAttribute;
 	@SuppressWarnings("WeakerAccess") public final boolean isDeprecated;
 	@SuppressWarnings("WeakerAccess") @Nullable public final Signature signature;
@@ -71,7 +69,8 @@ public final class ConcreteTypeInformation implements TypeInformation
 	@SuppressWarnings("WeakerAccess") @NotNull public final BootstrapMethod[] bootstrapMethods;
 	@SuppressWarnings("WeakerAccess") @NotNull public final Collection<FieldInformation> staticFields;
 	@SuppressWarnings("WeakerAccess") @NotNull public final Collection<FieldInformation> instanceFields;
-
+	@SuppressWarnings("WeakerAccess") @NotNull public final Collection<MethodInformation> staticMethods;
+	@SuppressWarnings("WeakerAccess") @NotNull public final Collection<MethodInformation> instanceMethods;
 
 	public ConcreteTypeInformation(@NotNull final TypeKind typeKind, @NotNull final Visibility visibility, @NotNull final Completeness completeness, final boolean isSynthetic, final boolean hasLegacySuperFlagSetting, @NotNull final KnownReferenceTypeName thisClassTypeName, @Nullable final KnownReferenceTypeName superClassTypeName, @NotNull final Set<KnownReferenceTypeName> interfaces, @NotNull final Map<FieldUniqueness, FieldInformation> fields, @NotNull final Map<MethodUniqueness, MethodInformation> methods, final boolean isSyntheticAttribute, final boolean isDeprecated, @Nullable final Signature signature, @NotNull final AnnotationValues runtimeAnnotationValues, @NotNull final TypeAnnotation[] typeAnnotations, @NotNull final TypeAnnotation[] visibleTypeAnnotations, @NotNull final UnknownAttributes unknownAttributes, @Nullable final String sourceFile, @Nullable final EnclosingMethod enclosingMethod, @Nullable final String sourceDebugExtension, @NotNull final BootstrapMethod[] bootstrapMethods)
 	{
@@ -83,7 +82,6 @@ public final class ConcreteTypeInformation implements TypeInformation
 		this.thisClassTypeName = thisClassTypeName;
 		this.superClassTypeName = superClassTypeName;
 		this.interfaces = interfaces;
-		this.methods = methods;
 		this.isSyntheticAttribute = isSyntheticAttribute;
 		this.isDeprecated = isDeprecated;
 		this.signature = signature;
@@ -105,6 +103,16 @@ public final class ConcreteTypeInformation implements TypeInformation
 		}
 		this.staticFields = trimToSizeOrReplaceWithEmptyOrSingleton(staticFields);
 		this.instanceFields = trimToSizeOrReplaceWithEmptyOrSingleton(instanceFields);
+
+		final ArrayList<MethodInformation> staticMethods = new ArrayList<>(methods.size());
+		final ArrayList<MethodInformation> instanceMethods = new ArrayList<>(methods.size());
+		for (final MethodInformation methodInformation : methods.values())
+		{
+			final List<MethodInformation> methodList = methodInformation.isStatic ? staticMethods : instanceMethods;
+			methodList.add(methodInformation);
+		}
+		this.staticMethods = trimToSizeOrReplaceWithEmptyOrSingleton(staticMethods);
+		this.instanceMethods = trimToSizeOrReplaceWithEmptyOrSingleton(instanceMethods);
 	}
 
 	@Override
@@ -120,21 +128,52 @@ public final class ConcreteTypeInformation implements TypeInformation
 	}
 
 	@Override
-	public int numberOfInstanceFields()
-	{
-		return instanceFields.size();
-	}
-
-	@Override
 	public void forEachStaticField(@NotNull final Consumer<FieldInformation> action)
 	{
 		staticFields.forEach(action);
 	}
 
 	@Override
+	public int numberOfInstanceFields()
+	{
+		return instanceFields.size();
+	}
+
+	@Override
 	public void forEachInstanceField(@NotNull final Consumer<FieldInformation> action)
 	{
 		instanceFields.forEach(action);
+	}
+
+	@Override
+	@NotNull
+	public SizedIterator<FieldInformation> instanceFieldsSizedIterator()
+	{
+		return sizedIteratorFromCollection(instanceFields);
+	}
+
+	@Override
+	public int numberOfStaticMethods()
+	{
+		return staticMethods.size();
+	}
+
+	@Override
+	public void forEachStaticMethod(@NotNull final Consumer<MethodInformation> action)
+	{
+		staticMethods.forEach(action);
+	}
+
+	@Override
+	public int numberOfInstanceMethods()
+	{
+		return instanceMethods.size();
+	}
+
+	@Override
+	public void forEachInstanceMethod(@NotNull final Consumer<MethodInformation> action)
+	{
+		instanceMethods.forEach(action);
 	}
 
 	@NotNull

@@ -22,6 +22,7 @@
 
 package com.stormmq.java.classfile.processing.typeInformationUsers;
 
+import com.stormmq.functions.SizedIterator;
 import com.stormmq.java.classfile.domain.information.*;
 import com.stormmq.java.parsing.utilities.names.typeNames.referenceTypeNames.KnownReferenceTypeName;
 import org.jetbrains.annotations.NotNull;
@@ -56,21 +57,52 @@ public final class TypeInformationTriplet implements TypeInformation
 	}
 
 	@Override
-	public int numberOfInstanceFields()
-	{
-		return typeInformation.numberOfInstanceFields();
-	}
-
-	@Override
 	public void forEachStaticField(@NotNull final Consumer<FieldInformation> action)
 	{
 		typeInformation.forEachStaticField(action);
 	}
 
 	@Override
+	public int numberOfInstanceFields()
+	{
+		return typeInformation.numberOfInstanceFields();
+	}
+
+	@Override
 	public void forEachInstanceField(@NotNull final Consumer<FieldInformation> action)
 	{
 		typeInformation.forEachInstanceField(action);
+	}
+
+	@NotNull
+	@Override
+	public SizedIterator<FieldInformation> instanceFieldsSizedIterator()
+	{
+		return typeInformation.instanceFieldsSizedIterator();
+	}
+
+	@Override
+	public int numberOfStaticMethods()
+	{
+		return typeInformation.numberOfStaticMethods();
+	}
+
+	@Override
+	public void forEachStaticMethod(@NotNull final Consumer<MethodInformation> action)
+	{
+		typeInformation.forEachStaticMethod(action);
+	}
+
+	@Override
+	public int numberOfInstanceMethods()
+	{
+		return typeInformation.numberOfInstanceMethods();
+	}
+
+	@Override
+	public void forEachInstanceMethod(@NotNull final Consumer<MethodInformation> action)
+	{
+		typeInformation.forEachInstanceMethod(action);
 	}
 
 	@Override

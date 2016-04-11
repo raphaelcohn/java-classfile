@@ -32,9 +32,8 @@ import java.util.function.*;
 
 import static com.stormmq.functions.MapHelper.useMapValue;
 import static com.stormmq.functions.MapHelper.useMapValueOrGetDefault;
-import static com.stormmq.java.parsing.utilities.StringConstants.ExternalTypeNameSeparator;
-import static com.stormmq.java.parsing.utilities.StringConstants.ExternalTypeNameSeparatorString;
-import static com.stormmq.java.parsing.utilities.names.parentNames.AbstractParentName.namespaceSplitter;
+import static com.stormmq.string.StringConstants.ExternalTypeNameSeparator;
+import static com.stormmq.string.StringConstants.ExternalTypeNameSeparatorString;
 import static com.stormmq.java.parsing.utilities.names.typeNames.referenceTypeNames.KnownReferenceTypeName.knownReferenceTypeName;
 
 public final class PackageName extends AbstractParentName

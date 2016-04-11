@@ -24,8 +24,8 @@ package com.stormmq.java.classfile.domain.names;
 
 import org.jetbrains.annotations.*;
 
-import static com.stormmq.java.parsing.utilities.ReservedIdentifiers.InstanceInitializerMethodName;
-import static com.stormmq.java.parsing.utilities.ReservedIdentifiers.StaticInitializerMethodName;
+import static com.stormmq.string.StringConstants.InstanceInitializerMethodName;
+import static com.stormmq.string.StringConstants.StaticInitializerMethodName;
 
 public final class MethodName
 {

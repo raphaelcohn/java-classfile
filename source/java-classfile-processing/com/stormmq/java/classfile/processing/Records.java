@@ -25,109 +25,19 @@ package com.stormmq.java.classfile.processing;
 import com.stormmq.functions.ToBooleanFunction;
 import com.stormmq.java.classfile.processing.typeInformationUsers.TypeInformationTriplet;
 import com.stormmq.java.parsing.utilities.names.typeNames.referenceTypeNames.KnownReferenceTypeName;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.*;
 
-import java.lang.annotation.*;
-import java.util.Map;
+import java.lang.annotation.Annotation;
 
-import static com.stormmq.annotations.AnnotationHelper.doesAnnotationTargetPackages;
-import static com.stormmq.annotations.AnnotationHelper.isInherited;
-import static com.stormmq.annotations.AnnotationHelper.isRepeatable;
-import static com.stormmq.functions.MapHelper.useMapValue;
-import static com.stormmq.functions.MapHelper.useMapValueOrGetDefault;
-import static com.stormmq.java.parsing.utilities.names.typeNames.referenceTypeNames.KnownReferenceTypeName.knownReferenceTypeName;
-
-public final class Records
+public interface Records
 {
-	public static final int OptimumHashMapSizeWhenRecording = 75_000; // Suitable for the Java 8 JDK
-
-	@NotNull private final Map<KnownReferenceTypeName, TypeInformationTriplet> records;
-
-	public Records(@NotNull final Map<KnownReferenceTypeName, TypeInformationTriplet> records)
-	{
-		this.records = records;
-	}
-
-	public void iterate(@NotNull final TypeInformationTripletUser typeInformationTripletUser)
-	{
-		for (final TypeInformationTriplet typeInformationTriplet : records.values())
-		{
-			typeInformationTripletUser.use(this, typeInformationTriplet);
-		}
-	}
+	void iterate(@NotNull final TypeInformationTripletUser typeInformationTripletUser);
 
 	@NotNull
-	public TypeInformationTriplet retrieve(@NotNull final KnownReferenceTypeName knownReferenceTypeName)
-	{
-		return useMapValueOrGetDefault(records, knownReferenceTypeName, () ->
-		{
-			throw new NoTypeInformationKnownException(knownReferenceTypeName);
-		});
-	}
+	TypeInformationTriplet retrieve(@NotNull final KnownReferenceTypeName knownReferenceTypeName);
 
 	@SuppressWarnings("BooleanMethodNameMustStartWithQuestion")
-	public boolean loopOverSelfAndSuperclasses(@NotNull final TypeInformationTriplet self, @NotNull final ToBooleanFunction<TypeInformationTriplet> user)
-	{
-		TypeInformationTriplet instance = self;
-		do
-		{
-			if (user.applyAsBoolean(instance))
-			{
-				return true;
-			}
+	boolean loopOverSelfAndSuperclasses(@NotNull final TypeInformationTriplet self, @NotNull final ToBooleanFunction<TypeInformationTriplet> user);
 
-			@Nullable final KnownReferenceTypeName superClassTypeName = instance.superClassTypeName();
-			if (superClassTypeName == null)
-			{
-				return false;
-			}
-
-			instance = retrieve(superClassTypeName);
-		}
-		while (true);
-	}
-
-	public boolean hasAnnotation(@NotNull final TypeInformationTriplet self, @NotNull final Class<? extends Annotation> annotationClass)
-	{
-		final Class<? extends Annotation> annotationClassToLookFor;
-		final boolean doesAnnotationAlsoTargetPackages;
-		final boolean isInherited;
-		if (isRepeatable(annotationClass))
-		{
-			// container class of the annotation, see https://docs.oracle.com/javase/tutorial/java/annotations/repeating.html
-			annotationClassToLookFor = annotationClass.getAnnotation(Repeatable.class).value();
-			doesAnnotationAlsoTargetPackages = doesAnnotationTargetPackages(annotationClass) || doesAnnotationTargetPackages(annotationClassToLookFor);
-			isInherited = isInherited(annotationClass) || isInherited(annotationClassToLookFor);
-		}
-		else
-		{
-			annotationClassToLookFor = annotationClass;
-			doesAnnotationAlsoTargetPackages = doesAnnotationTargetPackages(annotationClass);
-			isInherited = isInherited(annotationClass);
-		}
-
-		final KnownReferenceTypeName annotationTypeName = knownReferenceTypeName(annotationClassToLookFor.getName());
-
-		if (doesAnnotationAlsoTargetPackages)
-		{
-			final KnownReferenceTypeName packageClass = self.packageClass();
-			final boolean isOnPackage = useMapValue(records, packageClass, false, value -> value.hasAnnotation(annotationTypeName));
-			if (isOnPackage)
-			{
-				return true;
-			}
-		}
-
-		if (isInherited)
-		{
-			return hasInheritedAnnotation(self, annotationTypeName);
-		}
-		return self.hasAnnotation(annotationTypeName);
-	}
-
-	private boolean hasInheritedAnnotation(@NotNull final TypeInformationTriplet self, @NotNull final KnownReferenceTypeName annotationTypeName)
-	{
-		return loopOverSelfAndSuperclasses(self, typeInformationTriplet -> typeInformationTriplet.hasAnnotation(annotationTypeName));
-	}
+	boolean hasAnnotation(@NotNull final TypeInformationTriplet self, @NotNull final Class<? extends Annotation> annotationClass);
 }

@@ -25,7 +25,6 @@ package com.stormmq.java.classfile.domain.attributes.annotations;
 import com.stormmq.functions.*;
 import com.stormmq.java.classfile.domain.InvalidInternalTypeNameException;
 import com.stormmq.java.classfile.domain.names.MethodName;
-import com.stormmq.java.parsing.utilities.ReservedIdentifiers;
 import com.stormmq.java.parsing.utilities.names.typeNames.referenceTypeNames.KnownReferenceTypeName;
 import org.jetbrains.annotations.NotNull;
 
@@ -35,7 +34,7 @@ import java.util.Map;
 import java.util.function.Supplier;
 
 import static com.stormmq.functions.MapHelper.putOnce;
-import static com.stormmq.java.parsing.utilities.ReservedIdentifiers.DefaultAnnotationMemberName;
+import static com.stormmq.string.StringConstants.DefaultAnnotationMemberName;
 import static java.util.Collections.emptyMap;
 
 public final class AnnotationValues

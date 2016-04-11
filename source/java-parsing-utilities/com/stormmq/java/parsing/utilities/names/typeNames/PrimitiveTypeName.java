@@ -22,7 +22,7 @@
 
 package com.stormmq.java.parsing.utilities.names.typeNames;
 
-import com.stormmq.java.parsing.utilities.ReservedIdentifiers;
+import com.stormmq.string.StringConstants;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 
@@ -32,14 +32,14 @@ import static com.stormmq.java.parsing.utilities.names.typeNames.TypeNameCategor
 
 public final class PrimitiveTypeName implements TypeName
 {
-	@NotNull public static final PrimitiveTypeName _boolean = new PrimitiveTypeName(ReservedIdentifiers._boolean, 1, SignedInteger);
-	@NotNull public static final PrimitiveTypeName _byte = new PrimitiveTypeName(ReservedIdentifiers._byte, 8, SignedInteger);
-	@NotNull public static final PrimitiveTypeName _short = new PrimitiveTypeName(ReservedIdentifiers._short, 16, SignedInteger);
-	@NotNull public static final PrimitiveTypeName _char = new PrimitiveTypeName(ReservedIdentifiers._char, 16, UnsignedInteger);
-	@NotNull public static final PrimitiveTypeName _int = new PrimitiveTypeName(ReservedIdentifiers._int, 32, SignedInteger);
-	@NotNull public static final PrimitiveTypeName _long = new PrimitiveTypeName(ReservedIdentifiers._long, 64, SignedInteger);
-	@NotNull public static final PrimitiveTypeName _float = new PrimitiveTypeName(ReservedIdentifiers._float, 32, FloatingPoint);
-	@NotNull public static final PrimitiveTypeName _double = new PrimitiveTypeName(ReservedIdentifiers._double, 64, FloatingPoint);
+	@NotNull public static final PrimitiveTypeName _boolean = new PrimitiveTypeName(StringConstants._boolean, 1, SignedInteger);
+	@NotNull public static final PrimitiveTypeName _byte = new PrimitiveTypeName(StringConstants._byte, 8, SignedInteger);
+	@NotNull public static final PrimitiveTypeName _short = new PrimitiveTypeName(StringConstants._short, 16, SignedInteger);
+	@NotNull public static final PrimitiveTypeName _char = new PrimitiveTypeName(StringConstants._char, 16, UnsignedInteger);
+	@NotNull public static final PrimitiveTypeName _int = new PrimitiveTypeName(StringConstants._int, 32, SignedInteger);
+	@NotNull public static final PrimitiveTypeName _long = new PrimitiveTypeName(StringConstants._long, 64, SignedInteger);
+	@NotNull public static final PrimitiveTypeName _float = new PrimitiveTypeName(StringConstants._float, 32, FloatingPoint);
+	@NotNull public static final PrimitiveTypeName _double = new PrimitiveTypeName(StringConstants._double, 64, FloatingPoint);
 
 	@NotNull private final String name;
 	@SuppressWarnings("FieldNotUsedInToString") private final int sizeInBitsOnASixtyFourBitCpu;

@@ -22,97 +22,79 @@
 
 package com.stormmq.java.parsing.utilities;
 
-import com.stormmq.string.Formatting;
-import com.stormmq.string.InvalidUtf16StringException;
+import com.stormmq.string.*;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashSet;
 import java.util.Set;
 
-import static com.stormmq.functions.CollectionHelper.addOnce;
-import static com.stormmq.java.parsing.utilities.StringConstants.*;
+import static com.stormmq.string.StringConstants.*;
 import static com.stormmq.string.StringUtilities.iterateOverStringCodePoints;
 import static java.lang.Character.isJavaIdentifierPart;
 import static java.lang.Character.isJavaIdentifierStart;
 
 public final class ReservedIdentifiers
 {
-	@NotNull @NonNls public static final String StaticInitializerMethodName = "<clinit>";
-	@NotNull @NonNls public static final String InstanceInitializerMethodName = "<init>";
-	@NotNull @NonNls public static final String DefaultAnnotationMemberName = value;
-	@NotNull @NonNls public static final String _void = "void";
 	@NonNls @NotNull private static final String unqualifiedNameDescription = "unqualifiedName";
 	@NonNls @NotNull private static final String javaIdentifierDescription = "javaIdentifier";
 	@NotNull @NonNls private static final Set<String> ReservedIdentifiers = reservedIdentifiers();
-	@NotNull @NonNls public static final String _boolean = "boolean";
-	@NotNull @NonNls public static final String _byte = "byte";
-	@NotNull @NonNls public static final String _char = "char";
-	@NotNull @NonNls public static final String _short = "short";
-	@NotNull @NonNls public static final String _float = "float";
-	@NotNull @NonNls public static final String _double = "double";
-	@NotNull @NonNls public static final String _int = "int";
-	@NotNull @NonNls public static final String _long = "long";
-	@NotNull @NonNls public static final String _true = "true";
-	@NotNull @NonNls public static final String _false = "false";
-	@NotNull @NonNls public static final String _class = StringConstants._class;
-	@NotNull @NonNls public static final String _null = "null";
 
 	@NotNull
 	private static Set<String> reservedIdentifiers()
 	{
 		@NonNls final Set<String> reservedIdentifiers = new HashSet<>(50);
 
-		addOnce(reservedIdentifiers, "while");
-		addOnce(reservedIdentifiers, _super);
-		addOnce(reservedIdentifiers, "native");
-		addOnce(reservedIdentifiers, _float);
-		addOnce(reservedIdentifiers, "const");
-		addOnce(reservedIdentifiers, "volatile");
-		addOnce(reservedIdentifiers, "strictfp");
-		addOnce(reservedIdentifiers, _long);
-		addOnce(reservedIdentifiers, "finally");
-		addOnce(reservedIdentifiers, _class);
-		addOnce(reservedIdentifiers, _void);
-		addOnce(reservedIdentifiers, "static");
-		addOnce(reservedIdentifiers, _interface);
-		addOnce(reservedIdentifiers, "final");
-		addOnce(reservedIdentifiers, _char);
-		addOnce(reservedIdentifiers, "try");
-		addOnce(reservedIdentifiers, _short);
-		addOnce(reservedIdentifiers, _int);
-		addOnce(reservedIdentifiers, "extends");
-		addOnce(reservedIdentifiers, "catch");
-		addOnce(reservedIdentifiers, "transient");
-		addOnce(reservedIdentifiers, "return");
-		addOnce(reservedIdentifiers, "instanceof");
-		addOnce(reservedIdentifiers, _enum);
-		addOnce(reservedIdentifiers, "case");
-		addOnce(reservedIdentifiers, "throws");
-		addOnce(reservedIdentifiers, "public");
-		addOnce(reservedIdentifiers, "import");
-		addOnce(reservedIdentifiers, "else");
-		addOnce(reservedIdentifiers, _byte);
-		addOnce(reservedIdentifiers, "throw");
-		addOnce(reservedIdentifiers, _protected);
-		addOnce(reservedIdentifiers, "implements");
-		addOnce(reservedIdentifiers, _double);
-		addOnce(reservedIdentifiers, "break");
-		addOnce(reservedIdentifiers, "this");
-		addOnce(reservedIdentifiers, _private);
-		addOnce(reservedIdentifiers, "if");
-		addOnce(reservedIdentifiers, "do");
-		addOnce(reservedIdentifiers, _boolean);
-		addOnce(reservedIdentifiers, "synchronized");
-		addOnce(reservedIdentifiers, "package");
-		addOnce(reservedIdentifiers, "goto");
-		addOnce(reservedIdentifiers, _default);
-		addOnce(reservedIdentifiers, "assert");
-		addOnce(reservedIdentifiers, "switch");
-		addOnce(reservedIdentifiers, "new");
-		addOnce(reservedIdentifiers, "for");
-		addOnce(reservedIdentifiers, "continue");
-		addOnce(reservedIdentifiers, "abstract");
+		reservedIdentifiers.add("while");
+		reservedIdentifiers.add(_super);
+		reservedIdentifiers.add("native");
+		reservedIdentifiers.add(_float);
+		reservedIdentifiers.add("const");
+		reservedIdentifiers.add("volatile");
+		reservedIdentifiers.add("strictfp");
+		reservedIdentifiers.add(_long);
+		reservedIdentifiers.add("finally");
+		reservedIdentifiers.add(_class);
+		reservedIdentifiers.add(_void);
+		reservedIdentifiers.add("static");
+		reservedIdentifiers.add(_interface);
+		reservedIdentifiers.add("final");
+		reservedIdentifiers.add(_char);
+		reservedIdentifiers.add("try");
+		reservedIdentifiers.add(_short);
+		reservedIdentifiers.add(_int);
+		reservedIdentifiers.add("extends");
+		reservedIdentifiers.add("catch");
+		reservedIdentifiers.add("transient");
+		reservedIdentifiers.add("return");
+		reservedIdentifiers.add("instanceof");
+		reservedIdentifiers.add(_enum);
+		reservedIdentifiers.add("case");
+		reservedIdentifiers.add("throws");
+		reservedIdentifiers.add("public");
+		reservedIdentifiers.add("import");
+		reservedIdentifiers.add("else");
+		reservedIdentifiers.add(_byte);
+		reservedIdentifiers.add("throw");
+		reservedIdentifiers.add(_protected);
+		reservedIdentifiers.add("implements");
+		reservedIdentifiers.add(_double);
+		reservedIdentifiers.add("break");
+		reservedIdentifiers.add("this");
+		reservedIdentifiers.add(_private);
+		reservedIdentifiers.add("if");
+		reservedIdentifiers.add("do");
+		reservedIdentifiers.add(_boolean);
+		reservedIdentifiers.add("synchronized");
+		reservedIdentifiers.add("package");
+		reservedIdentifiers.add("goto");
+		reservedIdentifiers.add(_default);
+		reservedIdentifiers.add("assert");
+		reservedIdentifiers.add("switch");
+		reservedIdentifiers.add("new");
+		reservedIdentifiers.add("for");
+		reservedIdentifiers.add("continue");
+		reservedIdentifiers.add("abstract");
 
 		return reservedIdentifiers;
 	}

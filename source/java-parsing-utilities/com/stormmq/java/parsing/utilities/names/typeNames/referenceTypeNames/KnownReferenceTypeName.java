@@ -32,9 +32,8 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
-import java.util.function.*;
 
-import static com.stormmq.java.parsing.utilities.StringConstants.*;
+import static com.stormmq.string.StringConstants.*;
 import static com.stormmq.java.parsing.utilities.names.typeNames.TypeNameCategory.Reference;
 import static com.stormmq.string.StringUtilities.maximumUtf16ToUtf8EncodingSize;
 import static java.util.Collections.singleton;

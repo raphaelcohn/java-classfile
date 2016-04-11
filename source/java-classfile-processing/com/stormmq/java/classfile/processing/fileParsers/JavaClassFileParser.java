@@ -97,11 +97,6 @@ public final class JavaClassFileParser implements FileParser
 				processLog.failure(javaClassFilePath, e);
 				return;
 			}
-			catch (final JavaClassFileContainsDataTooLongToReadException e)
-			{
-				processLog.failure(javaClassFilePath, e);
-				return;
-			}
 		}
 
 		typeInformationUser.use(typeInformation, relativeFilePath, relativeRootFolderPath);

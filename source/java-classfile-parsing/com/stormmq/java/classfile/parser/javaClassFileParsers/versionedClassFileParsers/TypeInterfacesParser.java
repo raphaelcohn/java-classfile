@@ -37,7 +37,7 @@ import static com.stormmq.functions.CollectionHelper.addOnce;
 import static com.stormmq.java.classfile.domain.TypeKind.Annotation;
 import static com.stormmq.java.classfile.domain.TypeKind.Class;
 import static com.stormmq.java.classfile.domain.TypeKind.Interface;
-import static com.stormmq.java.parsing.utilities.StringConstants.Should_be_impossible;
+import static com.stormmq.string.StringConstants.Should_be_impossible;
 import static com.stormmq.java.parsing.utilities.names.typeNames.referenceTypeNames.KnownReferenceTypeName.*;
 import static com.stormmq.string.Formatting.format;
 import static com.stormmq.string.StringUtilities.aOrAn;

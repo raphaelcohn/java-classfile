@@ -22,7 +22,7 @@
 
 package com.stormmq.java.parsing.utilities.names.typeNames;
 
-import com.stormmq.java.parsing.utilities.ReservedIdentifiers;
+import com.stormmq.string.StringConstants;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 
@@ -30,7 +30,7 @@ import static com.stormmq.java.parsing.utilities.names.typeNames.TypeNameCategor
 
 public final class VoidTypeName implements TypeName
 {
-	@NotNull public static final VoidTypeName _void = new VoidTypeName(ReservedIdentifiers._void, 0);
+	@NotNull public static final VoidTypeName _void = new VoidTypeName(StringConstants._void, 0);
 
 	@NotNull private final String name;
 	@SuppressWarnings("FieldNotUsedInToString") private final int sizeInBitsOnASixtyFourBitCpu;
