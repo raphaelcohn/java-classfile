@@ -28,10 +28,11 @@ import com.stormmq.java.parsing.utilities.names.typeNames.referenceTypeNames.Kno
 import org.jetbrains.annotations.*;
 
 import java.lang.annotation.Annotation;
+import java.util.function.Function;
 
 public interface Records
 {
-	void iterate(@NotNull final TypeInformationTripletUser typeInformationTripletUser);
+	<R> void iterate(@NotNull final TypeInformationTripletUser<R> typeInformationTripletUser, @NotNull final Function<Records, R> usefulRecordsCreator);
 
 	@NotNull
 	TypeInformationTriplet retrieve(@NotNull final KnownReferenceTypeName knownReferenceTypeName);

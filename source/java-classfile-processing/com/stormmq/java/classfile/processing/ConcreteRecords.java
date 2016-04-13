@@ -30,6 +30,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.lang.annotation.*;
 import java.util.Map;
+import java.util.function.Function;
 
 import static com.stormmq.annotations.AnnotationHelper.doesAnnotationTargetPackages;
 import static com.stormmq.annotations.AnnotationHelper.isInherited;
@@ -48,11 +49,12 @@ public final class ConcreteRecords implements Records
 	}
 
 	@Override
-	public void iterate(@NotNull final TypeInformationTripletUser typeInformationTripletUser)
+	public <R> void iterate(@NotNull final TypeInformationTripletUser<R> typeInformationTripletUser, @NotNull final Function<Records, R> usefulRecordsCreator)
 	{
+		final R usefulRecords = usefulRecordsCreator.apply(this);
 		for (final TypeInformationTriplet typeInformationTriplet : records.values())
 		{
-			typeInformationTripletUser.use(this, typeInformationTriplet);
+			typeInformationTripletUser.use(usefulRecords, typeInformationTriplet);
 		}
 	}
 

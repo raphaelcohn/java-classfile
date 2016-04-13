@@ -26,7 +26,7 @@ import com.stormmq.java.classfile.processing.typeInformationUsers.TypeInformatio
 import org.jetbrains.annotations.NotNull;
 
 @FunctionalInterface
-public interface TypeInformationTripletUser
+public interface TypeInformationTripletUser<R>
 {
-	void use(@NotNull final Records records, @NotNull final TypeInformationTriplet typeInformationTriplet);
+	void use(@NotNull final R usefulRecords, @NotNull final TypeInformationTriplet typeInformationTriplet);
 }
