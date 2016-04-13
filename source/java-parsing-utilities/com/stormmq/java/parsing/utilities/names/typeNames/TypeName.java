@@ -37,6 +37,9 @@ public interface TypeName extends Comparable<TypeName>
 		return leftSizeInBitsOnASixtyFourBitCpu < rightSizeInBitsOnASixtyFourBitCpu ? -1 : 1;
 	}
 
+	@NotNull
+	<T> T visit(@NotNull final TypeNameVisitor<T> typeNameVisitor);
+
 	boolean isVoid();
 
 	boolean isPrimitive();

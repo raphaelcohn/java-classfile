@@ -30,7 +30,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 import static com.stormmq.string.StringConstants.*;
-import static com.stormmq.string.StringUtilities.iterateOverStringCodePoints;
 import static java.lang.Character.isJavaIdentifierPart;
 import static java.lang.Character.isJavaIdentifierStart;
 
@@ -112,7 +111,7 @@ public final class ReservedIdentifiers
 
 		try
 		{
-			iterateOverStringCodePoints(unqualifiedName, (index, codePoint) ->
+			((CodePointUser<InvalidUtf16StringException>) (index, codePoint) ->
 			{
 				switch (codePoint)
 				{
@@ -125,7 +124,7 @@ public final class ReservedIdentifiers
 					default:
 						break;
 				}
-			});
+			}).iterateOverStringCodePoints(unqualifiedName);
 		}
 		catch (final InvalidUtf16StringException e)
 		{
@@ -161,7 +160,7 @@ public final class ReservedIdentifiers
 
 		try
 		{
-			iterateOverStringCodePoints(javaIdentifier, (index, codePoint) ->
+			((CodePointUser<InvalidJavaIdentifierException>) (index, codePoint) ->
 			{
 				if (index == 0)
 				{
@@ -177,7 +176,7 @@ public final class ReservedIdentifiers
 						throw new InvalidJavaIdentifierException(Formatting.format("%1$s '%2$s' contains an illegal code point '0x%3$s' at index '%4$s'", javaIdentifierDescription, javaIdentifier, Integer.toHexString(codePoint), index));
 					}
 				}
-			});
+			}).iterateOverStringCodePoints(javaIdentifier);
 		}
 		catch (final InvalidUtf16StringException e)
 		{

@@ -23,8 +23,7 @@
 package com.stormmq.java.parsing.utilities.names.typeNames.referenceTypeNames;
 
 import com.stormmq.java.parsing.utilities.names.parentNames.AbstractParentName;
-import com.stormmq.java.parsing.utilities.names.typeNames.TypeName;
-import com.stormmq.java.parsing.utilities.names.typeNames.TypeNameCategory;
+import com.stormmq.java.parsing.utilities.names.typeNames.*;
 import org.jetbrains.annotations.*;
 
 import java.io.*;
@@ -35,7 +34,7 @@ import java.util.concurrent.ConcurrentMap;
 
 import static com.stormmq.string.StringConstants.*;
 import static com.stormmq.java.parsing.utilities.names.typeNames.TypeNameCategory.Reference;
-import static com.stormmq.string.StringUtilities.maximumUtf16ToUtf8EncodingSize;
+import static com.stormmq.string.Utf8ByteUser.maximumUtf16ToUtf8EncodingSize;
 import static java.util.Collections.singleton;
 
 public final class KnownReferenceTypeName extends AbstractParentName implements ReferenceTypeName
@@ -152,6 +151,13 @@ public final class KnownReferenceTypeName extends AbstractParentName implements 
 	public TypeNameCategory category()
 	{
 		return Reference;
+	}
+
+	@NotNull
+	@Override
+	public <T> T visit(@NotNull final TypeNameVisitor<T> typeNameVisitor)
+	{
+		return typeNameVisitor.useReference(this);
 	}
 
 	@Override

@@ -85,6 +85,14 @@ public final class VoidTypeName implements TypeName
 		result = 31 * result + sizeInBitsOnASixtyFourBitCpu;
 		return result;
 	}
+
+	@NotNull
+	@Override
+	public <T> T visit(@NotNull final TypeNameVisitor<T> typeNameVisitor)
+	{
+		return typeNameVisitor.useVoid();
+	}
+
 	@Override
 	public boolean isVoid()
 	{

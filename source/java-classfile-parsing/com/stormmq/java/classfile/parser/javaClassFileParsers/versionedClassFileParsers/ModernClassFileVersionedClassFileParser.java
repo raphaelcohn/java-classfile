@@ -22,7 +22,6 @@
 
 package com.stormmq.java.classfile.parser.javaClassFileParsers.versionedClassFileParsers;
 
-import com.stormmq.functions.MapHelper;
 import com.stormmq.functions.PutOnceViolationException;
 import com.stormmq.java.classfile.domain.*;
 import com.stormmq.java.classfile.domain.attributes.AttributeLocation;
@@ -52,7 +51,6 @@ import com.stormmq.java.parsing.utilities.*;
 import com.stormmq.java.parsing.utilities.names.parentNames.ParentName;
 import com.stormmq.java.parsing.utilities.names.typeNames.TypeName;
 import com.stormmq.java.parsing.utilities.names.typeNames.referenceTypeNames.KnownReferenceTypeName;
-import com.stormmq.string.Formatting;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

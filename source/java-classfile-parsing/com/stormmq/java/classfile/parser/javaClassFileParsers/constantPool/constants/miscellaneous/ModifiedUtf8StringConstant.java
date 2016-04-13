@@ -28,8 +28,6 @@ import com.stormmq.string.CodePointUser;
 import com.stormmq.string.InvalidUtf16StringException;
 import org.jetbrains.annotations.NotNull;
 
-import static com.stormmq.string.StringUtilities.iterateOverStringCodePoints;
-
 public final class ModifiedUtf8StringConstant extends AbstractSingleWidthConstant
 {
 	@NotNull private static final CodePointUser<RuntimeException> DoNothing = (index, codePoint) -> {};
@@ -75,7 +73,7 @@ public final class ModifiedUtf8StringConstant extends AbstractSingleWidthConstan
 	{
 		try
 		{
-			iterateOverStringCodePoints(potentiallyInvalidValue, DoNothing);
+			DoNothing.iterateOverStringCodePoints(potentiallyInvalidValue);
 		}
 		catch (final InvalidUtf16StringException e)
 		{

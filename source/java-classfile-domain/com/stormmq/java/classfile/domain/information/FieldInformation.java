@@ -28,12 +28,10 @@ import com.stormmq.java.classfile.domain.signatures.Signature;
 import com.stormmq.java.classfile.domain.uniqueness.FieldUniqueness;
 import com.stormmq.java.parsing.utilities.FieldFinality;
 import com.stormmq.java.parsing.utilities.Visibility;
-import com.stormmq.java.parsing.utilities.names.typeNames.referenceTypeNames.KnownReferenceTypeName;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.lang.annotation.Annotation;
-import java.util.Comparator;
 
 import static com.stormmq.java.parsing.utilities.Visibility.Private;
 import static com.stormmq.java.parsing.utilities.names.typeNames.referenceTypeNames.KnownReferenceTypeName.knownReferenceTypeName;
@@ -41,19 +39,19 @@ import static com.stormmq.java.parsing.utilities.names.typeNames.referenceTypeNa
 public final class FieldInformation
 {
 	@NotNull public final FieldUniqueness fieldUniqueness;
-	private final boolean isSynthetic;
-	@NotNull private final Visibility fieldVisibility;
-	@NotNull private final FieldFinality fieldFinality;
-	private final boolean isTransient;
-	private final boolean isFinal;
+	public final boolean isSynthetic;
+	@NotNull public final Visibility fieldVisibility;
+	@NotNull public final FieldFinality fieldFinality;
+	public final boolean isTransient;
+	public final boolean isFinal;
 	public final boolean isStatic;
-	private final boolean isDeprecated;
-	private final boolean isSyntheticAttribute;
-	@Nullable private final Signature signature;
+	public final boolean isDeprecated;
+	public final boolean isSyntheticAttribute;
+	@Nullable public final Signature signature;
 	@Nullable public final FieldConstant constantValue;
-	@NotNull private final AnnotationValues runtimeAnnotationValues;
-	@NotNull private final TypeAnnotation[] visibleTypeAnnotations;
-	@NotNull private final TypeAnnotation[] invisibleTypeAnnotations;
+	@NotNull public final AnnotationValues runtimeAnnotationValues;
+	@NotNull public final TypeAnnotation[] visibleTypeAnnotations;
+	@NotNull public final TypeAnnotation[] invisibleTypeAnnotations;
 
 	public FieldInformation(@NotNull final FieldUniqueness fieldUniqueness, final boolean isSynthetic, @NotNull final Visibility fieldVisibility, @NotNull final FieldFinality fieldFinality, final boolean isTransient, final boolean isFinal, final boolean isStatic, final boolean isDeprecated, final boolean isSyntheticAttribute, @Nullable final Signature signature, @Nullable final FieldConstant constantValue, @NotNull final AnnotationValues runtimeAnnotationValues, @NotNull final TypeAnnotation[] visibleTypeAnnotations, @NotNull final TypeAnnotation[] invisibleTypeAnnotations)
 	{

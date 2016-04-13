@@ -20,15 +20,40 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-package com.stormmq.java.classfile.parser.javaClassFileParsers.versionedClassFileParsers;
+package com.stormmq.java.parsing.utilities.names.typeNames;
 
-import com.stormmq.java.classfile.domain.information.ConcreteTypeInformation;
-import com.stormmq.java.classfile.parser.javaClassFileParsers.exceptions.InvalidJavaClassFileException;
-import org.jetbrains.annotations.NotNull;
+import com.stormmq.java.parsing.utilities.names.typeNames.referenceTypeNames.KnownReferenceTypeName;
+import org.jetbrains.annotations.*;
 
-@FunctionalInterface
-public interface VersionedClassFileParser
+public interface TypeNameVisitor<T>
 {
 	@NotNull
-	ConcreteTypeInformation parse() throws InvalidJavaClassFileException;
+	T useVoid();
+	
+	@NotNull
+	T useBoolean();
+	
+	@NotNull
+	T useByte();
+	
+	@NotNull
+	T useShort();
+	
+	@NotNull
+	T useChar();
+	
+	@NotNull
+	T useInt();
+	
+	@NotNull
+	T useLong();
+	
+	@NotNull
+	T useFloat();
+	
+	@NotNull
+	T useDouble();
+	
+	@NotNull
+	T useReference(@NotNull final KnownReferenceTypeName knownReferenceTypeName);
 }

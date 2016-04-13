@@ -26,30 +26,34 @@ import com.stormmq.string.StringConstants;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.function.Function;
+
 import static com.stormmq.java.parsing.utilities.names.typeNames.TypeNameCategory.FloatingPoint;
 import static com.stormmq.java.parsing.utilities.names.typeNames.TypeNameCategory.SignedInteger;
 import static com.stormmq.java.parsing.utilities.names.typeNames.TypeNameCategory.UnsignedInteger;
 
 public final class PrimitiveTypeName implements TypeName
 {
-	@NotNull public static final PrimitiveTypeName _boolean = new PrimitiveTypeName(StringConstants._boolean, 1, SignedInteger);
-	@NotNull public static final PrimitiveTypeName _byte = new PrimitiveTypeName(StringConstants._byte, 8, SignedInteger);
-	@NotNull public static final PrimitiveTypeName _short = new PrimitiveTypeName(StringConstants._short, 16, SignedInteger);
-	@NotNull public static final PrimitiveTypeName _char = new PrimitiveTypeName(StringConstants._char, 16, UnsignedInteger);
-	@NotNull public static final PrimitiveTypeName _int = new PrimitiveTypeName(StringConstants._int, 32, SignedInteger);
-	@NotNull public static final PrimitiveTypeName _long = new PrimitiveTypeName(StringConstants._long, 64, SignedInteger);
-	@NotNull public static final PrimitiveTypeName _float = new PrimitiveTypeName(StringConstants._float, 32, FloatingPoint);
-	@NotNull public static final PrimitiveTypeName _double = new PrimitiveTypeName(StringConstants._double, 64, FloatingPoint);
+	@NotNull public static final PrimitiveTypeName _boolean = new PrimitiveTypeName(StringConstants._boolean, 1, SignedInteger, TypeNameVisitor::useBoolean);
+	@NotNull public static final PrimitiveTypeName _byte = new PrimitiveTypeName(StringConstants._byte, 8, SignedInteger, TypeNameVisitor::useByte);
+	@NotNull public static final PrimitiveTypeName _short = new PrimitiveTypeName(StringConstants._short, 16, SignedInteger, TypeNameVisitor::useShort);
+	@NotNull public static final PrimitiveTypeName _char = new PrimitiveTypeName(StringConstants._char, 16, UnsignedInteger, TypeNameVisitor::useChar);
+	@NotNull public static final PrimitiveTypeName _int = new PrimitiveTypeName(StringConstants._int, 32, SignedInteger, TypeNameVisitor::useInt);
+	@NotNull public static final PrimitiveTypeName _long = new PrimitiveTypeName(StringConstants._long, 64, SignedInteger, TypeNameVisitor::useLong);
+	@NotNull public static final PrimitiveTypeName _float = new PrimitiveTypeName(StringConstants._float, 32, FloatingPoint, TypeNameVisitor::useFloat);
+	@NotNull public static final PrimitiveTypeName _double = new PrimitiveTypeName(StringConstants._double, 64, FloatingPoint, TypeNameVisitor::useDouble);
 
 	@NotNull private final String name;
 	@SuppressWarnings("FieldNotUsedInToString") private final int sizeInBitsOnASixtyFourBitCpu;
 	@SuppressWarnings("FieldNotUsedInToString") @NotNull private final TypeNameCategory typeNameCategory;
+	@NotNull private final Function<TypeNameVisitor<?>, ?> visitorMethod;
 
-	private PrimitiveTypeName(@NotNull @NonNls final String name, final int sizeInBitsOnASixtyFourBitCpu, @NotNull final TypeNameCategory typeNameCategory)
+	private <T> PrimitiveTypeName(@NotNull @NonNls final String name, final int sizeInBitsOnASixtyFourBitCpu, @NotNull final TypeNameCategory typeNameCategory, @NotNull final Function<TypeNameVisitor<?>, ?> visitorMethod)
 	{
 		this.name = name;
 		this.sizeInBitsOnASixtyFourBitCpu = sizeInBitsOnASixtyFourBitCpu;
 		this.typeNameCategory = typeNameCategory;
+		this.visitorMethod = visitorMethod;
 	}
 
 	@Override
@@ -95,6 +99,13 @@ public final class PrimitiveTypeName implements TypeName
 		int result = name.hashCode();
 		result = 31 * result + sizeInBitsOnASixtyFourBitCpu;
 		return result;
+	}
+
+	@NotNull
+	@Override
+	public <T> T visit(@NotNull final TypeNameVisitor<T> typeNameVisitor)
+	{
+		return (T) visitorMethod.apply(typeNameVisitor);
 	}
 
 	@Override

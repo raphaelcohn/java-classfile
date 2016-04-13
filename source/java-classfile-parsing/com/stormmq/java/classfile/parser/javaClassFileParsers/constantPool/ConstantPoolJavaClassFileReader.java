@@ -22,7 +22,6 @@
 
 package com.stormmq.java.classfile.parser.javaClassFileParsers.constantPool;
 
-import com.stormmq.functions.MapHelper;
 import com.stormmq.functions.PutOnceViolationException;
 import com.stormmq.java.classfile.domain.*;
 import com.stormmq.java.classfile.domain.attributes.annotations.*;

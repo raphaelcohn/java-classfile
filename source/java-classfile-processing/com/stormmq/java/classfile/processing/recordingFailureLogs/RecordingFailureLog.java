@@ -22,9 +22,6 @@
 
 package com.stormmq.java.classfile.processing.recordingFailureLogs;
 
-import com.stormmq.java.classfile.processing.typeInformationUsers.TypeInformationTriplet;
-import org.jetbrains.annotations.NotNull;
-
 public interface RecordingFailureLog
 {
 }

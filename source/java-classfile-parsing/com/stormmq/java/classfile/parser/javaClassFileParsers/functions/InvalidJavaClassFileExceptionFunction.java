@@ -24,7 +24,6 @@ package com.stormmq.java.classfile.parser.javaClassFileParsers.functions;
 
 import com.stormmq.functions.ExceptionFunction;
 import com.stormmq.java.classfile.parser.javaClassFileParsers.exceptions.InvalidJavaClassFileException;
-import org.jetbrains.annotations.NotNull;
 
 @FunctionalInterface
 public interface InvalidJavaClassFileExceptionFunction<T, R> extends ExceptionFunction<T, R, InvalidJavaClassFileException>

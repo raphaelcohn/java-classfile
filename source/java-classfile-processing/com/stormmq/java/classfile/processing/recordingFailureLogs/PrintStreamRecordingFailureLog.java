@@ -22,12 +22,10 @@
 
 package com.stormmq.java.classfile.processing.recordingFailureLogs;
 
-import com.stormmq.java.classfile.processing.typeInformationUsers.TypeInformationTriplet;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.PrintStream;
 
-import static com.stormmq.string.Formatting.formatPrintLineAndFlushWhilstSynchronized;
 import static java.lang.System.err;
 
 public final class PrintStreamRecordingFailureLog implements RecordingFailureLog

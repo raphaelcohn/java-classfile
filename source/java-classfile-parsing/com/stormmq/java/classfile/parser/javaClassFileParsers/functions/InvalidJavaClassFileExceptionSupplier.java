@@ -24,7 +24,6 @@ package com.stormmq.java.classfile.parser.javaClassFileParsers.functions;
 
 import com.stormmq.functions.ExceptionSupplier;
 import com.stormmq.java.classfile.parser.javaClassFileParsers.exceptions.InvalidJavaClassFileException;
-import com.stormmq.java.classfile.parser.javaClassFileParsers.exceptions.JavaClassFileContainsDataTooLongToReadException;
 import org.jetbrains.annotations.*;
 
 @FunctionalInterface

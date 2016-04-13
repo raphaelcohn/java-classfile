@@ -25,7 +25,6 @@ package com.stormmq.java.classfile.domain.attributes.code;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
-import java.util.function.Function;
 
 public final class LineNumberEntry
 {
