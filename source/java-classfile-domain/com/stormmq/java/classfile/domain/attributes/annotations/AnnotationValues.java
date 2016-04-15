@@ -26,6 +26,7 @@ import com.stormmq.functions.collections.PutOnceViolationException;
 import com.stormmq.java.classfile.domain.InvalidInternalTypeNameException;
 import com.stormmq.java.classfile.domain.names.MethodName;
 import com.stormmq.java.parsing.utilities.names.typeNames.referenceTypeNames.KnownReferenceTypeName;
+import com.stormmq.string.AbstractToString;
 import org.jetbrains.annotations.NotNull;
 
 import java.lang.annotation.RetentionPolicy;
@@ -37,7 +38,7 @@ import static com.stormmq.functions.collections.MapHelper.putOnce;
 import static com.stormmq.string.StringConstants.DefaultAnnotationMemberName;
 import static java.util.Collections.emptyMap;
 
-public final class AnnotationValues
+public final class AnnotationValues extends AbstractToString
 {
 	@NotNull public static final AnnotationValues[] NoAnnotationValues = {};
 	@NotNull public static final Map<KnownReferenceTypeName, RetentionPolicyAndValues> Empty = emptyMap();
@@ -76,6 +77,13 @@ public final class AnnotationValues
 	public AnnotationValues(@NotNull final Map<KnownReferenceTypeName, RetentionPolicyAndValues> nameToValues)
 	{
 		this.nameToValues = nameToValues;
+	}
+
+	@NotNull
+	@Override
+	protected Object[] fields()
+	{
+		return fields(nameToValues);
 	}
 
 	public boolean hasAnnotation(@NotNull final KnownReferenceTypeName annotationTypeName)

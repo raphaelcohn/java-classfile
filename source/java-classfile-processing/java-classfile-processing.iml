@@ -16,5 +16,6 @@
     <orderEntry type="module" module-name="functions" />
     <orderEntry type="module" module-name="annotations" />
     <orderEntry type="module" module-name="byteReaders" />
+    <orderEntry type="module" module-name="logs" />
   </component>
 </module>

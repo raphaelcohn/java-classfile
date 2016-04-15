@@ -33,12 +33,13 @@ import com.stormmq.java.classfile.domain.uniqueness.MethodUniqueness;
 import com.stormmq.java.parsing.utilities.Completeness;
 import com.stormmq.java.parsing.utilities.Visibility;
 import com.stormmq.java.parsing.utilities.names.typeNames.referenceTypeNames.KnownReferenceTypeName;
+import com.stormmq.string.AbstractToString;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Set;
 
-public final class MethodInformation
+public final class MethodInformation extends AbstractToString
 {
 	@NotNull private final MethodUniqueness methodUniqueness;
 	@NotNull private final Visibility visibility;
@@ -87,6 +88,13 @@ public final class MethodInformation
 		this.methodParameters = methodParameters;
 		this.annotationDefault = annotationDefault;
 		this.unknownAttributes = unknownAttributes;
+	}
+
+	@NotNull
+	@Override
+	protected Object[] fields()
+	{
+		return fields(methodUniqueness, code, visibility, isSynthetic, isBridge, isVarArgs, completeness, isSynchronized, isNative, isStatic, isStrictFloatingPoint, isSyntheticAttribute, isDeprecated, signature, runtimeAnnotationValues, parameterAnnotations, visibleTypeAnnotations, invisibleTypeAnnotations, exceptions, methodParameters, annotationDefault, unknownAttributes);
 	}
 
 	public void parseCode() throws MismatchedTypeInvalidOperandStackException, NotEnoughBytesInvalidOperandStackException, InvalidOpcodeException, UnderflowInvalidOperandStackException, OverflowInvalidOperandStackException

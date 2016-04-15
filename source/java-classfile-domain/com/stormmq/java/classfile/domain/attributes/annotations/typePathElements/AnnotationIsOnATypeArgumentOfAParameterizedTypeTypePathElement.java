@@ -22,9 +22,10 @@
 
 package com.stormmq.java.classfile.domain.attributes.annotations.typePathElements;
 
+import com.stormmq.string.AbstractToString;
 import org.jetbrains.annotations.NotNull;
 
-public final class AnnotationIsOnATypeArgumentOfAParameterizedTypeTypePathElement implements TypePathElement
+public final class AnnotationIsOnATypeArgumentOfAParameterizedTypeTypePathElement extends AbstractToString implements TypePathElement
 {
 	@NotNull private static final AnnotationIsOnATypeArgumentOfAParameterizedTypeTypePathElement[] Cache = cacheAllCombinations();
 
@@ -46,10 +47,17 @@ public final class AnnotationIsOnATypeArgumentOfAParameterizedTypeTypePathElemen
 		return Cache[typePathArgumentIndex];
 	}
 
-	private final short typeArgumentIndexUnsigned8BitInteger;
+	public final short typeArgumentIndexUnsigned8BitInteger;
 
 	private AnnotationIsOnATypeArgumentOfAParameterizedTypeTypePathElement(final short typeArgumentIndexUnsigned8BitInteger)
 	{
 		this.typeArgumentIndexUnsigned8BitInteger = typeArgumentIndexUnsigned8BitInteger;
+	}
+
+	@NotNull
+	@Override
+	protected Object[] fields()
+	{
+		return fields(typeArgumentIndexUnsigned8BitInteger);
 	}
 }

@@ -24,17 +24,18 @@ package com.stormmq.java.classfile.domain.attributes.annotations;
 
 import com.stormmq.java.classfile.domain.attributes.annotations.targetInformations.TargetInformation;
 import com.stormmq.java.classfile.domain.attributes.annotations.typePathElements.TypePathElement;
+import com.stormmq.string.AbstractToString;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 
-public final class TypeAnnotation
+public final class TypeAnnotation extends AbstractToString
 {
 	@NotNull public static final TypeAnnotation[] EmptyTypeAnnotations = {};
 
-	@NotNull private final TargetType targetType;
-	@NotNull private final TargetInformation targetInformation;
-	@NotNull private final TypePathElement[] typePath;
-	@NotNull private final AnnotationValue annotationValue;
+	@NotNull public final TargetType targetType;
+	@NotNull public final TargetInformation targetInformation;
+	@NotNull public final TypePathElement[] typePath;
+	@NotNull public final AnnotationValue annotationValue;
 
 	// An empty typePath implies the annotation is on the type itself
 	public TypeAnnotation(@NotNull final TargetType targetType, @NotNull final TargetInformation targetInformation, @NonNls @NotNull final TypePathElement[] typePath, @NotNull final AnnotationValue annotationValue)
@@ -43,5 +44,12 @@ public final class TypeAnnotation
 		this.targetInformation = targetInformation;
 		this.typePath = typePath;
 		this.annotationValue = annotationValue;
+	}
+
+	@NotNull
+	@Override
+	protected Object[] fields()
+	{
+		return fields(targetType, targetInformation, typePath, annotationValue);
 	}
 }

@@ -25,6 +25,7 @@ package com.stormmq.java.classfile.processing;
 import com.stormmq.functions.ToBooleanFunction;
 import com.stormmq.java.classfile.processing.typeInformationUsers.TypeInformationTriplet;
 import com.stormmq.java.parsing.utilities.names.typeNames.referenceTypeNames.KnownReferenceTypeName;
+import com.stormmq.string.AbstractToString;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -39,7 +40,7 @@ import static com.stormmq.functions.collections.MapHelper.useMapValue;
 import static com.stormmq.functions.collections.MapHelper.useMapValueOrGetDefault;
 import static com.stormmq.java.parsing.utilities.names.typeNames.referenceTypeNames.KnownReferenceTypeName.knownReferenceTypeName;
 
-public final class ConcreteRecords implements Records
+public final class ConcreteRecords extends AbstractToString implements Records
 {
 	@NotNull private final Map<KnownReferenceTypeName, TypeInformationTriplet> records;
 
@@ -48,13 +49,20 @@ public final class ConcreteRecords implements Records
 		this.records = records;
 	}
 
+	@NotNull
+	@Override
+	protected Object[] fields()
+	{
+		return fields(records);
+	}
+
 	@Override
 	public <R> void iterate(@NotNull final TypeInformationTripletUser<R> typeInformationTripletUser, @NotNull final Function<Records, R> usefulRecordsCreator)
 	{
 		final R usefulRecords = usefulRecordsCreator.apply(this);
 		for (final TypeInformationTriplet typeInformationTriplet : records.values())
 		{
-			typeInformationTripletUser.use(usefulRecords, typeInformationTriplet);
+			typeInformationTripletUser.use(typeInformationTriplet, usefulRecords);
 		}
 	}
 

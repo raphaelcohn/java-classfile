@@ -25,35 +25,28 @@ package com.stormmq.java.classfile.processing.processLogs;
 import com.stormmq.java.classfile.parser.javaClassFileParsers.exceptions.InvalidJavaClassFileException;
 import com.stormmq.java.classfile.parser.javaClassFileParsers.exceptions.JavaClassFileContainsDataTooLongToReadException;
 import com.stormmq.java.classfile.processing.typeInformationUsers.TypeInformationTriplet;
+import com.stormmq.logs.Log;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
-import java.io.PrintStream;
 import java.nio.file.Path;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.zip.*;
 
-import static com.stormmq.string.Formatting.formatPrintLineAndFlushWhilstSynchronized;
-import static java.lang.System.err;
+import static com.stormmq.logs.LogLevel.Error;
+import static com.stormmq.logs.LogLevel.*;
+import static com.stormmq.string.Formatting.format;
 
-public final class PrintStreamProcessLog implements ProcessLog
+public final class StandardProcessLog implements ProcessLog
 {
-	@SuppressWarnings("UseOfSystemOutOrSystemErr")
-	@NotNull public static ProcessLog standardErrorParseFailureLog(final boolean isAtLeastVerbose)
-	{
-		return new PrintStreamProcessLog(isAtLeastVerbose, err);
-	}
-
-	private final boolean isAtLeastVerbose;
-	@NotNull private final PrintStream printStream;
+	@NotNull private final Log log;
 	@NotNull private final AtomicInteger failureCount;
 	@NotNull private final AtomicInteger successCount;
 
-	private PrintStreamProcessLog(final boolean isAtLeastVerbose, @NotNull final PrintStream printStream)
+	public StandardProcessLog(@NotNull final Log log)
 	{
-		this.isAtLeastVerbose = isAtLeastVerbose;
-		this.printStream = printStream;
+		this.log = log;
 		failureCount = new AtomicInteger(0);
 		successCount = new AtomicInteger(0);
 	}
@@ -74,19 +67,13 @@ public final class PrintStreamProcessLog implements ProcessLog
 	public void success(@NotNull final String filePath)
 	{
 		successCount.getAndIncrement();
-		if (isAtLeastVerbose)
-		{
-			formatPrintLineAndFlushWhilstSynchronized(printStream, "Successfully parsed '%1$s'", filePath);
-		}
+		log.log(Info, format("Successfully parsed '%1$s'", filePath));
 	}
 
 	@Override
 	public void genericSuccess(@NonNls @NotNull final String messageTemplate, @NotNull final Object... arguments)
 	{
-		if (isAtLeastVerbose)
-		{
-			formatPrintLineAndFlushWhilstSynchronized(printStream, messageTemplate, arguments);
-		}
+		log.log(Info, format(messageTemplate, arguments));
 	}
 
 	@Override
@@ -134,10 +121,7 @@ public final class PrintStreamProcessLog implements ProcessLog
 	@Override
 	public void duplicateTypeInformationWarning(@NotNull final TypeInformationTriplet extant, @NotNull final TypeInformationTriplet replacement)
 	{
-		if (isAtLeastVerbose)
-		{
-			formatPrintLineAndFlushWhilstSynchronized(printStream, "Duplicate type information for '%1$s' found at '%2$s' in '%3$s' overrides '%4$s' in '%5$s", replacement.thisClassTypeName(), replacement.relativeFilePath, replacement.relativeRootFolderPath, extant.relativeFilePath, extant.relativeRootFolderPath);
-		}
+		log.log(Notice, format("Duplicate type information for '%1$s' found at '%2$s' in '%3$s' overrides '%4$s' in '%5$s", replacement.thisClassTypeName(), replacement.relativeFilePath, replacement.relativeRootFolderPath, extant.relativeFilePath, extant.relativeRootFolderPath));
 	}
 
 	@SuppressWarnings("OverloadedVarargsMethod")
@@ -145,6 +129,6 @@ public final class PrintStreamProcessLog implements ProcessLog
 	{
 		failureCount.getAndIncrement();
 
-		formatPrintLineAndFlushWhilstSynchronized(printStream, template, arguments);
+		log.log(Error, format(template, arguments));
 	}
 }

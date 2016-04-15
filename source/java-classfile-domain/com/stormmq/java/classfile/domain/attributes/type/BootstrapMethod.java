@@ -24,12 +24,13 @@ package com.stormmq.java.classfile.domain.attributes.type;
 
 import com.stormmq.java.classfile.domain.MethodHandle;
 import com.stormmq.java.classfile.domain.attributes.code.constants.BootstrapMethodArgument;
+import com.stormmq.string.AbstractToString;
 import com.stormmq.string.Formatting;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
 
-public final class BootstrapMethod
+public final class BootstrapMethod extends AbstractToString
 {
 	@NotNull public static final BootstrapMethod[] EmptyBootstrapMethods = {};
 
@@ -42,10 +43,10 @@ public final class BootstrapMethod
 		this.bootstrapMethodArguments = bootstrapMethodArguments;
 	}
 
-	@Override
 	@NotNull
-	public String toString()
+	@Override
+	protected Object[] fields()
 	{
-		return Formatting.format("%1$s(%2$s, %3$s)", getClass().getSimpleName(), methodHandle, Arrays.toString(bootstrapMethodArguments));
+		return fields(methodHandle, bootstrapMethodArguments);
 	}
 }

@@ -23,10 +23,25 @@
 package com.stormmq.java.classfile.processing;
 
 import com.stormmq.java.classfile.processing.typeInformationUsers.TypeInformationTriplet;
+import com.stormmq.logs.Log;
+import com.stormmq.string.Formatting;
 import org.jetbrains.annotations.NotNull;
+
+import static com.stormmq.logs.LogLevel.Info;
+import static com.stormmq.string.Formatting.format;
 
 @FunctionalInterface
 public interface TypeInformationTripletUser<R>
 {
-	void use(@NotNull final R usefulRecords, @NotNull final TypeInformationTriplet typeInformationTriplet);
+	void use(@NotNull final TypeInformationTriplet typeInformationTriplet, @NotNull final R usefulRecords);
+
+	@NotNull
+	static <R> TypeInformationTripletUser<R> loggingTypeInformationTripletUser(@NotNull final TypeInformationTripletUser<R> underlying, @NotNull final Log log)
+	{
+		return (typeInformationTriplet, usefulRecords) ->
+		{
+			log.log(Info, format("Processing type '%1$s' in '%2$s'", typeInformationTriplet.thisClassTypeName(), typeInformationTriplet.relativeRootFolderPath));
+			underlying.use(typeInformationTriplet, usefulRecords);
+		};
+	}
 }
