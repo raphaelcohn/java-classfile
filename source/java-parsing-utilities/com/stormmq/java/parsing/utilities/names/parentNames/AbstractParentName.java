@@ -24,6 +24,7 @@ package com.stormmq.java.parsing.utilities.names.parentNames;
 
 import com.stormmq.java.parsing.utilities.InvalidJavaIdentifierException;
 import com.stormmq.java.parsing.utilities.names.PackageName;
+import com.stormmq.string.AbstractToString;
 import com.stormmq.string.StringUtilities;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -36,7 +37,7 @@ import static com.stormmq.string.StringConstants.ExternalTypeNameSeparator;
 import static com.stormmq.string.StringConstants.InternalTypeNameSeparatorString;
 import static com.stormmq.java.parsing.utilities.names.PackageName.packageName;
 
-public abstract class AbstractParentName implements ParentName
+public abstract class AbstractParentName extends AbstractToString implements ParentName
 {
 	@NotNull
 	protected static <P extends AbstractParentName> BiConsumer<P, Consumer<String>> namespaceSplitter()
@@ -90,6 +91,13 @@ public abstract class AbstractParentName implements ParentName
 		this.fullyQualifiedNameUsingDotsAndDollarSigns = fullyQualifiedNameUsingDotsAndDollarSigns;
 	}
 
+	@NotNull
+	@Override
+	protected Object[] fields()
+	{
+		return fields(fullyQualifiedNameUsingDotsAndDollarSigns);
+	}
+
 	public final void split(@NotNull final Consumer<String> user)
 	{
 		split(fullyQualifiedNameUsingDotsAndDollarSigns, user);
@@ -127,12 +135,6 @@ public abstract class AbstractParentName implements ParentName
 		}
 
 		return simpleName;
-	}
-
-	@Override
-	public final String toString()
-	{
-		return fullyQualifiedNameUsingDotsAndDollarSigns;
 	}
 
 	@SuppressWarnings("RedundantIfStatement")

@@ -25,13 +25,14 @@ package com.stormmq.java.classfile.processing.typeInformationUsers;
 import com.stormmq.functions.SizedIterator;
 import com.stormmq.java.classfile.domain.information.*;
 import com.stormmq.java.parsing.utilities.names.typeNames.referenceTypeNames.KnownReferenceTypeName;
+import com.stormmq.string.AbstractToString;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.nio.file.Path;
 import java.util.function.Consumer;
 
-public final class TypeInformationTriplet implements TypeInformation
+public final class TypeInformationTriplet extends AbstractToString implements TypeInformation
 {
 	@NotNull private final TypeInformation typeInformation;
 	@NotNull public final String relativeFilePath;
@@ -42,6 +43,13 @@ public final class TypeInformationTriplet implements TypeInformation
 		this.typeInformation = typeInformation;
 		this.relativeFilePath = relativeFilePath;
 		this.relativeRootFolderPath = relativeRootFolderPath;
+	}
+
+	@NotNull
+	@Override
+	protected Object[] fields()
+	{
+		return fields(typeInformation, relativeFilePath, relativeRootFolderPath);
 	}
 
 	@Override

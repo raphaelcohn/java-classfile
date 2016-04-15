@@ -28,6 +28,7 @@ import com.stormmq.java.classfile.domain.signatures.Signature;
 import com.stormmq.java.classfile.domain.uniqueness.FieldUniqueness;
 import com.stormmq.java.parsing.utilities.FieldFinality;
 import com.stormmq.java.parsing.utilities.Visibility;
+import com.stormmq.string.AbstractToString;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -36,7 +37,7 @@ import java.lang.annotation.Annotation;
 import static com.stormmq.java.parsing.utilities.Visibility.Private;
 import static com.stormmq.java.parsing.utilities.names.typeNames.referenceTypeNames.KnownReferenceTypeName.knownReferenceTypeName;
 
-public final class FieldInformation
+public final class FieldInformation extends AbstractToString
 {
 	@NotNull public final FieldUniqueness fieldUniqueness;
 	public final boolean isSynthetic;
@@ -69,6 +70,13 @@ public final class FieldInformation
 		this.runtimeAnnotationValues = runtimeAnnotationValues;
 		this.visibleTypeAnnotations = visibleTypeAnnotations;
 		this.invisibleTypeAnnotations = invisibleTypeAnnotations;
+	}
+
+	@NotNull
+	@Override
+	protected Object[] fields()
+	{
+		return fields(fieldUniqueness, isSynthetic, fieldVisibility, fieldFinality, isTransient, isFinal, isStatic, isDeprecated, isSyntheticAttribute, signature, constantValue, runtimeAnnotationValues, visibleTypeAnnotations, invisibleTypeAnnotations);
 	}
 
 	public boolean isInstance()

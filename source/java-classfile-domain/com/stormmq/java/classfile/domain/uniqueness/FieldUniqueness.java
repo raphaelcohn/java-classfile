@@ -24,10 +24,11 @@ package com.stormmq.java.classfile.domain.uniqueness;
 
 import com.stormmq.java.classfile.domain.descriptors.FieldDescriptor;
 import com.stormmq.java.classfile.domain.names.FieldName;
+import com.stormmq.string.AbstractToString;
 import com.stormmq.string.Formatting;
 import org.jetbrains.annotations.*;
 
-public final class FieldUniqueness implements Comparable<FieldUniqueness>
+public final class FieldUniqueness extends AbstractToString implements Comparable<FieldUniqueness>
 {
 	@NotNull public final FieldName fieldName;
 	@NotNull public final FieldDescriptor fieldDescriptor;
@@ -56,12 +57,11 @@ public final class FieldUniqueness implements Comparable<FieldUniqueness>
 		return fieldDescriptor.compareTo(o.fieldDescriptor);
 	}
 
-	@NonNls
 	@NotNull
 	@Override
-	public String toString()
+	protected Object[] fields()
 	{
-		return Formatting.format("%1$s(%2$s, %3$s)", getClass().getSimpleName(), fieldName, fieldDescriptor);
+		return fields(fieldName, fieldDescriptor);
 	}
 
 	@SuppressWarnings("RedundantIfStatement")

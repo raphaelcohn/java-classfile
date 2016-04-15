@@ -35,6 +35,7 @@ import com.stormmq.java.classfile.domain.uniqueness.MethodUniqueness;
 import com.stormmq.java.parsing.utilities.Completeness;
 import com.stormmq.java.parsing.utilities.Visibility;
 import com.stormmq.java.parsing.utilities.names.typeNames.referenceTypeNames.KnownReferenceTypeName;
+import com.stormmq.string.AbstractToString;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -44,7 +45,7 @@ import java.util.function.Consumer;
 import static com.stormmq.functions.ListHelper.trimToSizeOrReplaceWithEmptyOrSingleton;
 import static com.stormmq.functions.SizedIterator.sizedIteratorFromCollection;
 
-public final class ConcreteTypeInformation implements TypeInformation
+public final class ConcreteTypeInformation extends AbstractToString implements TypeInformation
 {
 	@NotNull private static final List<FieldInformation> EmptyFields = Collections.emptyList();
 
@@ -113,6 +114,13 @@ public final class ConcreteTypeInformation implements TypeInformation
 		}
 		this.staticMethods = trimToSizeOrReplaceWithEmptyOrSingleton(staticMethods);
 		this.instanceMethods = trimToSizeOrReplaceWithEmptyOrSingleton(instanceMethods);
+	}
+
+	@NotNull
+	@Override
+	protected Object[] fields()
+	{
+		return fields(typeKind, visibility, completeness, isSynthetic, hasLegacySuperFlagSetting, thisClassTypeName, superClassTypeName, interfaces, isSyntheticAttribute, isDeprecated, signature, runtimeAnnotationValues, typeAnnotations, visibleTypeAnnotations, unknownAttributes, sourceFile, enclosingMethod, sourceDebugExtension, bootstrapMethods, staticFields, instanceFields, staticMethods, instanceMethods);
 	}
 
 	@Override
