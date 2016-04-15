@@ -22,7 +22,7 @@
 
 package com.stormmq.java.classfile.domain.information;
 
-import com.stormmq.functions.SizedIterator;
+import com.stormmq.functions.collections.SizedIterator;
 import com.stormmq.java.parsing.utilities.names.typeNames.referenceTypeNames.KnownReferenceTypeName;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

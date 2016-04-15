@@ -23,6 +23,7 @@
 package com.stormmq.java.classfile.parser.javaClassFileParsers.attributesParsers;
 
 import com.stormmq.functions.*;
+import com.stormmq.functions.collections.AddOnceViolationException;
 import com.stormmq.java.classfile.domain.*;
 import com.stormmq.java.classfile.domain.attributes.*;
 import com.stormmq.java.classfile.domain.attributes.annotations.TargetType;
@@ -57,9 +58,9 @@ import java.nio.ByteBuffer;
 import java.util.*;
 import java.util.function.IntFunction;
 
-import static com.stormmq.functions.MapHelper.putOnce;
-import static com.stormmq.functions.MapHelper.useMapValueExceptionally;
-import static com.stormmq.functions.CollectionHelper.addOnce;
+import static com.stormmq.functions.collections.MapHelper.putOnce;
+import static com.stormmq.functions.collections.MapHelper.useMapValueExceptionally;
+import static com.stormmq.functions.collections.CollectionHelper.addOnce;
 import static com.stormmq.java.classfile.domain.attributes.code.constants.BootstrapMethodArgument.EmptyBootstrapMethodArgumentConstants;
 import static com.stormmq.java.classfile.domain.JavaClassFileVersion.*;
 import static com.stormmq.java.classfile.domain.attributes.AttributeLocation.*;

@@ -22,7 +22,7 @@
 
 package com.stormmq.java.classfile.parser.javaClassFileParsers.versionedClassFileParsers;
 
-import com.stormmq.functions.AddOnceViolationException;
+import com.stormmq.functions.collections.AddOnceViolationException;
 import com.stormmq.java.classfile.domain.TypeKind;
 import com.stormmq.java.classfile.parser.javaClassFileParsers.exceptions.InvalidJavaClassFileException;
 import com.stormmq.java.classfile.parser.javaClassFileParsers.constantPool.ConstantPoolJavaClassFileReader;
@@ -32,8 +32,8 @@ import org.jetbrains.annotations.*;
 
 import java.util.*;
 
-import static com.stormmq.functions.MapHelper.putOnce;
-import static com.stormmq.functions.CollectionHelper.addOnce;
+import static com.stormmq.functions.collections.MapHelper.putOnce;
+import static com.stormmq.functions.collections.CollectionHelper.addOnce;
 import static com.stormmq.java.classfile.domain.TypeKind.Annotation;
 import static com.stormmq.java.classfile.domain.TypeKind.Class;
 import static com.stormmq.java.classfile.domain.TypeKind.Interface;

@@ -34,7 +34,7 @@ import org.jetbrains.annotations.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.stormmq.functions.ListHelper.listToArray;
+import static com.stormmq.functions.collections.ListHelper.listToArray;
 import static com.stormmq.java.classfile.domain.InternalTypeName.EmptyInternalTypeNames;
 import static com.stormmq.java.classfile.domain.InternalTypeName.MaximumArrayDimensions;
 import static com.stormmq.java.classfile.domain.InternalTypeName.VoidInternalTypeName;

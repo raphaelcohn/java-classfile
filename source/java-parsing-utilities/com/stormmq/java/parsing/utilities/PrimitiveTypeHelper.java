@@ -29,8 +29,8 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import static com.stormmq.functions.MapHelper.putOnce;
-import static com.stormmq.functions.CollectionHelper.addOnce;
+import static com.stormmq.functions.collections.MapHelper.putOnce;
+import static com.stormmq.functions.collections.CollectionHelper.addOnce;
 
 public final class PrimitiveTypeHelper
 {

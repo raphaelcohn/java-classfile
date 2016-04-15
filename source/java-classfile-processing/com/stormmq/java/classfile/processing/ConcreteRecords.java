@@ -35,8 +35,8 @@ import java.util.function.Function;
 import static com.stormmq.annotations.AnnotationHelper.doesAnnotationTargetPackages;
 import static com.stormmq.annotations.AnnotationHelper.isInherited;
 import static com.stormmq.annotations.AnnotationHelper.isRepeatable;
-import static com.stormmq.functions.MapHelper.useMapValue;
-import static com.stormmq.functions.MapHelper.useMapValueOrGetDefault;
+import static com.stormmq.functions.collections.MapHelper.useMapValue;
+import static com.stormmq.functions.collections.MapHelper.useMapValueOrGetDefault;
 import static com.stormmq.java.parsing.utilities.names.typeNames.referenceTypeNames.KnownReferenceTypeName.knownReferenceTypeName;
 
 public final class ConcreteRecords implements Records

@@ -29,7 +29,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
-import static com.stormmq.functions.MapHelper.computeExceptionally;
+import static com.stormmq.functions.collections.MapHelper.computeExceptionally;
 import static com.stormmq.java.classfile.parser.javaClassFileParsers.attributesParsers.Attributes.LineNumberTable;
 import static com.stormmq.java.classfile.parser.javaClassFileParsers.attributesParsers.Attributes.LocalVariableTable;
 import static com.stormmq.java.classfile.parser.javaClassFileParsers.attributesParsers.Attributes.LocalVariableTypeTable;

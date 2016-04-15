@@ -30,7 +30,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.function.*;
 
-import static com.stormmq.functions.MapHelper.useMapValueOrGetDefault;
+import static com.stormmq.functions.collections.MapHelper.useMapValueOrGetDefault;
 import static com.stormmq.string.StringConstants.ExternalTypeNameSeparator;
 import static com.stormmq.string.StringConstants.ExternalTypeNameSeparatorString;
 import static com.stormmq.java.parsing.utilities.names.typeNames.referenceTypeNames.KnownReferenceTypeName.knownReferenceTypeName;

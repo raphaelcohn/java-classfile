@@ -22,7 +22,7 @@
 
 package com.stormmq.java.classfile.parser.javaClassFileParsers.versionedClassFileParsers;
 
-import com.stormmq.functions.PutOnceViolationException;
+import com.stormmq.functions.collections.PutOnceViolationException;
 import com.stormmq.java.classfile.domain.*;
 import com.stormmq.java.classfile.domain.attributes.AttributeLocation;
 import com.stormmq.java.classfile.domain.attributes.UnknownAttributes;
@@ -56,8 +56,8 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
-import static com.stormmq.functions.MapHelper.getGuarded;
-import static com.stormmq.functions.MapHelper.putOnce;
+import static com.stormmq.functions.collections.MapHelper.getGuarded;
+import static com.stormmq.functions.collections.MapHelper.putOnce;
 import static com.stormmq.java.classfile.domain.TypeKind.*;
 import static com.stormmq.java.classfile.domain.TypeKind.Class;
 import static com.stormmq.java.classfile.domain.TypeKind.Enum;

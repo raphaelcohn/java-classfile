@@ -22,7 +22,7 @@
 
 package com.stormmq.java.classfile.domain.information;
 
-import com.stormmq.functions.SizedIterator;
+import com.stormmq.functions.collections.SizedIterator;
 import com.stormmq.java.classfile.domain.TypeKind;
 import com.stormmq.java.classfile.domain.attributes.UnknownAttributes;
 import com.stormmq.java.classfile.domain.attributes.annotations.AnnotationValues;
@@ -42,8 +42,8 @@ import org.jetbrains.annotations.Nullable;
 import java.util.*;
 import java.util.function.Consumer;
 
-import static com.stormmq.functions.ListHelper.trimToSizeOrReplaceWithEmptyOrSingleton;
-import static com.stormmq.functions.SizedIterator.sizedIteratorFromCollection;
+import static com.stormmq.functions.collections.ListHelper.trimToSizeOrReplaceWithEmptyOrSingleton;
+import static com.stormmq.functions.collections.SizedIterator.sizedIteratorFromCollection;
 
 public final class ConcreteTypeInformation extends AbstractToString implements TypeInformation
 {

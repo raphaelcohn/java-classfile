@@ -23,6 +23,7 @@
 package com.stormmq.java.classfile.parser.javaClassFileParsers.attributesParsers;
 
 import com.stormmq.functions.*;
+import com.stormmq.functions.collections.MapHelper;
 import com.stormmq.java.classfile.domain.InvalidInternalTypeNameException;
 import com.stormmq.java.classfile.domain.attributes.UnknownAttributeData;
 import com.stormmq.java.classfile.domain.attributes.UnknownAttributes;
@@ -43,9 +44,9 @@ import java.lang.annotation.RetentionPolicy;
 import java.util.*;
 import java.util.function.*;
 
-import static com.stormmq.functions.ListHelper.newArrayListExceptionally;
-import static com.stormmq.functions.MapHelper.useMapValue;
-import static com.stormmq.functions.MapHelper.useMapValueExceptionallyWithDefault;
+import static com.stormmq.functions.collections.ListHelper.newArrayListExceptionally;
+import static com.stormmq.functions.collections.MapHelper.useMapValue;
+import static com.stormmq.functions.collections.MapHelper.useMapValueExceptionallyWithDefault;
 import static com.stormmq.java.classfile.domain.attributes.annotations.AnnotationValue.EmptyParameterAnnotations;
 import static com.stormmq.java.classfile.domain.attributes.annotations.AnnotationValues.*;
 import static com.stormmq.java.classfile.domain.attributes.annotations.TypeAnnotation.EmptyTypeAnnotations;
