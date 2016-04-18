@@ -41,6 +41,14 @@ public final class FieldUniqueness extends AbstractToString implements Comparabl
 
 	@NonNls
 	@NotNull
+	public String fieldName()
+	{
+		return fieldName.name();
+	}
+
+	// The JVM spec permits fields to differ by type; in practice, in the entire JDK 1.8, none do this
+	@NonNls
+	@NotNull
 	public String uniqueName()
 	{
 		return fieldName.name() + '-' + fieldDescriptor.canonicalName();

@@ -29,8 +29,7 @@ import com.stormmq.java.classfile.domain.uniqueness.FieldUniqueness;
 import com.stormmq.java.parsing.utilities.FieldFinality;
 import com.stormmq.java.parsing.utilities.Visibility;
 import com.stormmq.string.AbstractToString;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.*;
 
 import java.lang.annotation.Annotation;
 
@@ -93,5 +92,12 @@ public final class FieldInformation extends AbstractToString
 	public <T> T annotationValue(@NotNull final Class<? extends Annotation> annotationClass, @NotNull final T defaultValue)
 	{
 		return runtimeAnnotationValues.annotationValue(knownReferenceTypeName(annotationClass.getName()), defaultValue);
+	}
+
+	@NotNull
+	@NonNls
+	public String fieldName()
+	{
+		return fieldUniqueness.fieldName();
 	}
 }
