@@ -40,7 +40,7 @@ public interface TypeInformationTripletUser<R>
 	{
 		return (typeInformationTriplet, usefulRecords) ->
 		{
-			log.log(Info, format("Processing type '%1$s' in '%2$s'", typeInformationTriplet.thisClassTypeName(), typeInformationTriplet.relativeRootFolderPath));
+			log.log(Info, format("Processing type '%1$s' in '%2$s'", typeInformationTriplet.thisClassTypeName().name(), typeInformationTriplet.relativeRootFolderPath));
 			underlying.use(typeInformationTriplet, usefulRecords);
 		};
 	}

@@ -53,7 +53,7 @@ public final class ConcreteRecords extends AbstractToString implements Records
 	@Override
 	protected Object[] fields()
 	{
-		return fields(records);
+		return fields(records.size());
 	}
 
 	@Override
